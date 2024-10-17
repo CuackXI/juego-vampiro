@@ -48,7 +48,7 @@ def main():
 
     # Create a game instance and start it
     game = Game(display, world, input_handler)
-    game.rdun()
+    game.run()
 
     # Properly quit Pygame
     pygame.quit()

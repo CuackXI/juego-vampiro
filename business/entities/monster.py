@@ -12,12 +12,17 @@ from presentation.sprite import Sprite
 class Monster(MovableEntity, IMonster):
     """A monster entity in the game."""
 
+    BASE_HEALTH = 10
+    BASE_DAMAGE = 10
+    BASE_ATTACK_RANGE = 50
+    BASE_ATTACK_COOLDOWN = 1000
+
     def __init__(self, src_x: int, src_y: int, sprite: Sprite):
         super().__init__(src_x, src_y, 2, sprite)
-        self.__health: int = 10
-        self.__damage = 10
-        self.__attack_range = 50
-        self.__attack_cooldown = CooldownHandler(1000)
+        self.__health: int = Monster.BASE_HEALTH
+        self.__damage = Monster.BASE_DAMAGE
+        self.__attack_range = Monster.BASE_ATTACK_RANGE
+        self.__attack_cooldown = CooldownHandler(Monster.BASE_ATTACK_COOLDOWN)
         self._logger.debug("Created %s", self)
 
     def attack(self, target: IDamageable):

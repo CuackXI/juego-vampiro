@@ -12,9 +12,11 @@ class TestMonster(unittest.TestCase):
     def test_attack(self):
         target_mock = MagicMock(spec=IDamageable)
         target_mock.health = 10
+        target_mock.pos_x = 2
+        target_mock.pos_y = 3
 
         with patch.object(
-            self.monster._Monster__attack_cooldown_handler,  # pylint: disable=W0212
+            self.monster._Monster__attack_cooldown,  # pylint: disable=W0212
             "is_action_ready",
             return_value=True,
         ):
@@ -27,7 +29,7 @@ class TestMonster(unittest.TestCase):
         target_mock.health = 10
 
         with patch.object(
-            self.monster._Monster__attack_cooldown_handler,  # pylint: disable=W0212
+            self.monster._Monster__attack_cooldown,  # pylint: disable=W0212
             "is_action_ready",
             return_value=False,
         ):
