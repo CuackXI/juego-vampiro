@@ -23,11 +23,8 @@ class ExperienceGem(Entity, IExperienceGem):
     def in_player_range(self, player):
         return self._get_distance_to(player) <= player.pick_range
 
-    def _get_distance_to(self, an_entity: IHasPosition) -> float:
-        return super()._get_distance_to(an_entity)
-
     def update(self, world: IGameWorld):
         super().update(world)
         
         if self._get_distance_to(world.player) > world.player.pick_range:
-            pass
+            world.remove_experience_gem(self)
