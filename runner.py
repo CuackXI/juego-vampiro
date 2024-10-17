@@ -14,12 +14,10 @@ from presentation.display import Display
 from presentation.input_handler import InputHandler
 from presentation.sprite import PlayerSprite
 
-
 def initialize_player():
     """Initializes the player object"""
     x, y = 0, 0
     return Player(x, y, PlayerSprite(x, y))
-
 
 def initialize_game_world():
     """Initializes the game world"""
@@ -27,7 +25,6 @@ def initialize_game_world():
     tile_map = TileMap()
     player = initialize_player()
     return GameWorld(monster_spawner, tile_map, player)
-
 
 def main():
     """Main function to run the game"""

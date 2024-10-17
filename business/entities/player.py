@@ -5,11 +5,11 @@ import pygame
 from business.entities.bullet import Bullet
 from business.entities.entity import MovableEntity
 from business.entities.experience_gem import ExperienceGem
+from business.handlers.cooldown_handler import CooldownHandler
 from business.entities.interfaces import ICanDealDamage, IDamageable, IPlayer
 from business.world.interfaces import IGameWorld
 from presentation.sprite import Sprite
 from business.exceptions import DeadPlayerException
-
 
 class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
     """Player entity.
@@ -18,16 +18,18 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
     """
 
     BASE_DAMAGE = 5
-    BASE_SHOOT_COOLDOWN = 2000
+    BASE_SHOOT_COOLDOWN = 200
     BASE_HEALTH = 100
+    BASE_PICK_RANGE = 2
 
     def __init__(self, pos_x: int, pos_y: int, sprite: Sprite):
         super().__init__(pos_x, pos_y, 5, sprite)
 
         self.__health: int = Player.BASE_HEALTH
-        self.__last_shot_time = pygame.time.get_ticks()
         self.__experience = 0
         self.__level = 1
+        self.__attack_cooldown = CooldownHandler(Player.BASE_SHOOT_COOLDOWN)
+        self.__pick_range = Player.BASE_PICK_RANGE
         self._logger.debug("Created %s", self)
 
     def __str__(self):
@@ -40,6 +42,10 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
     @property
     def experience_to_next_level(self):
         return 1
+
+    @property
+    def pick_range(self):
+        return self.__pick_range
 
     @property
     def level(self):
@@ -82,17 +88,9 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
         bullet = Bullet(self.pos_x, self.pos_y, monster.pos_x, monster.pos_y, 10)
         world.add_bullet(bullet)
 
-    @property
-    def __shoot_cooldown(self):
-        return Player.BASE_SHOOT_COOLDOWN
-
     def update(self, world: IGameWorld):
         super().update(world)
-
-        if self.health == 0:
-            raise DeadPlayerException
-
-        current_time = pygame.time.get_ticks()
-        if current_time - self.__last_shot_time >= self.__shoot_cooldown:
+        
+        if self.__attack_cooldown.is_action_ready():
             self.__shoot_at_nearest_enemy(world)
-            self.__last_shot_time = current_time
+            self.__attack_cooldown.put_on_cooldown()

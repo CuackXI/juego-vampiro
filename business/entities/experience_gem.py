@@ -2,6 +2,7 @@
 
 from business.entities.entity import Entity
 from business.entities.interfaces import IExperienceGem
+from business.world.interfaces import IGameWorld
 from presentation.sprite import ExperienceGemSprite
 
 
@@ -18,3 +19,12 @@ class ExperienceGem(Entity, IExperienceGem):
 
     def __str__(self):
         return f"ExperienceGem(amount={self.__amount}, pos=({self.pos_x}, {self.pos_y}))"
+    
+    def in_player_range(self, player):
+        return self._get_distance_to(player) <= player.pick_range
+
+    def update(self, world: IGameWorld):
+        super().update(world)
+        
+        if self._get_distance_to(world.player) > world.player.pick_range:
+            pass

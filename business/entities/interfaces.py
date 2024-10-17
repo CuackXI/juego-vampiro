@@ -4,7 +4,6 @@ from abc import ABC, abstractmethod
 
 from presentation.sprite import Sprite
 
-
 class ICanDealDamage(ABC):
     """Interface for entities that can deal damage."""
 
@@ -126,6 +125,16 @@ class IExperienceGem(IUpdatable, IHasPosition):
             int: The amount of experience the gem gives.
         """
 
+    @abstractmethod
+    def in_player_range(self, player) -> bool:
+        """Detects if the player is in range of the gem.
+
+        Args:
+            player: The player to check if it's in range.
+
+        Returns:
+            bool: If it's in range.
+        """
 
 class IPlayer(IUpdatable, ICanMove, IDamageable, ICanDealDamage):
     """Interface for the player entity."""
