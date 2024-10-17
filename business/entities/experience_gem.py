@@ -1,7 +1,7 @@
 """Module for the ExperienceGem class."""
 
 from business.entities.entity import Entity
-from business.entities.interfaces import IExperienceGem
+from business.entities.interfaces import IExperienceGem, IHasPosition
 from business.world.interfaces import IGameWorld
 from presentation.sprite import ExperienceGemSprite
 
@@ -22,6 +22,9 @@ class ExperienceGem(Entity, IExperienceGem):
     
     def in_player_range(self, player):
         return self._get_distance_to(player) <= player.pick_range
+
+    def _get_distance_to(self, an_entity: IHasPosition) -> float:
+        return super()._get_distance_to(an_entity)
 
     def update(self, world: IGameWorld):
         super().update(world)
