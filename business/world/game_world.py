@@ -29,7 +29,7 @@ class GameWorld(IGameWorld):
         for monster in self.monsters:
             monster.update(self)
 
-        for gem in self.gems:
+        for gem in self.experience_gems:
             gem.update(self)
 
         self.__monster_spawner.update(self)

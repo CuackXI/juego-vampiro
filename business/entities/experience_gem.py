@@ -26,5 +26,5 @@ class ExperienceGem(Entity, IExperienceGem):
     def update(self, world: IGameWorld):
         super().update(world)
         
-        if self._get_distance_to(world.player) > world.player.pick_range:
+        if self._get_distance_to(world.player) <= world.player.pick_range:
             world.remove_experience_gem(self)

@@ -20,7 +20,7 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
     BASE_DAMAGE = 5
     BASE_SHOOT_COOLDOWN = 200
     BASE_HEALTH = 100
-    BASE_PICK_RANGE = 2
+    BASE_PICK_RANGE = 35
     BASE_SPEED = 5
 
     def __init__(self, pos_x: int, pos_y: int, sprite: Sprite):
