@@ -8,6 +8,7 @@ from business.entities.experience_gem import ExperienceGem
 from business.entities.interfaces import ICanDealDamage, IDamageable, IPlayer
 from business.world.interfaces import IGameWorld
 from presentation.sprite import Sprite
+from business.exceptions import DeadPlayerException
 
 
 class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
@@ -18,11 +19,12 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
 
     BASE_DAMAGE = 5
     BASE_SHOOT_COOLDOWN = 2000
+    BASE_HEALTH = 100
 
     def __init__(self, pos_x: int, pos_y: int, sprite: Sprite):
         super().__init__(pos_x, pos_y, 5, sprite)
 
-        self.__health: int = 100
+        self.__health: int = Player.BASE_HEALTH
         self.__last_shot_time = pygame.time.get_ticks()
         self.__experience = 0
         self.__level = 1
@@ -86,6 +88,9 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
 
     def update(self, world: IGameWorld):
         super().update(world)
+
+        if self.health == 0:
+            raise DeadPlayerException
 
         current_time = pygame.time.get_ticks()
         if current_time - self.__last_shot_time >= self.__shoot_cooldown:

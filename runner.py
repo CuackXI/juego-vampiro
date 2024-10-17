@@ -48,11 +48,10 @@ def main():
 
     # Create a game instance and start it
     game = Game(display, world, input_handler)
-    game.run()
+    game.rdun()
 
     # Properly quit Pygame
     pygame.quit()
-
 
 if __name__ == "__main__":
     main()
