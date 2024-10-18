@@ -7,18 +7,19 @@ from business.entities.interfaces import IDamageable, IHasPosition, IHasSprite, 
 from business.handlers.cooldown_handler import CooldownHandler
 from business.world.interfaces import IGameWorld
 from presentation.sprite import Sprite
-
+import math
 
 class Monster(MovableEntity, IMonster):
     """A monster entity in the game."""
 
+    BASE_SPEED = 2
     BASE_HEALTH = 10
     BASE_DAMAGE = 10
     BASE_ATTACK_RANGE = 50
     BASE_ATTACK_COOLDOWN = 1000
 
     def __init__(self, src_x: int, src_y: int, sprite: Sprite):
-        super().__init__(src_x, src_y, 1, sprite)
+        super().__init__(src_x, src_y, 2, sprite)
         self.__health: int = Monster.BASE_HEALTH
         self.__damage = Monster.BASE_DAMAGE
         self.__attack_range = Monster.BASE_ATTACK_RANGE
@@ -38,20 +39,25 @@ class Monster(MovableEntity, IMonster):
     def damage_amount(self):
         return self.__damage
 
+    def __get_normalized_direction(self, entity: "IHasPosition"):
+        x1, y1 = self.pos_x, self.pos_y
+        x2, y2 = entity.pos_x, entity.pos_y
+        vector_x = x2 - x1
+        vector_y = y2 - y1
+
+        magnitud = math.sqrt(vector_x**2 + vector_y**2)
+
+        direccion_x = vector_x / magnitud
+        direccion_y = vector_y / magnitud
+        return direccion_x, direccion_y
+
     def __get_direction_towards_the_player(self, world: IGameWorld):
-        direction_x = world.player.pos_x - self.pos_x
-        if direction_x != 0:
-            direction_x = direction_x // abs(direction_x)
+        dir_x, dir_y = self.__get_normalized_direction(world.player)
 
-        direction_y = world.player.pos_y - self.pos_y
-        if direction_y != 0:
-            direction_y = direction_y // abs(direction_y)
+        return dir_x, dir_y
 
-        return direction_x, direction_y
-
-    def __movement_collides_with_entities(
-        self, dx: float, dy: float, entities: List[IHasSprite]
-    ) -> bool:
+    def __movement_collides_with_entities(self, dx: float, dy: float, entities: List[IHasSprite]) -> bool:
+        
         new_position = self.sprite.rect.move(dx, dy).inflate(-10, -10)
         return any(e.sprite.rect.colliderect(new_position) for e in entities)
 
@@ -61,7 +67,7 @@ class Monster(MovableEntity, IMonster):
             return
 
         monsters = [m for m in world.monsters if m != self]
-        dx, dy = direction_x * self.speed, direction_y * self.speed
+        dx, dy = direction_x, direction_y
         # TODO: Implementar mejores colisiones
         # if not self.__movement_collides_with_entities(dx, dy, monsters):
         self.move(direction_x, direction_y)
