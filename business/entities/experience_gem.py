@@ -25,4 +25,4 @@ class ExperienceGem(Entity, IExperienceGem):
         return self._get_distance_to(player) <= player.pick_range
 
     def update(self, world: IGameWorld):
-        super().update(world)
+        pass

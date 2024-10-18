@@ -68,7 +68,7 @@ class Display(IDisplay):
         pygame.draw.rect(self.__screen, (255, 0, 0), bg_rect)
 
         # Draw the health bar (green)
-        health_percentage = player.health / 100  # Assuming max health is 100 (code smell?)
+        health_percentage = player.health / player.max_health
         health_width = int(bar_width * health_percentage)
         health_rect = pygame.Rect(bar_x, bar_y, health_width, bar_height)
         pygame.draw.rect(self.__screen, (0, 255, 0), health_rect)

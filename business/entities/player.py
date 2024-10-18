@@ -9,7 +9,6 @@ from business.handlers.cooldown_handler import CooldownHandler
 from business.entities.interfaces import ICanDealDamage, IDamageable, IPlayer
 from business.world.interfaces import IGameWorld
 from presentation.sprite import Sprite
-from business.exceptions import DeadPlayerException
 
 class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
     """Player entity.
@@ -17,26 +16,27 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
     The player is the main character of the game. It can move around the game world and shoot at monsters.
     """
 
-    BASE_DAMAGE = 5
-    BASE_SHOOT_COOLDOWN = 200
-    BASE_HEALTH = 100
-    BASE_PICK_RANGE = 35
-    BASE_SPEED = 5
+    BASE_DAMAGE_MULTIPLIER = 1.0
+    BASE_SHOOT_COOLDOWN = 200.0
+    BASE_HEALTH = 100.0
+    BASE_PICK_RANGE = 35.0
+    BASE_SPEED = 5.0
     BASE_LEVELS = {
-        2: 10,
-        3: 25,
-        4: 50,
-        5: 85,
-        6: 120,
-        7: 170
+        2: 100,
+        3: 250,
+        4: 500,
+        5: 850,
+        6: 1200,
+        7: 1700
     }
 
     def __init__(self, pos_x: int, pos_y: int, sprite: Sprite):
         super().__init__(pos_x, pos_y, Player.BASE_SPEED, sprite)
 
-        self.__health: int = Player.BASE_HEALTH
         self.__experience = 0
         self.__level = 1
+        self.__max_health = Player.BASE_HEALTH
+        self.__health: int = Player.BASE_HEALTH
         self.__attack_cooldown = CooldownHandler(Player.BASE_SHOOT_COOLDOWN)
         self.__pick_range = Player.BASE_PICK_RANGE
         self._logger.debug("Created %s", self)
@@ -58,7 +58,6 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
         
         return experience_to_next_level
         
-
     @property
     def pick_range(self):
         return self.__pick_range
@@ -69,11 +68,15 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
 
     @property
     def damage_amount(self):
-        return Player.BASE_DAMAGE
+        return Player.BASE_DAMAGE_MULTIPLIER
 
     @property
     def health(self) -> int:
         return self.__health
+    
+    @property
+    def max_health(self) -> int:
+        return self.__max_health
 
     def take_damage(self, amount):
         self.__health = max(0, self.__health - amount)
@@ -101,12 +104,10 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
         )
 
         # Create a bullet towards the nearest monster
-        bullet = Bullet(self.pos_x, self.pos_y, monster.pos_x, monster.pos_y, 10)
+        bullet = Bullet(self.pos_x, self.pos_y, monster.pos_x, monster.pos_y, 4, self.damage_amount)
         world.add_bullet(bullet)
 
     def update(self, world: IGameWorld):
-        super().update(world)
-        
         if self.__attack_cooldown.is_action_ready():
             self.__shoot_at_nearest_enemy(world)
             self.__attack_cooldown.put_on_cooldown()

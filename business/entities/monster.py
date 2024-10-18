@@ -18,7 +18,7 @@ class Monster(MovableEntity, IMonster):
     BASE_ATTACK_COOLDOWN = 1000
 
     def __init__(self, src_x: int, src_y: int, sprite: Sprite):
-        super().__init__(src_x, src_y, 2, sprite)
+        super().__init__(src_x, src_y, 1, sprite)
         self.__health: int = Monster.BASE_HEALTH
         self.__damage = Monster.BASE_DAMAGE
         self.__attack_range = Monster.BASE_ATTACK_RANGE
@@ -62,12 +62,11 @@ class Monster(MovableEntity, IMonster):
 
         monsters = [m for m in world.monsters if m != self]
         dx, dy = direction_x * self.speed, direction_y * self.speed
-        if not self.__movement_collides_with_entities(dx, dy, monsters):
-            self.move(direction_x, direction_y)
+        # TODO: Implementar mejores colisiones
+        # if not self.__movement_collides_with_entities(dx, dy, monsters):
+        self.move(direction_x, direction_y)
 
         self.attack(world.player)
-
-        super().update(world)
 
     def __str__(self):
         return f"Monster(hp={self.health}, pos={self.pos_x, self.pos_y})"

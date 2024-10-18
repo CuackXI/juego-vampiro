@@ -23,6 +23,8 @@ class GameWorld(IGameWorld):
     def update(self):
         self.player.update(self)
 
+        self.__monster_spawner.update(self)
+
         for bullet in self.bullets:
             bullet.update(self)
 
@@ -31,8 +33,6 @@ class GameWorld(IGameWorld):
 
         for gem in self.experience_gems:
             gem.update(self)
-
-        self.__monster_spawner.update(self)
 
     def add_monster(self, monster: IMonster):
         self.__monsters.append(monster)
