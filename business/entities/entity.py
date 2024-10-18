@@ -60,14 +60,7 @@ class MovableEntity(Entity, ICanMove):
         self._pos_x += direction_x * self._speed
         self._pos_y += direction_y * self._speed
 
-        if self.__check_boundaries():
-            self.sprite.update_pos(self._pos_x, self._pos_y)
-        else:
-            self._pos_x -= direction_x * self._speed
-            self._pos_y -= direction_y * self._speed
-
-    def __check_boundaries(self):
-        return BoundariesHandler.is_entity_within_world_boundaries(self)
+        self.sprite.update_pos(self._pos_x, self._pos_y)
 
     @property
     def speed(self) -> float:

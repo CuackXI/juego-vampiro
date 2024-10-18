@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Runs the game"""
 import logging
 
