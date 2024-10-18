@@ -36,7 +36,7 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
         self.__experience = 0
         self.__level = 1
         self.__max_health = Player.BASE_HEALTH
-        self.__health: int = Player.BASE_HEALTH
+        self.__health = self.__max_health
         self.__attack_cooldown = CooldownHandler(Player.BASE_SHOOT_COOLDOWN)
         self.__pick_range = Player.BASE_PICK_RANGE
         self._logger.debug("Created %s", self)
@@ -108,6 +108,8 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
         world.add_bullet(bullet)
 
     def update(self, world: IGameWorld):
+        self.sprite.update()
+
         if self.__attack_cooldown.is_action_ready():
             self.__shoot_at_nearest_enemy(world)
             self.__attack_cooldown.put_on_cooldown()

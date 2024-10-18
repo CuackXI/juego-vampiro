@@ -23,7 +23,7 @@ class Monster(MovableEntity, IMonster):
         self.__damage = Monster.BASE_DAMAGE
         self.__attack_range = Monster.BASE_ATTACK_RANGE
         self.__attack_cooldown = CooldownHandler(Monster.BASE_ATTACK_COOLDOWN)
-        self._logger.debug("Created %s", self)
+        # self._logger.debug("Created %s", self)
 
     def attack(self, target: IDamageable):
         """Attacks the target."""
