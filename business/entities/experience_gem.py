@@ -11,11 +11,12 @@ class ExperienceGem(Entity, IExperienceGem):
 
     def __init__(self, pos_x: float, pos_y: float, amount: int):
         super().__init__(pos_x, pos_y, ExperienceGemSprite(pos_x, pos_y))
+        self.__amount = amount
         self._logger.debug("Created %s", self)
 
     @property
     def amount(self) -> int:
-        pass
+        return self.__amount
 
     def __str__(self):
         return f"ExperienceGem(amount={self.__amount}, pos=({self.pos_x}, {self.pos_y}))"
@@ -25,6 +26,3 @@ class ExperienceGem(Entity, IExperienceGem):
 
     def update(self, world: IGameWorld):
         super().update(world)
-        
-        if self._get_distance_to(world.player) <= world.player.pick_range:
-            world.remove_experience_gem(self)

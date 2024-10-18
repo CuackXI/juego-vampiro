@@ -22,6 +22,14 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
     BASE_HEALTH = 100
     BASE_PICK_RANGE = 35
     BASE_SPEED = 5
+    BASE_LEVELS = {
+        2: 10,
+        3: 25,
+        4: 50,
+        5: 85,
+        6: 120,
+        7: 170
+    }
 
     def __init__(self, pos_x: int, pos_y: int, sprite: Sprite):
         super().__init__(pos_x, pos_y, Player.BASE_SPEED, sprite)
@@ -42,7 +50,14 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
 
     @property
     def experience_to_next_level(self):
-        return 1
+        next_level = self.__level + 1
+        
+        experience_to_next_level = 0
+        if next_level in self.BASE_LEVELS:
+            experience_to_next_level = self.BASE_LEVELS[next_level]
+        
+        return experience_to_next_level
+        
 
     @property
     def pick_range(self):

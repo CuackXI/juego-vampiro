@@ -82,7 +82,7 @@ class Display(IDisplay):
         # Draw the experience text
         font = pygame.font.SysFont(None, 48)
         experience_text = font.render(
-            f"XP: {self.__world.player.experience}/{self.__world.player.experience_to_next_level}",
+            f"LEVEL {self.__world.player.level} XP: {self.__world.player.experience}/{self.__world.player.experience_to_next_level}",
             True,
             (255, 255, 255),
         )

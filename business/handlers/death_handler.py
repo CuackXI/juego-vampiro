@@ -37,6 +37,11 @@ class DeathHandler:
             if not DeathHandler.__is_entity_within_world_boundaries(monster):
                 world.remove_monster(monster)
 
+        for gem in world.experience_gems:
+            if gem.in_player_range(world.player):
+                world.player.pickup_gem(gem)
+                world.remove_experience_gem(gem)
+
         if world.player.health <= 0:
             raise DeadPlayerException
         
