@@ -68,6 +68,8 @@ class Monster(MovableEntity, IMonster):
 
         self.attack(world.player)
 
+        self.sprite.update()
+
     def __str__(self):
         return f"Monster(hp={self.health}, pos={self.pos_x, self.pos_y})"
 

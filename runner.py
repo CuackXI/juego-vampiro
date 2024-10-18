@@ -16,7 +16,7 @@ from presentation.sprite import PlayerSprite
 
 def initialize_player():
     """Initializes the player object"""
-    x, y = 0, 0
+    x, y = settings.SCREEN_WIDTH / 2, settings.SCREEN_HEIGHT / 2
     return Player(x, y, PlayerSprite(x, y))
 
 def initialize_game_world():

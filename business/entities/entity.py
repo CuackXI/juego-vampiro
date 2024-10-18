@@ -6,7 +6,7 @@ from abc import abstractmethod
 from business.entities.interfaces import ICanMove, IDamageable, IHasPosition, IHasSprite
 from business.world.interfaces import IGameWorld
 from presentation.sprite import Sprite
-
+from business.handlers.boundaries_handler import BoundariesHandler
 
 class Entity(IHasPosition, IHasSprite):
     """Base class for all entities in the game."""
@@ -59,13 +59,15 @@ class MovableEntity(Entity, ICanMove):
     def move(self, direction_x: float, direction_y: float):
         self._pos_x += direction_x * self._speed
         self._pos_y += direction_y * self._speed
-        self._logger.debug(
-            "Moving in direction (%.2f, %.2f) with speed %.2f",
-            direction_x,
-            direction_y,
-            self._speed,
-        )
-        self.sprite.update_pos(self._pos_x, self._pos_y)
+
+        if self.__check_boundaries():
+            self.sprite.update_pos(self._pos_x, self._pos_y)
+        else:
+            self._pos_x -= direction_x * self._speed
+            self._pos_y -= direction_y * self._speed
+
+    def __check_boundaries(self):
+        return BoundariesHandler.is_entity_within_world_boundaries(self)
 
     @property
     def speed(self) -> float:

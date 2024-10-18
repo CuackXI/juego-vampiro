@@ -10,7 +10,7 @@ from presentation.sprite import BulletSprite
 class Bullet(MovableEntity, IBullet):
     """A bullet that moves towards a target direction."""
 
-    BASE_DAMAGE = 200
+    BASE_DAMAGE = 5
     BASE_HEALTH = 5
 
     def __init__(self, src_x, src_y, dst_x, dst_y, speed, damage_multiplier):

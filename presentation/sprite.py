@@ -60,7 +60,7 @@ class Sprite(pygame.sprite.Sprite):
     def take_damage(self):
         """Take damage."""
         self.__change_color((255, 0, 0))
-        self.__is_in_damage_countdown = 30
+        self.__is_in_damage_countdown = 20
 
     def update(self, *args, **kwargs):
         """Update the sprite behavior"""
