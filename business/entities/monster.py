@@ -57,7 +57,6 @@ class Monster(MovableEntity, IMonster):
         return dir_x, dir_y
 
     def __movement_collides_with_entities(self, dx: float, dy: float, entities: List[IHasSprite]) -> bool:
-        
         new_position = self.sprite.rect.move(dx, dy).inflate(-10, -10)
         return any(e.sprite.rect.colliderect(new_position) for e in entities)
 
