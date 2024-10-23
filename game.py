@@ -43,18 +43,19 @@ class Game:
         """Starts the game loop."""
         self.__logger.debug("Starting the game loop.")
         while self.__running:
-                try:
-                    self.__process_game_events()
-                    if self.__paused:
-                        pass
-                    else:
-                        self.__paused = self.__input_handler.process_pause(self)
+            try:
+                self.__process_game_events()
 
-                        self.__input_handler.process_input()
-                        self.__world.update()
-                        CollisionHandler.handle_collisions(self.__world)
-                        DeathHandler.check_deaths(self.__world)
-                    self.__display.render_frame()
-                    self.__clock.tick(settings.FPS)
-                except DeadPlayerException:
-                    self.__running = False
+                if self.__input_handler.is_pause_pressed():
+                    self.__paused = self.__input_handler.process_pause(self)
+                
+                if not self.__paused:
+                    self.__input_handler.process_input()
+                    self.__world.update()
+                    CollisionHandler.handle_collisions(self.__world)
+                    DeathHandler.check_deaths(self.__world)
+
+                self.__display.render_frame()
+                self.__clock.tick(settings.FPS)
+            except DeadPlayerException:
+                self.__running = False

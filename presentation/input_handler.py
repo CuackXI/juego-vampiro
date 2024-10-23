@@ -43,11 +43,21 @@ class InputHandler(IInputHandler):
     def __get_pause(self, keys, game):
         if keys[pygame.K_p]:
             return not game.paused
+            
+    def is_pause_pressed(self):
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_ESCAPE]:
+            if not self.__pause_key_down:
+                self.__pause_key_down = True
+                return True
+        else:
+            self.__pause_key_down = False
+        return False
 
     def process_input(self):
         keys = pygame.key.get_pressed()
         self.__get_player_movement(keys)
-    
+
     def process_pause(self, game):
-        keys = pygame.key.get_pressed()
-        return self.__get_pause(keys, game)
+        """Toggles the paused state of the game."""
+        return not game.paused

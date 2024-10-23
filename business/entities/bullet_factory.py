@@ -49,17 +49,17 @@ class NormalBulletFactory(IBulletFactory, IPerk):
                         self.__health)
         world.add_bullet(bullet)
 
-class EpicBulletFactory(IBulletFactory, IPerk):
-    BASE_COOLDOWN = 100
-    BASE_DAMAGE = 5
+class TurretBulletFactory(IBulletFactory, IPerk):
+    BASE_COOLDOWN = 250
+    BASE_DAMAGE = 1
     BASE_SPEED = 10
     BASE_HEALTH = 5
 
     def __init__(self, player: IPlayer):
-        self.__damage = EpicBulletFactory.BASE_DAMAGE
-        self.__speed = EpicBulletFactory.BASE_SPEED
-        self.__cooldown = EpicBulletFactory.BASE_COOLDOWN
-        self.__health = EpicBulletFactory.BASE_HEALTH
+        self.__damage = TurretBulletFactory.BASE_DAMAGE
+        self.__speed = TurretBulletFactory.BASE_SPEED
+        self.__cooldown = TurretBulletFactory.BASE_COOLDOWN
+        self.__health = TurretBulletFactory.BASE_HEALTH
         self.__player = player
 
         self.__cooldown_handler = CooldownHandler(self.__cooldown)

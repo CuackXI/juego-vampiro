@@ -20,7 +20,8 @@ class Monster(MovableEntity, IMonster):
 
     def __init__(self, src_x: int, src_y: int, sprite: Sprite):
         super().__init__(src_x, src_y, 2, sprite)
-        self.__health: int = Monster.BASE_HEALTH
+        self.__max_healt = Monster.BASE_HEALTH
+        self.__health: int = self.__max_healt
         self.__damage = Monster.BASE_DAMAGE
         self.__attack_range = Monster.BASE_ATTACK_RANGE
         self.__attack_cooldown = CooldownHandler(Monster.BASE_ATTACK_COOLDOWN)
@@ -38,6 +39,10 @@ class Monster(MovableEntity, IMonster):
     @property
     def damage_amount(self):
         return self.__damage
+
+    @property
+    def max_health(self):
+        return self.__max_healt
 
     def __get_normalized_direction(self, entity: "IHasPosition"):
         x1, y1 = self.pos_x, self.pos_y

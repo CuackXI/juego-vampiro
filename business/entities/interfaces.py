@@ -107,7 +107,14 @@ class ICanMove(IHasPosition):
 
 class IMonster(IUpdatable, ICanMove, IDamageable, ICanDealDamage):
     """Interface for monster entities."""
+    @property
+    @abstractmethod
+    def max_health(self) -> int:
+        """The maximum health of the entity.
 
+        Returns:
+            int: The maximum health of the entity.
+        """
 
 class IBullet(IUpdatable, ICanMove, IDamageable, ICanDealDamage):
     """Interface for bullet entities."""
@@ -150,6 +157,10 @@ class IPlayer(IUpdatable, ICanMove, IDamageable, ICanDealDamage):
         Args:
             gem (IExperienceGem): The experience gem to pick up.
         """
+
+    @abstractmethod
+    def heal(self):
+        """Heals the player based on its health regen amount."""
 
     @property
     @abstractmethod

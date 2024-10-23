@@ -74,7 +74,7 @@ class Display(IDisplay):
         pygame.draw.rect(self.__screen, (0, 255, 0), health_rect)
 
         # Render the health value
-        health_text = f"{player.health}/{player.max_health}"
+        health_text = f"{player.health}"
         font = pygame.font.Font(None, 24)  # Use default font and set size
         text_surface = font.render(health_text, True, (255, 255, 255))  # White text
         text_x = bar_x + (bar_width - text_surface.get_width()) // 2  # Center below the health bar
@@ -82,6 +82,25 @@ class Display(IDisplay):
 
         # Draw the health value text
         self.__screen.blit(text_surface, (text_x, text_y))
+
+    def __draw_monster_health_bar(self, monster):
+        """Draws the monster's health bar and health value on the screen."""
+        
+        # Define the health bar dimensions
+        bar_width = settings.TILE_WIDTH
+        bar_height = 5
+        bar_x = monster.sprite.rect.centerx - bar_width // 2 - self.camera.camera_rect.left
+        bar_y = monster.sprite.rect.bottom + 5 - self.camera.camera_rect.top
+
+        # Draw the background bar (red)
+        bg_rect = pygame.Rect(bar_x, bar_y, bar_width, bar_height)
+        pygame.draw.rect(self.__screen, (255, 0, 0), bg_rect)
+
+        # Draw the health bar (green)
+        health_percentage = monster.health / monster.max_health
+        health_width = int(bar_width * health_percentage)
+        health_rect = pygame.Rect(bar_x, bar_y, health_width, bar_height)
+        pygame.draw.rect(self.__screen, (0, 255, 0), health_rect)
 
     def __draw_player(self):
         adjusted_rect = self.camera.apply(self.__world.player.sprite.rect)
@@ -101,6 +120,24 @@ class Display(IDisplay):
     def load_world(self, world: GameWorld):
         self.__world = world
 
+    # Posible implementacion de un menu de pausa
+    # def show_pause_menu(self):
+    #     while True:
+    #         # Handle events
+    #         for event in pygame.event.get():
+    #             if event.type == pygame.QUIT:
+    #                 pygame.quit()
+    #                 sys.exit()
+
+    #             if event.type == pygame.MOUSEBUTTONDOWN:
+    #                 if continue_button.collidepoint(event.pos):
+    #                     return False  # Unpause the game
+
+    #                 if save_exit_button.collidepoint(event.pos):
+    #                     self.save_game()
+    #                     self.__running = False
+    #                     return False
+
     def render_frame(self):
         # Update the camera to follow the player
         self.camera.update(self.__world.player.sprite.rect)
@@ -119,6 +156,8 @@ class Display(IDisplay):
             if self.camera.camera_rect.colliderect(monster.sprite.rect):
                 adjusted_rect = self.camera.apply(monster.sprite.rect)
                 self.__screen.blit(monster.sprite.image, adjusted_rect)
+                if monster.health != monster.max_health:
+                    self.__draw_monster_health_bar(monster)
 
         # Draw the bullets
         for bullet in self.__world.bullets:

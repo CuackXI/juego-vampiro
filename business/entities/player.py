@@ -13,23 +13,22 @@ from presentation.sprite import Sprite
 class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
     """Player entity.
 
-    The player is the main character of the game. It can move around the game world and shoot at monsters.
-    """
+    The player is the main character of the game. It can move around the game world and shoot at monsters."""
 
     BASE_COOLDOWN_MULTIPLIER = 1.0
     BASE_DAMAGE_MULTIPLIER = 1.0
-    BASE_SHOOT_COOLDOWN = 200.0
+    BASE_HEALTH_REGEN_COOLDWON = 1000
     BASE_HEALTH = 100.0
-    BASE_HEALTH_REGEN = 0.0
+    BASE_HEALTH_REGEN = 0.5
     BASE_PICK_RANGE = 35.0
     BASE_SPEED = 5.0
     BASE_LEVELS = {
-        2: 100,
-        3: 250,
-        4: 500,
-        5: 850,
-        6: 1200,
-        7: 1700
+        2: 20,
+        3: 50,
+        4: 150,
+        5: 400,
+        6: 1000,
+        7: 5000
     }
 
     def __init__(self, pos_x: int, pos_y: int, sprite: Sprite):
@@ -41,12 +40,12 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
         self.__max_health = Player.BASE_HEALTH
         self.__health = self.__max_health
         self.__health_regen = Player.BASE_HEALTH_REGEN
+        self.__health_regen_cooldown = CooldownHandler(Player.BASE_HEALTH_REGEN_COOLDWON)
         self.__cooldown_multiplier = Player.BASE_COOLDOWN_MULTIPLIER
         self.__pick_range = Player.BASE_PICK_RANGE
 
         self.__static_inventory = []
-        self.__updatable_inventory = [NormalBulletFactory(self)]
-        # EpicBulletFactory(self)
+        self.__updatable_inventory = [NormalBulletFactory(self), TurretBulletFactory(self)]
 
     def __str__(self):
         return f"Player(hp={self.__health}, xp={self.__experience}, lvl={self.__level}, pos=({self._pos_x}, {self._pos_y}))"
@@ -95,7 +94,13 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
 
     def take_damage(self, amount):
         self.__health = max(0, self.__health - amount)
+
         self.sprite.take_damage()
+
+    def heal(self):
+        self.__health += self.__health_regen
+        if self.__health > self.__max_health:
+            self.__health = self.__max_health
 
     def pickup_gem(self, gem: ExperienceGem):
         self.__gain_experience(gem.amount)
@@ -114,3 +119,7 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
 
         for perk in self.__updatable_inventory:
             perk.update(world)
+
+        if self.__health_regen_cooldown.is_action_ready() and self.__health < self.__max_health:
+            self.heal()
+            self.__health_regen_cooldown.put_on_cooldown()
