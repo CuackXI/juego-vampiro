@@ -74,7 +74,7 @@ class Display(IDisplay):
         pygame.draw.rect(self.__screen, (0, 255, 0), health_rect)
 
         # Render the health value
-        health_text = f"{player.health}"
+        health_text = f"{int(player.health)}"
         font = pygame.font.Font(None, 24)  # Use default font and set size
         text_surface = font.render(health_text, True, (255, 255, 255))  # White text
         text_x = bar_x + (bar_width - text_surface.get_width()) // 2  # Center below the health bar

@@ -7,6 +7,7 @@ from business.entities.entity import MovableEntity
 from business.entities.experience_gem import ExperienceGem
 from business.entities.interfaces import ICanDealDamage, IDamageable, IPlayer
 from business.entities.bullet_factory import *
+from business.entities.perks import *
 from business.world.interfaces import IGameWorld
 from presentation.sprite import Sprite
 
@@ -44,7 +45,7 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
         self.__cooldown_multiplier = Player.BASE_COOLDOWN_MULTIPLIER
         self.__pick_range = Player.BASE_PICK_RANGE
 
-        self.__static_inventory = []
+        self.__static_inventory = [MaxHealthPerk(), RegenerationPerk()]
         self.__updatable_inventory = [NormalBulletFactory(self), TurretBulletFactory(self)]
 
     def __str__(self):
@@ -86,11 +87,22 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
     
     @property
     def max_health(self) -> int:
+        for perk in self.__static_inventory:
+            if isinstance(perk, MaxHealthPerk):
+                return self.__max_health + perk.upgrade_amount
+
         return self.__max_health
 
     @property
     def cooldown_multiplier(self) -> float:
         return self.__cooldown_multiplier
+
+    @property
+    def health_regen(self):
+        for perk in self.__static_inventory:
+            if isinstance(perk, RegenerationPerk):
+                return self.__health_regen + perk.upgrade_amount 
+        return self.__health_regen
 
     def take_damage(self, amount):
         self.__health = max(0, self.__health - amount)
@@ -98,9 +110,9 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
         self.sprite.take_damage()
 
     def heal(self):
-        self.__health += self.__health_regen
-        if self.__health > self.__max_health:
-            self.__health = self.__max_health
+        self.__health += self.health_regen
+        if self.__health > self.max_health:
+            self.__health = self.max_health
 
     def pickup_gem(self, gem: ExperienceGem):
         self.__gain_experience(gem.amount)
@@ -120,6 +132,6 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
         for perk in self.__updatable_inventory:
             perk.update(world)
 
-        if self.__health_regen_cooldown.is_action_ready() and self.__health < self.__max_health:
+        if self.__health_regen_cooldown.is_action_ready() and self.__health < self.max_health:
             self.heal()
             self.__health_regen_cooldown.put_on_cooldown()

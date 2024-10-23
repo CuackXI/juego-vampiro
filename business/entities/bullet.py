@@ -42,7 +42,7 @@ class Bullet(MovableEntity, IBullet):
     def __str__(self):
         return f"Bullet(pos=({self._pos_x, self._pos_y}), dir=({self.__dir_x, self.__dir_y}))"
     
-class EpicBullet(MovableEntity, IBullet):
+class TurretBullet(MovableEntity, IBullet):
     """A bullet that moves towards a target direction."""
 
     def __init__(self, src_x, src_y, dst_x, dst_y, speed, damage, health):

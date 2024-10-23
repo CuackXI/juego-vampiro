@@ -92,6 +92,6 @@ class TurretBulletFactory(IBulletFactory, IPerk):
         )
 
         # Create a bullet towards the nearest monster
-        bullet = EpicBullet(world.player.pos_x, world.player.pos_y, monster.pos_x, monster.pos_y, self.__speed, self.damage_amount,
+        bullet = TurretBullet(world.player.pos_x, world.player.pos_y, monster.pos_x, monster.pos_y, self.__speed, self.damage_amount,
                         self.__health)
         world.add_bullet(bullet)

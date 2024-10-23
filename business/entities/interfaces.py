@@ -124,6 +124,15 @@ class IPerk():
     def upgrade(self):
         """It upgrades the perk to the next level."""
 
+    @property
+    @abstractmethod
+    def upgrade_amount(self) -> int | float:
+        """The amount by which it upgrades a player stat.
+
+        Returns:
+            int | float: The amount.
+        """
+
 class IExperienceGem(IUpdatable, IHasPosition):
     """Interface for experience gem entities."""
 

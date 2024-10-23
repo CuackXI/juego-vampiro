@@ -4,6 +4,7 @@ from business.entities.experience_gem import ExperienceGem
 from business.exceptions import DeadPlayerException
 from business.world.interfaces import IGameWorld
 from business.handlers.boundaries_handler import BoundariesHandler
+import random
 
 class DeathHandler:
     """Class that handles entity deaths."""
@@ -23,7 +24,8 @@ class DeathHandler:
 
         for monster in world.monsters:
             if monster.health <= 0:
-                world.add_experience_gem(ExperienceGem(monster.pos_x, monster.pos_y, 1))
+                if random.randint(1,3) == 3:
+                    world.add_experience_gem(ExperienceGem(monster.pos_x, monster.pos_y, 1))
                 world.remove_monster(monster)
             elif not BoundariesHandler.is_entity_within_world_boundaries(monster):
                 world.remove_monster(monster)
