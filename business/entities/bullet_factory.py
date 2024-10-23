@@ -45,7 +45,7 @@ class NormalBulletFactory(IBulletFactory, IPerk):
         )
 
         # Create a bullet towards the nearest monster
-        bullet = Bullet(world.player.pos_x, world.player.pos_y, monster.pos_x, monster.pos_y, self.__speed, self.damage_amount,
+        bullet = Bullet(world.player.pos_x, world.player.pos_y, monster.pos_x, monster.pos_y, self.__speed, self.damage_amount * self.__player.damage_multiplier,
                         self.__health)
         world.add_bullet(bullet)
 
@@ -92,6 +92,6 @@ class TurretBulletFactory(IBulletFactory, IPerk):
         )
 
         # Create a bullet towards the nearest monster
-        bullet = TurretBullet(world.player.pos_x, world.player.pos_y, monster.pos_x, monster.pos_y, self.__speed, self.damage_amount,
-                        self.__health)
+        bullet = TurretBullet(world.player.pos_x, world.player.pos_y, monster.pos_x, monster.pos_y, self.__speed, 
+                              self.damage_amount * self.__player.damage_multiplier, self.__health)
         world.add_bullet(bullet)

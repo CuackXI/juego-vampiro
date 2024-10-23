@@ -45,7 +45,7 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
         self.__cooldown_multiplier = Player.BASE_COOLDOWN_MULTIPLIER
         self.__pick_range = Player.BASE_PICK_RANGE
 
-        self.__static_inventory = [MaxHealthPerk(), RegenerationPerk()]
+        self.__static_inventory = [MaxHealthPerk(), RegenerationPerk(), DamageMultiplierPerk()]
         self.__updatable_inventory = [NormalBulletFactory(self), TurretBulletFactory(self)]
 
     def __str__(self):
@@ -75,6 +75,10 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
 
     @property
     def damage_multiplier(self):
+        for perk in self.__static_inventory:
+            if isinstance(perk, DamageMultiplierPerk):
+                return self.__damage_multiplier + perk.upgrade_amount 
+
         return self.__damage_multiplier
 
     @property

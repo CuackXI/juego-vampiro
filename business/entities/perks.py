@@ -38,6 +38,13 @@ class MaxHealthPerk(IPerk):
         return super().upgrade()
 
 class DamageMultiplierPerk(IPerk):
+    BASE_LEVELS = {
+        2: 1.5,
+        3: 2,
+        4: 3,
+        5: 5
+    }
+
     def __init__(self) -> None:
         self.__damage_multiplier: 1.2
 
