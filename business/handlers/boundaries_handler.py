@@ -1,3 +1,5 @@
+"""Handler for entities with a position escaping the boundaries of the world."""
+
 import settings
 
 class BoundariesHandler:

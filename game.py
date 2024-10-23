@@ -26,6 +26,11 @@ class Game:
         self.__world = game_world
         self.__input_handler = input_handler
         self.__running = True
+        self.__paused = False
+
+    @property
+    def paused(self):
+        return self.__paused
 
     def __process_game_events(self):
         for event in pygame.event.get():
@@ -38,13 +43,18 @@ class Game:
         """Starts the game loop."""
         self.__logger.debug("Starting the game loop.")
         while self.__running:
-            try:
-                self.__process_game_events()
-                self.__input_handler.process_input()
-                self.__world.update()
-                CollisionHandler.handle_collisions(self.__world)
-                DeathHandler.check_deaths(self.__world)
-                self.__display.render_frame()
-                self.__clock.tick(settings.FPS)
-            except DeadPlayerException:
-                self.__running = False
+                try:
+                    self.__process_game_events()
+                    if self.__paused:
+                        pass
+                    else:
+                        self.__paused = self.__input_handler.process_pause(self)
+
+                        self.__input_handler.process_input()
+                        self.__world.update()
+                        CollisionHandler.handle_collisions(self.__world)
+                        DeathHandler.check_deaths(self.__world)
+                    self.__display.render_frame()
+                    self.__clock.tick(settings.FPS)
+                except DeadPlayerException:
+                    self.__running = False

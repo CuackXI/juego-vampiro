@@ -47,6 +47,9 @@ class Monster(MovableEntity, IMonster):
 
         magnitud = math.sqrt(vector_x**2 + vector_y**2)
 
+        if magnitud == 0:
+            magnitud = 0.001 # ZERO DIVISION ERROR
+
         direccion_x = vector_x / magnitud
         direccion_y = vector_y / magnitud
         return direccion_x, direccion_y

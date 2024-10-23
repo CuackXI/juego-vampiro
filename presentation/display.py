@@ -54,9 +54,9 @@ class Display(IDisplay):
                 self.__screen.blit(tile_image, (x, y))
 
     def __draw_player_health_bar(self):
-        # Get the player's health
+        """Draws the player's health bar and health value on the screen."""
         player = self.__world.player
-        
+
         # Define the health bar dimensions
         bar_width = settings.TILE_WIDTH
         bar_height = 5
@@ -72,6 +72,16 @@ class Display(IDisplay):
         health_width = int(bar_width * health_percentage)
         health_rect = pygame.Rect(bar_x, bar_y, health_width, bar_height)
         pygame.draw.rect(self.__screen, (0, 255, 0), health_rect)
+
+        # Render the health value
+        health_text = f"{player.health}/{player.max_health}"
+        font = pygame.font.Font(None, 24)  # Use default font and set size
+        text_surface = font.render(health_text, True, (255, 255, 255))  # White text
+        text_x = bar_x + (bar_width - text_surface.get_width()) // 2  # Center below the health bar
+        text_y = bar_y + bar_height + 5  # Position below the health bar
+
+        # Draw the health value text
+        self.__screen.blit(text_surface, (text_x, text_y))
 
     def __draw_player(self):
         adjusted_rect = self.camera.apply(self.__world.player.sprite.rect)

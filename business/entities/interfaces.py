@@ -112,6 +112,10 @@ class IMonster(IUpdatable, ICanMove, IDamageable, ICanDealDamage):
 class IBullet(IUpdatable, ICanMove, IDamageable, ICanDealDamage):
     """Interface for bullet entities."""
 
+class IPerk():
+    @abstractmethod
+    def upgrade(self):
+        """It upgrades the perk to the next level."""
 
 class IExperienceGem(IUpdatable, IHasPosition):
     """Interface for experience gem entities."""
@@ -172,4 +176,31 @@ class IPlayer(IUpdatable, ICanMove, IDamageable, ICanDealDamage):
 
         Returns:
             int: The experience required to reach the next level.
+        """
+
+    @property
+    @abstractmethod
+    def damage_multiplier(self) -> float:
+        """Indicates the player's damage multiplier.
+
+        Returns:
+            float: The multiplier that will be applied on bullets.
+        """
+    
+    @abstractmethod
+    def handle_perk(self):
+        """Handles what happens with a perk with the current inventory"""
+
+class IBulletFactory():
+    @abstractmethod
+    def create_bullet(self):
+        """Instances bullet of the specified type in the direction given by the player."""
+
+    @property
+    @abstractmethod
+    def cooldown(self) -> int:
+        """The cooldown in which it creates bullets.
+
+        Returns:
+            int: The cooldown in miliseconds.
         """

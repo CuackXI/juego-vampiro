@@ -99,12 +99,25 @@ class BulletSprite(Sprite):
     """A class representing the bullet sprite."""
 
     def __init__(self, pos_x: float, pos_y: float):
-        image = pygame.Surface((5, 5), pygame.SRCALPHA)  # pylint: disable=E1101
-        pygame.draw.circle(image, (255, 255, 0), (2, 2), 5)
+        image_size = 30
+
+        image = pygame.Surface((image_size, image_size), pygame.SRCALPHA)  # pylint: disable=E1101
+        pygame.draw.circle(image, (255, 255, 0), (image_size // 2, image_size // 2), image_size // 2)
         rect: pygame.rect = image.get_rect(center=(int(pos_x), int(pos_y)))
 
         super().__init__(image, rect)
+    
+class EpicBulletSprite(Sprite):
+    """A class representing the bullet sprite."""
 
+    def __init__(self, pos_x: float, pos_y: float):
+        image_size = 20  # Change this to make the bullet bigger
+        image = pygame.Surface((image_size, image_size), pygame.SRCALPHA)
+        pygame.draw.circle(image, (255, 100, 100), (image_size // 2, image_size // 2), image_size // 2)
+
+        rect: pygame.Rect = image.get_rect(center=(int(pos_x), int(pos_y)))
+
+        super().__init__(image, rect)
 
 class ExperienceGemSprite(Sprite):
     """A class representing the experience gem sprite."""
