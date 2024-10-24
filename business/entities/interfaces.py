@@ -218,6 +218,33 @@ class IBulletFactory():
 
     @property
     @abstractmethod
+    def damage(self) -> float:
+        """The damage that the bullet will deal.
+
+        Returns:
+            float: The damage amount.
+        """
+
+    @property
+    @abstractmethod
+    def speed(self) -> float:
+        """The speed at which the bullet will move.
+
+        Returns:
+            float: The speed amount.
+        """
+
+    @property
+    @abstractmethod
+    def health(self) -> float:
+        """The health that the bullet will have.
+
+        Returns:
+            float: The health amount.
+        """
+
+    @property
+    @abstractmethod
     def cooldown(self) -> int:
         """The cooldown in which it creates bullets.
 

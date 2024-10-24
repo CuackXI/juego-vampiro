@@ -107,7 +107,7 @@ class BulletSprite(Sprite):
 
         super().__init__(image, rect)
     
-class EpicBulletSprite(Sprite):
+class TurretBulletSprite(Sprite):
     """A class representing the bullet sprite."""
 
     def __init__(self, pos_x: float, pos_y: float):

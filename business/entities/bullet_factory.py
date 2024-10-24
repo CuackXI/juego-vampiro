@@ -3,25 +3,27 @@ from business.entities.bullet import *
 from business.handlers.cooldown_handler import CooldownHandler
 
 class NormalBulletFactory(IBulletFactory, IPerk):
-    BASE_COOLDOWN = 1000
-    BASE_DAMAGE = 5
-    BASE_SPEED = 4
-    BASE_HEALTH = 100
+    BASE_LEVEL_STATS = {
+        1: {
+            'COOLDOWN': 1000,
+            'DAMAGE': 5,
+            'SPEED': 4,
+            'HEALTH': 100
+        }
+    }
 
     def __init__(self, player: IPlayer):
-        self.__damage = NormalBulletFactory.BASE_DAMAGE
-        self.__speed = NormalBulletFactory.BASE_SPEED
-        self.__cooldown = NormalBulletFactory.BASE_COOLDOWN
-        self.__health = NormalBulletFactory.BASE_HEALTH
+        self.__level = 1
         self.__player = player
 
-        self.__cooldown_handler = CooldownHandler(self.__cooldown)
+        self.__cooldown_handler = CooldownHandler(self.cooldown)
 
     def create_bullet(self, world: IGameWorld):
         self.__shoot_at_nearest_enemy(world)
     
     def upgrade(self):
-        return super().upgrade()
+        if self.__level + 1 in TurretBulletFactory.BASE_LEVEL_STATS.keys():
+            self.__level += 1
     
     def update(self, world: IGameWorld):
         if self.__cooldown_handler.is_action_ready():
@@ -29,8 +31,20 @@ class NormalBulletFactory(IBulletFactory, IPerk):
             self.create_bullet(world)
 
     @property
+    def cooldown(self):
+        return NormalBulletFactory.BASE_LEVEL_STATS[self.__level]['COOLDOWN']
+
+    @property
     def damage_amount(self):
-        return self.__damage * self.__player.damage_multiplier
+        return NormalBulletFactory.BASE_LEVEL_STATS[self.__level]['DAMAGE'] * self.__player.damage_multiplier
+
+    @property
+    def speed(self):
+        return NormalBulletFactory.BASE_LEVEL_STATS[self.__level]['SPEED']
+    
+    @property
+    def health(self):
+        return NormalBulletFactory.BASE_LEVEL_STATS[self.__level]['HEALTH']
 
     def __shoot_at_nearest_enemy(self, world: IGameWorld):
         if not world.monsters:
@@ -45,30 +59,33 @@ class NormalBulletFactory(IBulletFactory, IPerk):
         )
 
         # Create a bullet towards the nearest monster
-        bullet = Bullet(world.player.pos_x, world.player.pos_y, monster.pos_x, monster.pos_y, self.__speed, self.damage_amount * self.__player.damage_multiplier,
-                        self.__health)
+        bullet = Bullet(world.player.pos_x, world.player.pos_y, monster.pos_x, monster.pos_y, 
+        self.speed, self.damage_amount, self.health)
         world.add_bullet(bullet)
 
 class TurretBulletFactory(IBulletFactory, IPerk):
-    BASE_COOLDOWN = 250
-    BASE_DAMAGE = 1
-    BASE_SPEED = 10
-    BASE_HEALTH = 5
+
+    BASE_LEVEL_STATS = {
+        1: {
+            'COOLDOWN': 250,
+            'DAMAGE': 1,
+            'SPEED': 10,
+            'HEALTH': 5
+        }
+    }
 
     def __init__(self, player: IPlayer):
-        self.__damage = TurretBulletFactory.BASE_DAMAGE
-        self.__speed = TurretBulletFactory.BASE_SPEED
-        self.__cooldown = TurretBulletFactory.BASE_COOLDOWN
-        self.__health = TurretBulletFactory.BASE_HEALTH
+        self.__level = 1
         self.__player = player
 
-        self.__cooldown_handler = CooldownHandler(self.__cooldown)
+        self.__cooldown_handler = CooldownHandler(self.cooldown)
 
     def create_bullet(self, world: IGameWorld):
         self.__shoot_at_nearest_enemy(world)
     
     def upgrade(self):
-        return super().upgrade()
+        if self.__level + 1 in TurretBulletFactory.BASE_LEVEL_STATS.keys():
+            self.__level += 1
     
     def update(self, world: IGameWorld):
         if self.__cooldown_handler.is_action_ready():
@@ -76,8 +93,20 @@ class TurretBulletFactory(IBulletFactory, IPerk):
             self.create_bullet(world)
 
     @property
+    def cooldown(self):
+        return TurretBulletFactory.BASE_LEVEL_STATS[self.__level]['COOLDOWN']
+
+    @property
     def damage_amount(self):
-        return self.__damage * self.__player.damage_multiplier
+        return TurretBulletFactory.BASE_LEVEL_STATS[self.__level]['DAMAGE'] * self.__player.damage_multiplier
+
+    @property
+    def speed(self):
+        return TurretBulletFactory.BASE_LEVEL_STATS[self.__level]['SPEED']
+    
+    @property
+    def health(self):
+        return TurretBulletFactory.BASE_LEVEL_STATS[self.__level]['HEALTH']
 
     def __shoot_at_nearest_enemy(self, world: IGameWorld):
         if not world.monsters:
@@ -92,6 +121,10 @@ class TurretBulletFactory(IBulletFactory, IPerk):
         )
 
         # Create a bullet towards the nearest monster
-        bullet = TurretBullet(world.player.pos_x, world.player.pos_y, monster.pos_x, monster.pos_y, self.__speed, 
-                              self.damage_amount * self.__player.damage_multiplier, self.__health)
+        bullet = TurretBullet(world.player.pos_x, world.player.pos_y, monster.pos_x, monster.pos_y, 
+                              self.speed, self.damage_amount, self.health)
+        
         world.add_bullet(bullet)
+
+class FollowingBulletFactory(IBulletFactory, IPerk):
+    pass #bala que persiga a un monstruo

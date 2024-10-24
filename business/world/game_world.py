@@ -2,7 +2,8 @@
 
 from business.entities.interfaces import IBullet, IExperienceGem, IMonster, IPlayer
 from business.world.interfaces import IGameWorld, IMonsterSpawner, ITileMap
-
+from business.entities.perks import *
+from business.entities.bullet_factory import *
 
 class GameWorld(IGameWorld):
     """Represents the game world."""
@@ -13,6 +14,7 @@ class GameWorld(IGameWorld):
         self.__monsters: list[IMonster] = []
         self.__bullets: list[IBullet] = []
         self.__experience_gems: list[IExperienceGem] = []
+        self.__perks = []
 
         # Initialize the tile map
         self.tile_map: ITileMap = tile_map

@@ -2,7 +2,8 @@ from business.entities.interfaces import IPerk
 
 class RegenerationPerk(IPerk):
 
-    BASE_LEVELS = {
+    BASE_LEVEL_STATS = {
+        1: 1,
         2: 2,
         3: 5,
         4: 8,
@@ -10,17 +11,19 @@ class RegenerationPerk(IPerk):
     }
 
     def __init__(self) -> None:
-        self.__regen = 1
+        self.__level = 1
 
     @property
     def upgrade_amount(self):
-        return self.__regen
+        return RegenerationPerk.BASE_LEVEL_STATS[self.__level]
 
     def upgrade(self):
-        return super().upgrade()
+        if self.__level + 1 in RegenerationPerk.BASE_LEVEL_STATS.keys():
+            self.__level += 1
 
 class MaxHealthPerk(IPerk):
-    BASE_LEVELS = {
+    BASE_LEVEL_STATS = {
+        1: 25,
         2: 40,
         3: 75,
         4: 150,
@@ -28,29 +31,32 @@ class MaxHealthPerk(IPerk):
     }
 
     def __init__(self) -> None:
-        self.__health = 25
+        self.__level = 1
 
     @property
     def upgrade_amount(self):
-        return self.__health
+        return MaxHealthPerk.BASE_LEVEL_STATS[self.__level]
 
     def upgrade(self):
-        return super().upgrade()
+        if self.__level + 1 in MaxHealthPerk.BASE_LEVEL_STATS.keys():
+            self.__level += 1
 
 class DamageMultiplierPerk(IPerk):
-    BASE_LEVELS = {
-        2: 1.5,
-        3: 2,
-        4: 3,
-        5: 5
+    BASE_LEVEL_STATS = { #All + 1 from player
+        1: 0.1,
+        2: 0.5,
+        3: 1,
+        4: 2,
+        5: 4
     }
 
     def __init__(self) -> None:
-        self.__damage_multiplier: 1.2
+        self.__level = 1
 
     @property
     def upgrade_amount(self):
-        return self.__damage_multiplier
+        return DamageMultiplierPerk.BASE_LEVEL_STATS[self.__level]
 
     def upgrade(self):
-        return super().upgrade()
+        if self.__level + 1 in DamageMultiplierPerk.BASE_LEVEL_STATS.keys():
+            self.__level += 1

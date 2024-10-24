@@ -5,7 +5,7 @@ import math
 from business.entities.entity import MovableEntity
 from business.entities.interfaces import IBullet
 from business.world.interfaces import IGameWorld
-from presentation.sprite import BulletSprite, EpicBulletSprite
+from presentation.sprite import BulletSprite, TurretBulletSprite
 
 class Bullet(MovableEntity, IBullet):
     """A bullet that moves towards a target direction."""
@@ -46,7 +46,7 @@ class TurretBullet(MovableEntity, IBullet):
     """A bullet that moves towards a target direction."""
 
     def __init__(self, src_x, src_y, dst_x, dst_y, speed, damage, health):
-        super().__init__(src_x, src_y, speed, EpicBulletSprite(src_x, src_y))
+        super().__init__(src_x, src_y, speed, TurretBulletSprite(src_x, src_y))
         self.__dir_x, self.__dir_y = self.__calculate_direction(dst_x - src_x, dst_y - src_y)
 
         self.__damage = damage
@@ -76,3 +76,6 @@ class TurretBullet(MovableEntity, IBullet):
 
     def __str__(self):
         return f"Bullet(pos=({self._pos_x, self._pos_y}), dir=({self.__dir_x, self.__dir_y}))"
+    
+class FollowingBullet():
+    pass

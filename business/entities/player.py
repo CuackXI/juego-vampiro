@@ -23,7 +23,7 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
     BASE_HEALTH_REGEN = 0.5
     BASE_PICK_RANGE = 35.0
     BASE_SPEED = 5.0
-    BASE_LEVELS = {
+    BASE_LEVELS_EXP = {
         2: 20,
         3: 50,
         4: 150,
@@ -45,8 +45,8 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
         self.__cooldown_multiplier = Player.BASE_COOLDOWN_MULTIPLIER
         self.__pick_range = Player.BASE_PICK_RANGE
 
-        self.__static_inventory = [MaxHealthPerk(), RegenerationPerk(), DamageMultiplierPerk()]
-        self.__updatable_inventory = [NormalBulletFactory(self), TurretBulletFactory(self)]
+        self.__static_inventory = []
+        self.__updatable_inventory = [NormalBulletFactory(self)]
 
     def __str__(self):
         return f"Player(hp={self.__health}, xp={self.__experience}, lvl={self.__level}, pos=({self._pos_x}, {self._pos_y}))"
@@ -60,8 +60,8 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
         next_level = self.__level + 1
         
         experience_to_next_level = 0
-        if next_level in self.BASE_LEVELS:
-            experience_to_next_level = self.BASE_LEVELS[next_level]
+        if next_level in self.BASE_LEVELS_EXP:
+            experience_to_next_level = self.BASE_LEVELS_EXP[next_level]
         
         return experience_to_next_level
         
