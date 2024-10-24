@@ -120,7 +120,7 @@ class Display(IDisplay):
     def load_world(self, world: GameWorld):
         self.__world = world
 
-    def show_pause_menu(self):
+    def __draw_pause_menu(self, game):
         x = self.__world.player.pos_x
         y = self.__world.player.pos_y
 
@@ -159,12 +159,46 @@ class Display(IDisplay):
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if continue_button.collidepoint(event.pos):
-                    return False
+                    game.unpause_event()
+                    return
+
                 if quit_button.collidepoint(event.pos):
-                    # self.save_game()
-                    return False
-                
-    def render_frame(self, paused = None):
+                    # save_game()
+                    game.close_game_loop()
+                    pygame.quit()
+                    return
+
+    def __draw_clock(self):
+        elapsed_time_ms = pygame.time.get_ticks()
+
+        total_seconds = elapsed_time_ms // 1000
+        minutes = total_seconds // 60
+        seconds = total_seconds % 60
+
+        if minutes < 10:
+            minutes = "0" + str(minutes)
+
+        if seconds < 10:
+            seconds = "0" + str(seconds)
+
+        formatted_time = f"{minutes}:{seconds}"
+
+        font = pygame.font.Font(None, 36)
+        time_text = font.render(formatted_time, True, (255, 255, 255))
+
+        text_width, text_height = time_text.get_size()
+
+        opacity_square = pygame.Surface((text_width + 20, text_height + 10), pygame.SRCALPHA)
+        opacity_square.fill((0, 0, 0, 77))
+
+        box_x = (settings.SCREEN_WIDTH- text_width) // 2 - 10
+        box_y = 10
+
+        self.__screen.blit(opacity_square, (box_x, box_y))
+
+        self.__screen.blit(time_text, (box_x + 10, box_y + 5))
+
+    def render_frame(self, paused = None, game = None):
         self.camera.update(self.__world.player.sprite.rect)
 
         # Render the ground tiles
@@ -193,8 +227,10 @@ class Display(IDisplay):
         # Draw the player
         self.__draw_player()
 
+        self.__draw_clock()
+
         if paused:
-            self.show_pause_menu()
+            self.__draw_pause_menu(game)
 
         # Update the display
         pygame.display.flip()

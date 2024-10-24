@@ -32,12 +32,22 @@ class Game:
     def paused(self):
         return self.__paused
 
+    @property
+    def elapsed_time(self):
+        return pygame.time.get_ticks()
+
+    def close_game_loop(self):
+        self.__running = False
+
     def __process_game_events(self):
         for event in pygame.event.get():
             # pygame.QUIT event means the user clicked X to close your window
             if event.type == pygame.QUIT:  # pylint: disable=E1101
                 self.__logger.debug("QUIT event detected")
                 self.__running = False
+
+    def unpause_event(self):
+        self.__paused = not self.__paused
 
     def run(self):
         """Starts the game loop."""
@@ -55,7 +65,7 @@ class Game:
                     CollisionHandler.handle_collisions(self.__world)
                     DeathHandler.check_deaths(self.__world)
 
-                self.__display.render_frame(self.__paused)
+                self.__display.render_frame(self.__paused, self)
                 self.__clock.tick(settings.FPS)
             except DeadPlayerException:
                 self.__running = False
