@@ -55,7 +55,7 @@ class Game:
                     CollisionHandler.handle_collisions(self.__world)
                     DeathHandler.check_deaths(self.__world)
 
-                self.__display.render_frame()
+                self.__display.render_frame(self.__paused)
                 self.__clock.tick(settings.FPS)
             except DeadPlayerException:
                 self.__running = False

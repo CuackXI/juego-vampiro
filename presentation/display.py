@@ -120,26 +120,51 @@ class Display(IDisplay):
     def load_world(self, world: GameWorld):
         self.__world = world
 
-    # Posible implementacion de un menu de pausa
-    # def show_pause_menu(self):
-    #     while True:
-    #         # Handle events
-    #         for event in pygame.event.get():
-    #             if event.type == pygame.QUIT:
-    #                 pygame.quit()
-    #                 sys.exit()
+    def show_pause_menu(self):
+        x = self.__world.player.pos_x
+        y = self.__world.player.pos_y
 
-    #             if event.type == pygame.MOUSEBUTTONDOWN:
-    #                 if continue_button.collidepoint(event.pos):
-    #                     return False  # Unpause the game
+        x = max(0, min(x, settings.WORLD_WIDTH - settings.SCREEN_WIDTH))
+        y = max(0, min(y, settings.WORLD_HEIGHT - settings.SCREEN_HEIGHT))
 
-    #                 if save_exit_button.collidepoint(event.pos):
-    #                     self.save_game()
-    #                     self.__running = False
-    #                     return False
+        opacity_square = pygame.Surface((settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT), pygame.SRCALPHA)
+        opacity_square.fill((0, 0, 0, 30))
 
-    def render_frame(self):
-        # Update the camera to follow the player
+        self.__screen.blit(opacity_square, (0, 0))
+
+        continue_button = pygame.Rect(150, 150, 200, 50)
+        quit_button = pygame.Rect(150, 250, 200, 50)
+
+        font = pygame.font.Font(None, 36)
+        continue_text = font.render("Continue", True, (255, 255, 255))
+        quit_text = font.render("Quit", True, (255, 255, 255))
+
+        self.__screen.blit(opacity_square, (0, 0))
+
+        continue_button.x = (settings.SCREEN_WIDTH - continue_button.x) // 2 - 200
+        continue_button.y = (settings.SCREEN_HEIGHT // 2) + 200
+
+        quit_button.x = (settings.SCREEN_WIDTH - quit_button.x) // 2 + 200
+        quit_button.y = (settings.SCREEN_HEIGHT // 2) + 200
+
+        pygame.draw.rect(self.__screen, (0, 0, 0), continue_button)
+        pygame.draw.rect(self.__screen, (0, 0, 0), quit_button)
+
+        self.__screen.blit(continue_text, (continue_button.x + 40, continue_button.y + 10))
+        self.__screen.blit(quit_text, (quit_button.x + 70, quit_button.y + 10))
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if continue_button.collidepoint(event.pos):
+                    return False
+                if quit_button.collidepoint(event.pos):
+                    # self.save_game()
+                    return False
+                
+    def render_frame(self, paused = None):
         self.camera.update(self.__world.player.sprite.rect)
 
         # Render the ground tiles
@@ -167,6 +192,9 @@ class Display(IDisplay):
 
         # Draw the player
         self.__draw_player()
+
+        if paused:
+            self.show_pause_menu()
 
         # Update the display
         pygame.display.flip()
