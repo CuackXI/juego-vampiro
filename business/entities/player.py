@@ -155,6 +155,9 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
         else:
             perk.upgrade()
 
+        print(self.__updatable_inventory)
+        print(self.__static_inventory)
+
     def update(self, world: IGameWorld):
         self.sprite.update()
 

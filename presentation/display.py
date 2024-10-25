@@ -199,8 +199,8 @@ class Display(IDisplay):
 
         self.__screen.blit(time_text, (box_x + 10, box_y + 5))
 
-    def __show_upgrade_menu(self, game: Game):
-        """ACA IRIA EL MENU DE UPGRADES"""
+    def __show_upgrade_menu(self):
+        """ACA IRIA EL MENU DE UPGRADES IMPLEMENTADO, ESTO ES CUALQUIER COSA"""
 
         perks = self.__world.get_perks()
         
@@ -209,8 +209,8 @@ class Display(IDisplay):
             print(type(random_choice))
             self.__world.give_perk_to_player(random_choice)
 
-            self.__world.in_upgrade = False
-
+        self.__world.in_upgrade = False
+        
     def render_frame(self, paused = None, in_upgrade = None, game = None):
         self.camera.update(self.__world.player.sprite.rect)
 
@@ -246,7 +246,7 @@ class Display(IDisplay):
             self.__draw_pause_menu(game)
 
         if in_upgrade:
-            return self.__show_upgrade_menu(game)
+            self.__show_upgrade_menu()
 
         # Update the display
         pygame.display.flip()

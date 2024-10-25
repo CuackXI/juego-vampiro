@@ -27,7 +27,9 @@ class GameWorld(IGameWorld):
         self.__monster_spawner: IMonsterSpawner = spawner
 
     def __initialize_perks(self):
-        self.PERKS_U = [NormalBulletFactory(self.__player), TurretBulletFactory(self.__player)]
+        initial_perk = NormalBulletFactory(self.__player)
+
+        self.PERKS_U = [initial_perk, TurretBulletFactory(self.__player)]
         self.PERKS_S = [RegenerationPerk(), MaxHealthPerk(), DamageMultiplierPerk()]
 
         for perk in self.PERKS_S:
@@ -35,7 +37,7 @@ class GameWorld(IGameWorld):
         for perk in self.PERKS_U:
             self.__perks.append(perk)
 
-        self.__player.handle_perk(NormalBulletFactory(self.__player))
+        self.__player.handle_perk(initial_perk)
 
     def get_perks(self):
         usable_perks = self.__perks
