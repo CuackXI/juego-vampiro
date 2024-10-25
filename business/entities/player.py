@@ -46,7 +46,7 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
         self.__pick_range = Player.BASE_PICK_RANGE
 
         self.__static_inventory = []
-        self.__updatable_inventory = [NormalBulletFactory(self)]
+        self.__updatable_inventory = []
 
     def __str__(self):
         return f"Player(hp={self.__health}, xp={self.__experience}, lvl={self.__level}, pos=({self._pos_x}, {self._pos_y}))"
@@ -108,6 +108,17 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
                 return self.__health_regen + perk.upgrade_amount 
         return self.__health_regen
 
+    @property
+    def inventory(self):
+        perks = []
+        for perk in self.__updatable_inventory:
+            perks.append(perk)
+
+        for perk in self.__static_inventory:
+            perks.append(perk)
+
+        return perks
+
     def take_damage(self, amount):
         self.__health = max(0, self.__health - amount)
 
@@ -118,17 +129,26 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
         if self.__health > self.max_health:
             self.__health = self.max_health
 
-    def pickup_gem(self, gem: ExperienceGem):
-        self.__gain_experience(gem.amount)
+    def pickup_gem(self, gem: ExperienceGem, world: IGameWorld):
+        self.__gain_experience(gem.amount, world)
 
-    def __gain_experience(self, amount: int):
+    def __gain_experience(self, amount: int, world: IGameWorld):
         self.__experience += amount
         while self.__experience >= self.experience_to_next_level:
             self.__experience -= self.experience_to_next_level
             self.__level += 1
+            world.activate_upgrade()
 
-    def handle_perk(self):
-        return super().handle_perk()
+    def handle_perk(self, perk):
+        if isinstance(perk, IUpdatable):
+            if perk not in self.__updatable_inventory:
+                self.__updatable_inventory.append(perk)
+            else:
+                perk.upgrade()
+        elif perk not in self.__static_inventory:
+            self.__static_inventory.append(perk)
+        else:
+            perk.upgrade()
 
     def update(self, world: IGameWorld):
         self.sprite.update()

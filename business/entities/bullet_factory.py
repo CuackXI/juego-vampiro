@@ -1,4 +1,4 @@
-from business.entities.interfaces import IBulletFactory, IPerk, IPlayer
+from business.entities.interfaces import IBulletFactory, IPerk, IPlayer, IUpdatable
 from business.entities.bullet import *
 from business.handlers.cooldown_handler import CooldownHandler
 
@@ -22,9 +22,13 @@ class NormalBulletFactory(IBulletFactory, IPerk):
         self.__shoot_at_nearest_enemy(world)
     
     def upgrade(self):
-        if self.__level + 1 in TurretBulletFactory.BASE_LEVEL_STATS.keys():
+        if self.__level + 1 in NormalBulletFactory.BASE_LEVEL_STATS.keys():
             self.__level += 1
     
+    @property
+    def upgradable(self):
+        return self.__level != max(NormalBulletFactory.BASE_LEVEL_STATS.keys())
+
     def update(self, world: IGameWorld):
         if self.__cooldown_handler.is_action_ready():
             self.__cooldown_handler.put_on_cooldown()
@@ -86,7 +90,11 @@ class TurretBulletFactory(IBulletFactory, IPerk):
     def upgrade(self):
         if self.__level + 1 in TurretBulletFactory.BASE_LEVEL_STATS.keys():
             self.__level += 1
-    
+
+    @property
+    def upgradable(self):
+        return self.__level != max(TurretBulletFactory.BASE_LEVEL_STATS.keys())
+
     def update(self, world: IGameWorld):
         if self.__cooldown_handler.is_action_ready():
             self.__cooldown_handler.put_on_cooldown()
@@ -127,4 +135,5 @@ class TurretBulletFactory(IBulletFactory, IPerk):
         world.add_bullet(bullet)
 
 class FollowingBulletFactory(IBulletFactory, IPerk):
+    
     pass #bala que persiga a un monstruo

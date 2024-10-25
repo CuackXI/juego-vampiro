@@ -14,13 +14,41 @@ class GameWorld(IGameWorld):
         self.__monsters: list[IMonster] = []
         self.__bullets: list[IBullet] = []
         self.__experience_gems: list[IExperienceGem] = []
-        self.__perks = []
+        self.__in_upgrade = False
+
+        self.__perks: list[IPerk] = []
+
+        self.__initialize_perks()
 
         # Initialize the tile map
         self.tile_map: ITileMap = tile_map
 
         # Initialize the monster spawner
         self.__monster_spawner: IMonsterSpawner = spawner
+
+    def __initialize_perks(self):
+        self.PERKS_U = [NormalBulletFactory(self.__player), TurretBulletFactory(self.__player)]
+        self.PERKS_S = [RegenerationPerk(), MaxHealthPerk(), DamageMultiplierPerk()]
+
+        for perk in self.PERKS_S:
+            self.__perks.append(perk)
+        for perk in self.PERKS_U:
+            self.__perks.append(perk)
+
+        self.__player.handle_perk(NormalBulletFactory(self))
+
+    def get_perks(self):
+        usable_perks: list = self.__perks
+
+        for perk in self.__perks:
+            if not perk.upgradable:
+                usable_perks.remove(perk)
+
+        return usable_perks
+
+    def give_perk_to_player(self, perk):
+        """ESTO DEBERIA SER TEMPORAL PERO ES PARA PROBAR ALGO"""
+        self.__player.handle_perk(perk)
 
     def update(self):
         self.player.update(self)
@@ -54,6 +82,9 @@ class GameWorld(IGameWorld):
     def remove_bullet(self, bullet: IBullet):
         self.__bullets.remove(bullet)
 
+    def activate_upgrade(self):
+        self.__in_upgrade = True
+
     @property
     def player(self) -> IPlayer:
         return self.__player
@@ -69,3 +100,7 @@ class GameWorld(IGameWorld):
     @property
     def experience_gems(self) -> list[IExperienceGem]:
         return self.__experience_gems[:]
+
+    @property
+    def in_upgrade(self):
+        return self.__in_upgrade

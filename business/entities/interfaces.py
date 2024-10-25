@@ -126,11 +126,29 @@ class IPerk():
 
     @property
     @abstractmethod
+    def perk_type(self) -> str:
+        """The type of perk.
+
+        Returns:
+            str: The type.
+        """
+
+    @property
+    @abstractmethod
     def upgrade_amount(self) -> int | float:
         """The amount by which it upgrades a player stat.
 
         Returns:
             int | float: The amount.
+        """
+
+    @property
+    @abstractmethod
+    def upgradable(self) -> bool:
+        """If the current perk at the current level can be upgradable.
+
+        Returns:
+            bool: If it's upgradable.
         """
 
 class IExperienceGem(IUpdatable, IHasPosition):
@@ -207,11 +225,20 @@ class IPlayer(IUpdatable, ICanMove, IDamageable, ICanDealDamage):
             float: The multiplier that will be applied on bullets.
         """
     
+    @property
+    @abstractmethod
+    def inventory(self) -> list:
+        """A list of all the perks the player has obtained.
+
+        Returns:
+            list: The list of perks.
+        """
+
     @abstractmethod
     def handle_perk(self):
         """Handles what happens with a perk with the current inventory"""
 
-class IBulletFactory():
+class IBulletFactory(IUpdatable):
     @abstractmethod
     def create_bullet(self):
         """Instances bullet of the specified type in the direction given by the player."""

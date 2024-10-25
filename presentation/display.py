@@ -7,7 +7,8 @@ from business.world.game_world import GameWorld
 from presentation.camera import Camera
 from presentation.interfaces import IDisplay
 from presentation.tileset import Tileset
-
+import random
+from game import Game
 
 class Display(IDisplay):
     """Class for displaying the game world."""
@@ -198,7 +199,16 @@ class Display(IDisplay):
 
         self.__screen.blit(time_text, (box_x + 10, box_y + 5))
 
-    def render_frame(self, paused = None, game = None):
+    def __show_upgrade_menu(self, game: Game):
+        """ACA IRIA EL MENU DE UPGRADES"""
+
+        perks = self.__world.get_perks()
+
+        game.in_upgrade_menu = False
+
+        self.__world.give_perk_to_player(random.choice(perks))
+
+    def render_frame(self, paused = None, in_upgrade = None, game = None):
         self.camera.update(self.__world.player.sprite.rect)
 
         # Render the ground tiles
@@ -231,6 +241,9 @@ class Display(IDisplay):
 
         if paused:
             self.__draw_pause_menu(game)
+
+        if in_upgrade:
+            return self.__show_upgrade_menu(game)
 
         # Update the display
         pygame.display.flip()
