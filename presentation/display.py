@@ -1,7 +1,7 @@
 """Module for displaying the game world."""
 
 import pygame
-
+import logging
 import settings
 from business.world.game_world import GameWorld
 from presentation.camera import Camera
@@ -203,10 +203,13 @@ class Display(IDisplay):
         """ACA IRIA EL MENU DE UPGRADES"""
 
         perks = self.__world.get_perks()
+        
+        if len(perks) > 0:
+            random_choice = random.choice(perks)    
+            print(type(random_choice))
+            self.__world.give_perk_to_player(random_choice)
 
-        game.in_upgrade_menu = False
-
-        self.__world.give_perk_to_player(random.choice(perks))
+            self.__world.in_upgrade = False
 
     def render_frame(self, paused = None, in_upgrade = None, game = None):
         self.camera.update(self.__world.player.sprite.rect)

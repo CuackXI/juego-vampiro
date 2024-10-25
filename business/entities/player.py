@@ -24,12 +24,12 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
     BASE_PICK_RANGE = 35.0
     BASE_SPEED = 5.0
     BASE_LEVELS_EXP = {
-        2: 20,
-        3: 50,
-        4: 150,
-        5: 400,
-        6: 1000,
-        7: 5000
+        2: 1,
+        3: 1,
+        4: 1,
+        5: 1,
+        6: 1,
+        7: 1
     }
 
     def __init__(self, pos_x: int, pos_y: int, sprite: Sprite):
@@ -62,6 +62,8 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
         experience_to_next_level = 0
         if next_level in self.BASE_LEVELS_EXP:
             experience_to_next_level = self.BASE_LEVELS_EXP[next_level]
+        else:
+            experience_to_next_level = self.BASE_LEVELS_EXP[self.__level]
         
         return experience_to_next_level
         
@@ -137,10 +139,13 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
         while self.__experience >= self.experience_to_next_level:
             self.__experience -= self.experience_to_next_level
             self.__level += 1
+            if self.__level not in Player.BASE_LEVELS_EXP.keys():
+                self.__level -= 1
+                
             world.activate_upgrade()
 
     def handle_perk(self, perk):
-        if isinstance(perk, IUpdatable):
+        if isinstance(perk, IBulletFactory):
             if perk not in self.__updatable_inventory:
                 self.__updatable_inventory.append(perk)
             else:

@@ -14,7 +14,7 @@ class GameWorld(IGameWorld):
         self.__monsters: list[IMonster] = []
         self.__bullets: list[IBullet] = []
         self.__experience_gems: list[IExperienceGem] = []
-        self.__in_upgrade = False
+        self.in_upgrade = False
 
         self.__perks: list[IPerk] = []
 
@@ -35,16 +35,16 @@ class GameWorld(IGameWorld):
         for perk in self.PERKS_U:
             self.__perks.append(perk)
 
-        self.__player.handle_perk(NormalBulletFactory(self))
+        self.__player.handle_perk(NormalBulletFactory(self.__player))
 
     def get_perks(self):
-        usable_perks: list = self.__perks
+        usable_perks = self.__perks
 
         for perk in self.__perks:
             if not perk.upgradable:
                 usable_perks.remove(perk)
 
-        return usable_perks
+        return self.__perks
 
     def give_perk_to_player(self, perk):
         """ESTO DEBERIA SER TEMPORAL PERO ES PARA PROBAR ALGO"""
@@ -83,7 +83,7 @@ class GameWorld(IGameWorld):
         self.__bullets.remove(bullet)
 
     def activate_upgrade(self):
-        self.__in_upgrade = True
+        self.in_upgrade = True
 
     @property
     def player(self) -> IPlayer:
@@ -100,7 +100,3 @@ class GameWorld(IGameWorld):
     @property
     def experience_gems(self) -> list[IExperienceGem]:
         return self.__experience_gems[:]
-
-    @property
-    def in_upgrade(self):
-        return self.__in_upgrade

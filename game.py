@@ -27,19 +27,10 @@ class Game:
         self.__input_handler = input_handler
         self.__running = True
         self.__paused = False
-        self.__in_upgrade_menu = False
 
     @property
     def paused(self):
         return self.__paused
-
-    @property
-    def in_upgrade_menu(self):
-        return self.__in_upgrade_menu
-    
-    @in_upgrade_menu.setter
-    def in_upgrade_menu(self, value: bool):
-        self.__in_upgrade_menu = value
 
     @property
     def elapsed_time(self):
@@ -68,16 +59,13 @@ class Game:
                 if self.__input_handler.is_pause_pressed():
                     self.__paused = self.__input_handler.process_pause(self)
 
-                if self.__world.in_upgrade:
-                    self.__in_upgrade_menu = True
-
-                if not self.__paused or not self.__in_upgrade_menu:
+                if not self.__paused or not self.__world.in_upgrade:
                     self.__input_handler.process_input()
                     self.__world.update()
                     CollisionHandler.handle_collisions(self.__world)
                     DeathHandler.check_deaths(self.__world)
 
-                self.__display.render_frame(self.__paused, self.__in_upgrade_menu, self)
+                self.__display.render_frame(self.__paused, self.__world.in_upgrade, self)
 
                 self.__clock.tick(settings.FPS)
             except DeadPlayerException:

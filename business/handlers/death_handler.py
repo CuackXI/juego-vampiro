@@ -32,7 +32,7 @@ class DeathHandler:
 
         for gem in world.experience_gems:
             if gem.in_player_range(world.player):
-                world.player.pickup_gem(gem)
+                world.player.pickup_gem(gem, world)
                 world.remove_experience_gem(gem)
 
         if world.player.health <= 0:

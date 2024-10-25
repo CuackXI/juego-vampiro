@@ -17,8 +17,6 @@ class Bullet(MovableEntity, IBullet):
         self.__damage = damage
         self.__health = health
 
-        self._logger.debug("Created %s", self)
-
     def __calculate_direction(self, dx, dy):
         distance = math.hypot(dx, dy)
         if distance != 0:
