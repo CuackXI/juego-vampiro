@@ -111,7 +111,7 @@ class TurretBulletSprite(Sprite):
     """A class representing the bullet sprite."""
 
     def __init__(self, pos_x: float, pos_y: float):
-        image_size = 20  # Change this to make the bullet bigger
+        image_size = 20
         image = pygame.Surface((image_size, image_size), pygame.SRCALPHA)
         pygame.draw.circle(image, (255, 100, 100), (image_size // 2, image_size // 2), image_size // 2)
 
