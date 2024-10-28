@@ -1,5 +1,6 @@
 """This module contains the implementation of the game world."""
 
+import random
 from business.entities.interfaces import IBullet, IExperienceGem, IMonster, IPlayer
 from business.world.interfaces import IGameWorld, IMonsterSpawner, ITileMap
 from business.entities.perks import *
@@ -15,6 +16,7 @@ class GameWorld(IGameWorld):
         self.__bullets: list[IBullet] = []
         self.__experience_gems: list[IExperienceGem] = []
         self.in_upgrade = False
+        self.__current_upgrade_type = None
 
         self.__perks: list[IPerk] = []
 
@@ -86,6 +88,16 @@ class GameWorld(IGameWorld):
 
     def activate_upgrade(self):
         self.in_upgrade = True
+        perks = self.get_perks()
+
+        if len(perks) > 0:
+            random_choice = random.choice(perks)    
+            self.give_perk_to_player(random_choice)
+            self.__current_upgrade_type = type(random_choice)
+
+    @property
+    def current_upgrade(self):
+        return self.__current_upgrade_type
 
     @property
     def player(self) -> IPlayer:

@@ -24,12 +24,12 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
     BASE_PICK_RANGE = 35.0
     BASE_SPEED = 5.0
     BASE_LEVELS_EXP = {
-        2: 1,
-        3: 1,
-        4: 1,
-        5: 1,
-        6: 1,
-        7: 1
+        2: 5,
+        3: 5,
+        4: 10,
+        5: 10,
+        6: 15,
+        7: 20
     }
 
     def __init__(self, pos_x: int, pos_y: int, sprite: Sprite):
@@ -66,7 +66,7 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
             experience_to_next_level = self.BASE_LEVELS_EXP[self.__level]
         
         return experience_to_next_level
-        
+
     @property
     def pick_range(self):
         return self.__pick_range

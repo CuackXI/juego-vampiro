@@ -202,15 +202,39 @@ class Display(IDisplay):
     def __show_upgrade_menu(self):
         """ACA IRIA EL MENU DE UPGRADES IMPLEMENTADO, ESTO ES CUALQUIER COSA"""
 
-        perks = self.__world.get_perks()
-        
-        if len(perks) > 0:
-            random_choice = random.choice(perks)    
-            print(type(random_choice))
-            self.__world.give_perk_to_player(random_choice)
+        upgrade = self.__world.current_upgrade
 
-        self.__world.in_upgrade = False
-        
+        x = self.__world.player.pos_x
+        y = self.__world.player.pos_y
+
+        x = max(0, min(x, settings.WORLD_WIDTH - settings.SCREEN_WIDTH))
+        y = max(0, min(y, settings.WORLD_HEIGHT - settings.SCREEN_HEIGHT))
+
+        opacity_square = pygame.Surface((settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT), pygame.SRCALPHA)
+        opacity_square.fill((0, 0, 0, 30))
+
+        self.__screen.blit(opacity_square, (0, 0))
+
+        font = pygame.font.Font(None, 36)
+        upgrade_text = font.render(str(upgrade), True, (255, 255, 255))
+
+        continue_button = pygame.Rect(150, 150, 200, 50)
+        continue_text = font.render("Continue", True, (255, 255, 255))
+        continue_button.x = (settings.SCREEN_WIDTH - continue_button.x) // 2 - 200
+        continue_button.y = (settings.SCREEN_HEIGHT // 2) + 200
+
+        self.__screen.blit(upgrade_text, (100, 100))
+
+        pygame.draw.rect(self.__screen, (0, 0, 0), continue_button)
+
+        self.__screen.blit(continue_text, (continue_button.x + 40, continue_button.y + 10))
+
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if continue_button.collidepoint(event.pos):
+                    self.__world.in_upgrade = False
+                    return
+
     def render_frame(self, paused = None, in_upgrade = None, game = None):
         self.camera.update(self.__world.player.sprite.rect)
 
