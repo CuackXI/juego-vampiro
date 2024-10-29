@@ -128,7 +128,7 @@ class ExperienceGemSprite(Sprite):
         tileset = Tileset(
             ExperienceGemSprite.ASSET, settings.TILE_HEIGHT, settings.TILE_HEIGHT, 2, 2
         )
-        image: pygame.Surface = tileset.get_tile(0)
+        image: pygame.Surface = tileset.get_tile(3)
         rect: pygame.Rect = image.get_rect(center=(int(pos_x), int(pos_y)))
 
         super().__init__(image, rect)

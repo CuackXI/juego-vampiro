@@ -45,8 +45,8 @@ class Display(IDisplay):
         for row in range(start_row, end_row):
             for col in range(start_col, end_col):
                 # Get the tile index from the tile map
-                tile_index = self.__world.tile_map.get(row, col)
-                tile_image = self.__ground_tileset.get_tile(tile_index)
+                # tile_index = self.__world.tile_map.get(row, col)
+                tile_image = self.__ground_tileset.get_tile(1)
 
                 # Calculate the position on the screen
                 x = col * settings.TILE_WIDTH - self.camera.camera_rect.left
@@ -219,7 +219,7 @@ class Display(IDisplay):
         upgrade_text = font.render(str(upgrade), True, (255, 255, 255))
 
         continue_button = pygame.Rect(150, 150, 200, 50)
-        continue_text = font.render("Continue", True, (255, 255, 255))
+        continue_text = font.render("Upgrade!", True, (255, 255, 255))
         continue_button.x = (settings.SCREEN_WIDTH - continue_button.x) // 2 - 200
         continue_button.y = (settings.SCREEN_HEIGHT // 2) + 200
 
