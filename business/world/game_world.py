@@ -32,7 +32,7 @@ class GameWorld(IGameWorld):
         initial_perk = NormalBulletFactory(self.__player)
 
         self.PERKS_U = [initial_perk, TurretBulletFactory(self.__player)]
-        self.PERKS_S = [RegenerationPerk(), MaxHealthPerk(), DamageMultiplierPerk()]
+        self.PERKS_S = [RegenerationPerk(self.__player), MaxHealthPerk(self.__player), DamageMultiplierPerk(self.__player)]
 
         for perk in self.PERKS_S:
             self.__perks.append(perk)
@@ -41,14 +41,25 @@ class GameWorld(IGameWorld):
 
         self.__player.handle_perk(initial_perk)
 
-    def get_perks(self):
+    def get_perks_for_display(self):
         usable_perks = self.__perks
 
         for perk in self.__perks:
             if not perk.upgradable:
                 usable_perks.remove(perk)
 
-        return self.__perks
+        random_perks = []
+
+        length = len(usable_perks)
+        if len(usable_perks) > 3:
+            length = 3
+
+        for _ in range(length):
+            random_perk = random.choice(usable_perks)
+            random_perks.append(random_perk)
+            usable_perks.remove(random_perk)
+
+        return random_perks
 
     def give_perk_to_player(self, perk):
         """ESTO DEBERIA SER TEMPORAL PERO ES PARA PROBAR ALGO"""
@@ -68,6 +79,9 @@ class GameWorld(IGameWorld):
         for gem in self.experience_gems:
             gem.update(self)
 
+    def activate_upgrade(self):
+        self.in_upgrade = True
+
     def add_monster(self, monster: IMonster):
         self.__monsters.append(monster)
 
@@ -85,15 +99,6 @@ class GameWorld(IGameWorld):
 
     def remove_bullet(self, bullet: IBullet):
         self.__bullets.remove(bullet)
-
-    def activate_upgrade(self):
-        self.in_upgrade = True
-        perks = self.get_perks()
-
-        if len(perks) > 0:
-            random_choice = random.choice(perks)    
-            self.give_perk_to_player(random_choice)
-            self.__current_upgrade_type = type(random_choice)
 
     @property
     def current_upgrade(self):

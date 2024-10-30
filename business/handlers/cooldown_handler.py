@@ -7,7 +7,8 @@ class CooldownHandler:
     """A handler for cooldowns."""
 
     def __init__(self, cooldown_time: int):
-        self.__last_action_time = pygame.time.get_ticks()
+        self.__game = game
+        self.__last_action_time = self.__game.game_clock
         self.__cooldown_time = cooldown_time
 
     def is_action_ready(self):
@@ -17,4 +18,4 @@ class CooldownHandler:
 
     def put_on_cooldown(self):
         """Put the action on cooldown."""
-        self.__last_action_time = pygame.time.get_ticks()
+        self.__last_action_time = self.__game.game_clock

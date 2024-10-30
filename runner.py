@@ -8,6 +8,7 @@ from business.entities.player import Player
 from business.world.game_world import GameWorld
 from business.world.monster_spawner import MonsterSpawner
 from business.world.tile_map import TileMap
+from business.handlers.clock import Clock
 from game import Game
 from presentation.display import Display
 from presentation.input_handler import InputHandler
@@ -39,11 +40,12 @@ def main():
     # Initialize the game objects
     display = Display()
     world = initialize_game_world()
+    clock = Clock()
     display.load_world(world)
     input_handler = InputHandler(world)
 
     # Create a game instance and start it
-    game = Game(display, world, input_handler)
+    game = Game(display, world, input_handler, clock)
     game.run()
 
     # Properly quit Pygame

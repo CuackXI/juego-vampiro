@@ -20,6 +20,7 @@ class Game:
     """
 
     def __init__(self, display: IDisplay, game_world: IGameWorld, input_handler: IInputHandler):
+        self.__game_clock = 0
         self.__logger = logging.getLogger(self.__class__.__name__)
         self.__clock = pygame.time.Clock()
         self.__display = display
@@ -27,6 +28,11 @@ class Game:
         self.__input_handler = input_handler
         self.__running = True
         self.__paused = False
+        self.__dead = False
+
+    @property
+    def game_clock(self):
+        return self.__game_clock
 
     @property
     def paused(self):
@@ -56,18 +62,22 @@ class Game:
             try:
                 self.__process_game_events()
 
-                if self.__input_handler.is_pause_pressed():
+                if self.__input_handler.is_pause_pressed() and not self.__dead:
                     self.__paused = self.__input_handler.process_pause(self)
 
-                if self.__paused or self.__world.in_upgrade:
+                if self.__paused or self.__world.in_upgrade or self.__dead:
                     pass
                 else:
                     self.__input_handler.process_input()
                     self.__world.update()
                     CollisionHandler.handle_collisions(self.__world)
                     DeathHandler.check_deaths(self.__world)
+                    self.__game_clock += 1000 / settings.FPS
 
-                self.__display.render_frame(self.__paused, self.__world.in_upgrade, self)
+                self.__display.render_frame(
+                    self.__paused, self.__world.in_upgrade, self.__dead,
+                    self
+                )
                 self.__clock.tick(settings.FPS)
             except DeadPlayerException:
-                self.__running = False
+                self.__dead = True

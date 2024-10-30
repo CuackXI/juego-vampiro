@@ -23,8 +23,16 @@ class Display(IDisplay):
         # Initialize the camera
         self.camera = Camera()
 
+        self.__perks_for_display = []
+
         self.__ground_tileset = self.__load_ground_tileset()
         self.__world: GameWorld = None
+
+    def __get_perks(self):
+        if len(self.__perks_for_display) == 0:
+            self.__perks_for_display = self.__world.get_perks_for_display()
+        
+        return self.__perks_for_display
 
     def __load_ground_tileset(self):
         return Tileset(
@@ -169,12 +177,11 @@ class Display(IDisplay):
                     pygame.quit()
                     return
 
-    def __draw_clock(self):
-        elapsed_time_ms = pygame.time.get_ticks()
-
-        total_seconds = elapsed_time_ms // 1000
-        minutes = total_seconds // 60
-        seconds = total_seconds % 60
+    def __draw_clock(self, game):
+        clock = game.game_clock
+        total_seconds = clock // 1000
+        minutes = int(total_seconds // 60)
+        seconds = int(total_seconds % 60)
 
         if minutes < 10:
             minutes = "0" + str(minutes)
@@ -199,11 +206,7 @@ class Display(IDisplay):
 
         self.__screen.blit(time_text, (box_x + 10, box_y + 5))
 
-    def __show_upgrade_menu(self):
-        """ACA IRIA EL MENU DE UPGRADES IMPLEMENTADO, ESTO ES CUALQUIER COSA"""
-
-        upgrade = self.__world.current_upgrade
-
+    def __draw_game_over_screen(self, game):
         x = self.__world.player.pos_x
         y = self.__world.player.pos_y
 
@@ -211,31 +214,70 @@ class Display(IDisplay):
         y = max(0, min(y, settings.WORLD_HEIGHT - settings.SCREEN_HEIGHT))
 
         opacity_square = pygame.Surface((settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT), pygame.SRCALPHA)
-        opacity_square.fill((0, 0, 0, 30))
+        opacity_square.fill((0, 0, 0, 120))
 
         self.__screen.blit(opacity_square, (0, 0))
 
+        game_over_font = pygame.font.Font(None, 72)
         font = pygame.font.Font(None, 36)
-        upgrade_text = font.render(str(upgrade), True, (255, 255, 255))
 
-        continue_button = pygame.Rect(150, 150, 200, 50)
-        continue_text = font.render("Upgrade!", True, (255, 255, 255))
-        continue_button.x = (settings.SCREEN_WIDTH - continue_button.x) // 2 - 200
-        continue_button.y = (settings.SCREEN_HEIGHT // 2) + 200
+        game_over_text = game_over_font.render("Game over!", True, (255, 150, 150))
 
-        self.__screen.blit(upgrade_text, (100, 100))
+        self.__screen.blit(game_over_text, ((settings.SCREEN_WIDTH // 2) - 150, (settings.SCREEN_HEIGHT // 2) - 10))
 
-        pygame.draw.rect(self.__screen, (0, 0, 0), continue_button)
+        quit_button = pygame.Rect(150, 250, 200, 50)
+        quit_text = font.render("Quit", True, (255, 255, 255))
 
-        self.__screen.blit(continue_text, (continue_button.x + 40, continue_button.y + 10))
+        quit_button.x = (settings.SCREEN_WIDTH // 2) - (quit_button.width // 2)
+        quit_button.y = (settings.SCREEN_HEIGHT // 2) + 200
+
+        pygame.draw.rect(self.__screen, (0, 0, 0), quit_button)
+
+        self.__screen.blit(quit_text, (quit_button.x + 70, quit_button.y + 10))
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if quit_button.collidepoint(event.pos):
+                    # save_game()
+                    game.close_game_loop()
+                    pygame.quit()
+                    return
+
+    def __draw_upgrade_menu(self):
+        perks = self.__get_perks()
+
+        opacity_square = pygame.Surface((settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT), pygame.SRCALPHA)
+        opacity_square.fill((0, 0, 0, 30))
+        self.__screen.blit(opacity_square, (0, 0))
+
+        upgrade_buttons = []
+
+        font = pygame.font.Font(None, 36)
+
+        for i in range(len(perks)):
+            upgrade_button = pygame.Rect(0, 0, settings.SCREEN_WIDTH - 100, settings.SCREEN_HEIGHT // 20)
+            upgrade_button.x = 50
+            upgrade_button.y = 100 + (i * 200)
+
+            upgrade_buttons.append(upgrade_button)
+
+            upgrade_text = font.render(str(perks[i]), True, (255, 255, 255))
+            pygame.draw.rect(self.__screen, (0, 0, 0), upgrade_button)
+            self.__screen.blit(upgrade_text, (upgrade_button.x + 40, upgrade_button.y + 10))
 
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if continue_button.collidepoint(event.pos):
-                    self.__world.in_upgrade = False
-                    return
+                for i in range(len(upgrade_buttons)):
+                    if upgrade_buttons[i].collidepoint(event.pos):
+                        self.__world.in_upgrade = False
+                        self.__world.give_perk_to_player(perks[i])
+                        self.__perks_for_display.clear()
+                        return
 
-    def render_frame(self, paused = None, in_upgrade = None, game = None):
+    def render_frame(self, paused = None, in_upgrade = None, dead = None, game = None):
         self.camera.update(self.__world.player.sprite.rect)
 
         # Render the ground tiles
@@ -264,13 +306,17 @@ class Display(IDisplay):
         # Draw the player
         self.__draw_player()
 
-        self.__draw_clock()
+        self.__draw_clock(game)
+
+
+        if in_upgrade:
+            self.__draw_upgrade_menu()
+
+        if dead:
+            self.__draw_game_over_screen(game)
 
         if paused:
             self.__draw_pause_menu(game)
-
-        if in_upgrade:
-            self.__show_upgrade_menu()
 
         # Update the display
         pygame.display.flip()

@@ -56,6 +56,12 @@ class NormalBulletFactory(IBulletFactory, IPerk):
     def health(self):
         return NormalBulletFactory.BASE_LEVEL_STATS[self.__level]['HEALTH']
 
+    def __str__(self) -> str:
+        if self in self.__player.inventory:
+            return f'ARMA COMUN -> NIVEL {self.__level + 1}'
+        
+        return "DESBLOQUEAR ARMA COMUN"
+
     def __shoot_at_nearest_enemy(self, world: IGameWorld):
         if not world.monsters:
             return  # No monsters to shoot at
@@ -127,6 +133,12 @@ class TurretBulletFactory(IBulletFactory, IPerk, IUpdatable):
     @property
     def health(self):
         return TurretBulletFactory.BASE_LEVEL_STATS[self.__level]['HEALTH']
+
+    def __str__(self) -> str:
+        if self in self.__player.inventory:
+            return f'TORRETA -> NIVEL {self.__level + 1}'
+        
+        return 'DESBLOQUEAR TORRETA'
 
     def __shoot_at_nearest_enemy(self, world: IGameWorld):
         if not world.monsters:
