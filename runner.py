@@ -4,7 +4,7 @@ import logging
 import pygame
 
 import settings
-import business.entities.player as player
+from business.entities.player import Player
 from business.world.game_world import GameWorld
 from business.world.monster_spawner import MonsterSpawner
 from business.world.tile_map import TileMap
@@ -13,11 +13,10 @@ from presentation.display import Display
 from presentation.input_handler import InputHandler
 from presentation.sprite import PlayerSprite
 
-
 def initialize_player():
     """Initializes the player object"""
     x, y = settings.SCREEN_WIDTH / 2, settings.SCREEN_HEIGHT / 2
-    return player.Player(x, y, PlayerSprite(x, y))
+    return Player(x, y, PlayerSprite(x, y))
 
 def initialize_game_world(display):
     """Initializes the game world"""
