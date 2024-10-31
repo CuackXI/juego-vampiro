@@ -42,7 +42,6 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
         self.__max_health = Player.BASE_HEALTH
         self.__health = self.__max_health
         self.__health_regen = Player.BASE_HEALTH_REGEN
-        self.__health_regen_cooldown = CooldownHandler(Player.BASE_HEALTH_REGEN_COOLDWON)
         self.__cooldown_multiplier = Player.BASE_COOLDOWN_MULTIPLIER
         self.__pick_range = Player.BASE_PICK_RANGE
 
@@ -51,6 +50,10 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
 
     def __str__(self):
         return f"Player(hp={self.__health}, xp={self.__experience}, lvl={self.__level}, pos=({self._pos_x}, {self._pos_y}))"
+
+    def load_game(self, game):
+        self.__game = game
+        self.__health_regen_cooldown = CooldownHandler(Player.BASE_HEALTH_REGEN_COOLDWON, self.__game)
 
     @property
     def experience(self):

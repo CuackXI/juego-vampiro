@@ -18,11 +18,12 @@ class NormalBulletFactory(IBulletFactory, IPerk):
         }
     }
 
-    def __init__(self, player: IPlayer):
+    def __init__(self, player: IPlayer, game):
         self.__level = 1
         self.__player = player
+        self.__game = game
 
-        self.__cooldown_handler = CH.CooldownHandler(self.cooldown)
+        self.__cooldown_handler = CH.CooldownHandler(self.cooldown, self.__game)
 
     def create_bullet(self, world: IGameWorld):
         self.__shoot_at_nearest_enemy(world)
@@ -96,11 +97,12 @@ class TurretBulletFactory(IBulletFactory, IPerk, IUpdatable):
         }
     }
 
-    def __init__(self, player: IPlayer):
+    def __init__(self, player: IPlayer, game):
         self.__level = 1
         self.__player = player
+        self.__game = game
 
-        self.__cooldown_handler = CH.CooldownHandler(self.cooldown)
+        self.__cooldown_handler = CH.CooldownHandler(self.cooldown, self.__game)
 
     def create_bullet(self, world: IGameWorld):
         self.__shoot_at_nearest_enemy(world)

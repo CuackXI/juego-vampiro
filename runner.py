@@ -20,12 +20,12 @@ def initialize_player():
     x, y = settings.SCREEN_WIDTH / 2, settings.SCREEN_HEIGHT / 2
     return player.Player(x, y, PlayerSprite(x, y))
 
-def initialize_game_world():
+def initialize_game_world(display):
     """Initializes the game world"""
-    monster_spawner = MonsterSpawner()
+    monster_spawner = MonsterSpawner(display)
     tile_map = TileMap()
     player = initialize_player()
-    return GameWorld(monster_spawner, tile_map, player)
+    return GameWorld(monster_spawner, tile_map, player, display)
 
 def main():
     """Main function to run the game"""
@@ -39,14 +39,18 @@ def main():
     )
 
     # Initialize the game objects
-    world = initialize_game_world()
-    clock = Clock()
     display = Display()
+    world = initialize_game_world(display)
+    clock = Clock()
     display.load_world(world)
     input_handler = InputHandler(world)
 
     # Create a game instance and start it
-    game = Game(display, world, input_handler, clock)
+    game = Game(world, input_handler, clock)
+
+    world.load_game(game)
+    world.monster_spawner.load_world(world)
+    world.player.load_game(game)
 
     game.run()
 

@@ -7,33 +7,34 @@ from business.entities.perks import *
 from business.entities.bullet_factory import *
 from business.handlers.boundaries_handler import BoundariesHandler
 from business.exceptions import * 
+from presentation.interfaces import IDisplay
 
 class GameWorld(IGameWorld):
     """Represents the game world."""
 
-    def __init__(self, spawner: IMonsterSpawner, tile_map: ITileMap, player: IPlayer):
+    def __init__(self, spawner: IMonsterSpawner, tile_map: ITileMap, player: IPlayer, display: IDisplay):
         # Initialize the player and lists for monsters, bullets and gems
         self.__player: IPlayer = player
         self.__monsters: list[IMonster] = []
         self.__bullets: list[IBullet] = []
         self.__experience_gems: list[IExperienceGem] = []
         self.in_upgrade = False
+        self.__game = None
         self.__current_upgrade_type = None
+        self.display = display
 
         self.__perks: list[IPerk] = []
-
-        self.__initialize_perks()
 
         # Initialize the tile map
         self.tile_map: ITileMap = tile_map
 
         # Initialize the monster spawner
-        self.__monster_spawner: IMonsterSpawner = spawner
+        self.monster_spawner: IMonsterSpawner = spawner
 
     def __initialize_perks(self):
-        initial_perk = NormalBulletFactory(self.__player)
+        initial_perk = NormalBulletFactory(self.__player, self.__game)
 
-        self.PERKS_U = [initial_perk, TurretBulletFactory(self.__player)]
+        self.PERKS_U = [initial_perk, TurretBulletFactory(self.__player, self.__game)]
         self.PERKS_S = [RegenerationPerk(self.__player), MaxHealthPerk(self.__player), DamageMultiplierPerk(self.__player)]
 
         for perk in self.PERKS_S:
@@ -42,6 +43,10 @@ class GameWorld(IGameWorld):
             self.__perks.append(perk)
 
         self.__player.handle_perk(initial_perk)
+
+    def load_game(self, game):
+        self.__game = game
+        self.__initialize_perks()
 
     def get_perks_for_display(self):
         amount = 3
@@ -63,7 +68,7 @@ class GameWorld(IGameWorld):
     def update(self):
         self.player.update(self)
 
-        self.__monster_spawner.update(self)
+        self.monster_spawner.update(self)
 
         for bullet in self.bullets:
             bullet.update(self)
@@ -97,6 +102,10 @@ class GameWorld(IGameWorld):
 
     def remove_bullet(self, bullet: IBullet):
         self.__bullets.remove(bullet)
+
+    @property
+    def game(self):
+        return self.__game
 
     @property
     def current_upgrade(self):

@@ -18,13 +18,14 @@ class Monster(MovableEntity, IMonster):
     BASE_ATTACK_RANGE = 50
     BASE_ATTACK_COOLDOWN = 1000
 
-    def __init__(self, src_x: int, src_y: int, sprite: Sprite):
+    def __init__(self, src_x: int, src_y: int, sprite: Sprite, game):
         super().__init__(src_x, src_y, 2, sprite)
         self.__max_healt = Monster.BASE_HEALTH
         self.__health: int = self.__max_healt
         self.__damage = Monster.BASE_DAMAGE
         self.__attack_range = Monster.BASE_ATTACK_RANGE
-        self.__attack_cooldown = CH.CooldownHandler(Monster.BASE_ATTACK_COOLDOWN)
+        self.__game = game
+        self.__attack_cooldown = CH.CooldownHandler(Monster.BASE_ATTACK_COOLDOWN, self.__game)
         # self._logger.debug("Created %s", self)
 
     def attack(self, target: IDamageable):

@@ -4,7 +4,6 @@ from abc import ABC, abstractmethod
 
 from business.entities.interfaces import IBullet, IExperienceGem, IMonster, IPlayer
 
-
 class IGameWorld(ABC):
     """Interface for the game world.
 
@@ -62,6 +61,15 @@ class IGameWorld(ABC):
     @abstractmethod
     def update(self):
         """Updates the state of the world and all updatable entities within it."""
+
+    @property
+    @abstractmethod
+    def game(self):
+        """Return the game instance.
+
+        Returns:
+            Game: The game.
+        """
 
     @property
     @abstractmethod
@@ -124,6 +132,14 @@ class IMonsterSpawner(IUpdatable):
 
         Args:
             world (IGameWorld): The game world in which to spawn the monster.
+        """
+
+    @abstractmethod
+    def load_world(self, world: IGameWorld):
+        """It loads the world from within the runner file.
+
+        Args:
+            world (IGameWorld): The world.
         """
 
 
