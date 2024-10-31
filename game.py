@@ -10,7 +10,7 @@ from business.handlers.colission_handler import CollisionHandler
 from business.handlers.death_handler import DeathHandler
 from business.world.interfaces import IGameWorld
 from presentation.interfaces import IInputHandler
-from business.handlers.clock import clock
+from business.handlers.clock import GameClockSingleton
 
 class Game:
     """
@@ -71,7 +71,7 @@ class Game:
                     self.__world.update()
                     CollisionHandler.handle_collisions(self.__world)
                     DeathHandler.check_deaths(self.__world)
-                    clock.update()
+                    GameClockSingleton().update()
 
                 self.__world.display.render_frame(self.__paused, self.__world.in_upgrade, self.__dead, self)
                 self.__clock.tick(settings.FPS)

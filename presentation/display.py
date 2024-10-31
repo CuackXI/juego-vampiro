@@ -7,7 +7,7 @@ from business.world.game_world import GameWorld
 from presentation.camera import Camera
 from presentation.interfaces import IDisplay
 from presentation.tileset import Tileset
-from business.handlers.clock import clock as global_clock
+from business.handlers.clock import GameClockSingleton
 import random
 from game import Game
 
@@ -179,7 +179,7 @@ class Display(IDisplay):
                     return
 
     def __draw_clock(self):
-        clock = global_clock
+        clock = GameClockSingleton()
         total_seconds = clock.game_clock // 1000
         minutes = int(total_seconds // 60)
         seconds = int(total_seconds % 60)
