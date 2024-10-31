@@ -19,7 +19,7 @@ class Game:
     This is the game entrypoint.
     """
 
-    def __init__(self, display: IDisplay, game_world: IGameWorld, input_handler: IInputHandler):
+    def __init__(self, display: IDisplay, game_world: IGameWorld, input_handler: IInputHandler, clock = None):
         self.__game_clock = 0
         self.__logger = logging.getLogger(self.__class__.__name__)
         self.__clock = pygame.time.Clock()
@@ -74,10 +74,7 @@ class Game:
                     DeathHandler.check_deaths(self.__world)
                     self.__game_clock += 1000 / settings.FPS
 
-                self.__display.render_frame(
-                    self.__paused, self.__world.in_upgrade, self.__dead,
-                    self
-                )
+                self.__display.render_frame(self.__paused, self.__world.in_upgrade, self.__dead, self)
                 self.__clock.tick(settings.FPS)
             except DeadPlayerException:
                 self.__dead = True

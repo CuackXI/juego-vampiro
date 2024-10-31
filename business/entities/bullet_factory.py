@@ -1,6 +1,6 @@
 from business.entities.interfaces import IBulletFactory, IPerk, IPlayer, IUpdatable
 from business.entities.bullet import *
-from business.handlers.cooldown_handler import CooldownHandler
+import business.handlers.cooldown_handler as CH
 
 class NormalBulletFactory(IBulletFactory, IPerk):
     BASE_LEVEL_STATS = {
@@ -22,7 +22,7 @@ class NormalBulletFactory(IBulletFactory, IPerk):
         self.__level = 1
         self.__player = player
 
-        self.__cooldown_handler = CooldownHandler(self.cooldown)
+        self.__cooldown_handler = CH.CooldownHandler(self.cooldown)
 
     def create_bullet(self, world: IGameWorld):
         self.__shoot_at_nearest_enemy(world)
@@ -100,7 +100,7 @@ class TurretBulletFactory(IBulletFactory, IPerk, IUpdatable):
         self.__level = 1
         self.__player = player
 
-        self.__cooldown_handler = CooldownHandler(self.cooldown)
+        self.__cooldown_handler = CH.CooldownHandler(self.cooldown)
 
     def create_bullet(self, world: IGameWorld):
         self.__shoot_at_nearest_enemy(world)

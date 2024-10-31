@@ -257,14 +257,25 @@ class Display(IDisplay):
 
         font = pygame.font.Font(None, 36)
 
-        for i in range(len(perks)):
+        if len(perks) != 0:
+            for i in range(len(perks)):
+                upgrade_button = pygame.Rect(0, 0, settings.SCREEN_WIDTH - 100, settings.SCREEN_HEIGHT // 20)
+                upgrade_button.x = 50
+                upgrade_button.y = 100 + (i * 200)
+
+                upgrade_buttons.append(upgrade_button)
+
+                upgrade_text = font.render(str(perks[i]), True, (255, 255, 255))
+                pygame.draw.rect(self.__screen, (0, 0, 0), upgrade_button)
+                self.__screen.blit(upgrade_text, (upgrade_button.x + 40, upgrade_button.y + 10))
+        else:
             upgrade_button = pygame.Rect(0, 0, settings.SCREEN_WIDTH - 100, settings.SCREEN_HEIGHT // 20)
             upgrade_button.x = 50
-            upgrade_button.y = 100 + (i * 200)
+            upgrade_button.y = 700
 
             upgrade_buttons.append(upgrade_button)
 
-            upgrade_text = font.render(str(perks[i]), True, (255, 255, 255))
+            upgrade_text = font.render(("Sin mejoras disponibles"), True, (255, 255, 255))
             pygame.draw.rect(self.__screen, (0, 0, 0), upgrade_button)
             self.__screen.blit(upgrade_text, (upgrade_button.x + 40, upgrade_button.y + 10))
 
@@ -273,8 +284,9 @@ class Display(IDisplay):
                 for i in range(len(upgrade_buttons)):
                     if upgrade_buttons[i].collidepoint(event.pos):
                         self.__world.in_upgrade = False
-                        self.__world.give_perk_to_player(perks[i])
-                        self.__perks_for_display.clear()
+                        if len(perks) != 0:
+                            self.__world.give_perk_to_player(perks[i])
+                            self.__perks_for_display.clear()
                         return
 
     def render_frame(self, paused = None, in_upgrade = None, dead = None, game = None):

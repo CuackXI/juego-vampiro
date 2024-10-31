@@ -132,8 +132,7 @@ class IPerk():
         Returns:
             str: The type.
         """
-
-    @property
+        
     @abstractmethod
     def upgrade_amount(self) -> int | float:
         """The amount by which it upgrades a player stat.

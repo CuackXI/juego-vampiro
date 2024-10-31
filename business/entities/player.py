@@ -2,14 +2,15 @@
 
 import pygame
 
-from business.entities.bullet import Bullet
 from business.entities.entity import MovableEntity
 from business.entities.experience_gem import ExperienceGem
 from business.entities.interfaces import ICanDealDamage, IDamageable, IPlayer
-from business.entities.bullet_factory import *
+import business.entities.bullet_factory as bf
+from business.handlers.cooldown_handler import CooldownHandler
 from business.entities.perks import *
 from business.world.interfaces import IGameWorld
 from presentation.sprite import Sprite
+
 
 class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
     """Player entity.
@@ -24,12 +25,12 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
     BASE_PICK_RANGE = 35.0
     BASE_SPEED = 5.0
     BASE_LEVELS_EXP = {
-        2: 5,
-        3: 5,
-        4: 10,
-        5: 10,
-        6: 15,
-        7: 20
+        2: 1,
+        3: 1,
+        4: 1,
+        5: 1,
+        6: 1,
+        7: 1
     }
 
     def __init__(self, pos_x: int, pos_y: int, sprite: Sprite):
@@ -79,7 +80,7 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
     def damage_multiplier(self):
         for perk in self.__static_inventory:
             if isinstance(perk, DamageMultiplierPerk):
-                return self.__damage_multiplier + perk.upgrade_amount 
+                return self.__damage_multiplier + perk.upgrade_amount() 
 
         return self.__damage_multiplier
 
@@ -145,7 +146,7 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
             world.activate_upgrade()
 
     def handle_perk(self, perk):
-        if isinstance(perk, IBulletFactory):
+        if isinstance(perk, bf.IBulletFactory):
             if perk not in self.__updatable_inventory:
                 self.__updatable_inventory.append(perk)
             else:

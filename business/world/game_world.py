@@ -5,6 +5,8 @@ from business.entities.interfaces import IBullet, IExperienceGem, IMonster, IPla
 from business.world.interfaces import IGameWorld, IMonsterSpawner, ITileMap
 from business.entities.perks import *
 from business.entities.bullet_factory import *
+from business.handlers.boundaries_handler import BoundariesHandler
+from business.exceptions import * 
 
 class GameWorld(IGameWorld):
     """Represents the game world."""
@@ -42,22 +44,15 @@ class GameWorld(IGameWorld):
         self.__player.handle_perk(initial_perk)
 
     def get_perks_for_display(self):
-        usable_perks = self.__perks
+        amount = 3
 
-        for perk in self.__perks:
-            if not perk.upgradable:
-                usable_perks.remove(perk)
+        usable_perks = [perk for perk in self.__perks if perk.upgradable]
 
-        random_perks = []
-
-        length = len(usable_perks)
-        if len(usable_perks) > 3:
-            length = 3
-
-        for _ in range(length):
-            random_perk = random.choice(usable_perks)
-            random_perks.append(random_perk)
-            usable_perks.remove(random_perk)
+        for i in range(amount + 1):
+            try:
+                random_perks = random.sample(usable_perks, i)
+            except:
+                break
 
         return random_perks
 
@@ -83,7 +78,10 @@ class GameWorld(IGameWorld):
         self.in_upgrade = True
 
     def add_monster(self, monster: IMonster):
-        self.__monsters.append(monster)
+        if BoundariesHandler.is_entity_within_world_boundaries(monster):
+            self.__monsters.append(monster)
+        else:
+            raise EntityOutOfBounds
 
     def remove_monster(self, monster: IMonster):
         self.__monsters.remove(monster)
