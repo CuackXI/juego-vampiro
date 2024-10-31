@@ -134,14 +134,6 @@ class IMonsterSpawner(IUpdatable):
             world (IGameWorld): The game world in which to spawn the monster.
         """
 
-    @abstractmethod
-    def load_world(self, world: IGameWorld):
-        """It loads the world from within the runner file.
-
-        Args:
-            world (IGameWorld): The world.
-        """
-
 
 class ITileMap(ABC):
     """Interface for a tile map.

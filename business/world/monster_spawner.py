@@ -21,10 +21,7 @@ class MonsterSpawner(IMonsterSpawner):
     def __init__(self, display: IDisplay):
         self.__logger = logging.getLogger(__name__)
         self.__display = display
-
-    def load_world(self, world):
-        self.__world = world
-        self.__spawn_cooldown = CH.CooldownHandler(MonsterSpawner.BASE_DELAY, self.__world.game)
+        self.__spawn_cooldown = CH.CooldownHandler(MonsterSpawner.BASE_DELAY)
 
     def update(self, world: IGameWorld):
         if self.__spawn_cooldown.is_action_ready() and len(world.monsters) <= 20:
@@ -61,7 +58,7 @@ class MonsterSpawner(IMonsterSpawner):
                     pos_x = camera_right
                     pos_y = random.randint(camera_top, camera_bottom)
 
-                monster = Monster(pos_x, pos_y, MonsterSprite(pos_x, pos_y), self.__world.game)
+                monster = Monster(pos_x, pos_y, MonsterSprite(pos_x, pos_y))
                 world.add_monster(monster)
 
                 break  # Monster added, break the loop

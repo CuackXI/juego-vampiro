@@ -4,7 +4,7 @@ from typing import List
 
 from business.entities.entity import MovableEntity
 from business.entities.interfaces import IDamageable, IHasPosition, IHasSprite, IMonster
-import business.handlers.cooldown_handler as CH
+from business.handlers.cooldown_handler import CooldownHandler
 from business.world.interfaces import IGameWorld
 from presentation.sprite import Sprite
 import math
@@ -18,14 +18,13 @@ class Monster(MovableEntity, IMonster):
     BASE_ATTACK_RANGE = 50
     BASE_ATTACK_COOLDOWN = 1000
 
-    def __init__(self, src_x: int, src_y: int, sprite: Sprite, game):
+    def __init__(self, src_x: int, src_y: int, sprite: Sprite):
         super().__init__(src_x, src_y, 2, sprite)
         self.__max_healt = Monster.BASE_HEALTH
         self.__health: int = self.__max_healt
         self.__damage = Monster.BASE_DAMAGE
         self.__attack_range = Monster.BASE_ATTACK_RANGE
-        self.__game = game
-        self.__attack_cooldown = CH.CooldownHandler(Monster.BASE_ATTACK_COOLDOWN, self.__game)
+        self.__attack_cooldown = CooldownHandler(Monster.BASE_ATTACK_COOLDOWN)
         # self._logger.debug("Created %s", self)
 
     def attack(self, target: IDamageable):

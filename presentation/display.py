@@ -7,6 +7,7 @@ from business.world.game_world import GameWorld
 from presentation.camera import Camera
 from presentation.interfaces import IDisplay
 from presentation.tileset import Tileset
+from business.handlers.clock import clock as global_clock
 import random
 from game import Game
 
@@ -177,9 +178,9 @@ class Display(IDisplay):
                     pygame.quit()
                     return
 
-    def __draw_clock(self, game):
-        clock = game.game_clock
-        total_seconds = clock // 1000
+    def __draw_clock(self):
+        clock = global_clock
+        total_seconds = clock.game_clock // 1000
         minutes = int(total_seconds // 60)
         seconds = int(total_seconds % 60)
 
@@ -287,7 +288,9 @@ class Display(IDisplay):
                         if len(perks) != 0:
                             self.__world.give_perk_to_player(perks[i])
                             self.__perks_for_display.clear()
-                        return
+                        return      
+            elif event.type == pygame.QUIT:
+                pygame.quit()
 
     def render_frame(self, paused = None, in_upgrade = None, dead = None, game = None):
         self.camera.update(self.__world.player.sprite.rect)
@@ -318,8 +321,7 @@ class Display(IDisplay):
         # Draw the player
         self.__draw_player()
 
-        self.__draw_clock(game)
-
+        self.__draw_clock()
 
         if in_upgrade:
             self.__draw_upgrade_menu()

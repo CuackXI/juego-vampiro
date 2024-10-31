@@ -9,8 +9,8 @@ from business.exceptions import DeadPlayerException
 from business.handlers.colission_handler import CollisionHandler
 from business.handlers.death_handler import DeathHandler
 from business.world.interfaces import IGameWorld
-from presentation.interfaces import IDisplay, IInputHandler
-
+from presentation.interfaces import IInputHandler
+from business.handlers.clock import clock
 
 class Game:
     """
@@ -19,7 +19,7 @@ class Game:
     This is the game entrypoint.
     """
 
-    def __init__(self, game_world: IGameWorld, input_handler: IInputHandler, clock = None):
+    def __init__(self, game_world: IGameWorld, input_handler: IInputHandler):
         self.__game_clock = 0
         self.__logger = logging.getLogger(self.__class__.__name__)
         self.__clock = pygame.time.Clock()
@@ -44,7 +44,7 @@ class Game:
     def close_game_loop(self):
         self.__running = False
 
-    def __process_game_events(self):
+    def process_game_events(self):
         for event in pygame.event.get():
             # pygame.QUIT event means the user clicked X to close your window
             if event.type == pygame.QUIT:  # pylint: disable=E1101
@@ -59,7 +59,7 @@ class Game:
         self.__logger.debug("Starting the game loop.")
         while self.__running:
             try:
-                self.__process_game_events()
+                self.process_game_events()
 
                 if self.__input_handler.is_pause_pressed() and not self.__dead:
                     self.__paused = self.__input_handler.process_pause(self)
@@ -71,7 +71,7 @@ class Game:
                     self.__world.update()
                     CollisionHandler.handle_collisions(self.__world)
                     DeathHandler.check_deaths(self.__world)
-                    self.__game_clock += 1000 / settings.FPS
+                    clock.update()
 
                 self.__world.display.render_frame(self.__paused, self.__world.in_upgrade, self.__dead, self)
                 self.__clock.tick(settings.FPS)

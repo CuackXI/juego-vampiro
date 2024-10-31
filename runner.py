@@ -8,7 +8,6 @@ import business.entities.player as player
 from business.world.game_world import GameWorld
 from business.world.monster_spawner import MonsterSpawner
 from business.world.tile_map import TileMap
-from business.handlers.clock import Clock
 from game import Game
 from presentation.display import Display
 from presentation.input_handler import InputHandler
@@ -41,16 +40,11 @@ def main():
     # Initialize the game objects
     display = Display()
     world = initialize_game_world(display)
-    clock = Clock()
     display.load_world(world)
     input_handler = InputHandler(world)
 
     # Create a game instance and start it
-    game = Game(world, input_handler, clock)
-
-    world.load_game(game)
-    world.monster_spawner.load_world(world)
-    world.player.load_game(game)
+    game = Game(world, input_handler)
 
     game.run()
 

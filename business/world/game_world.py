@@ -24,6 +24,7 @@ class GameWorld(IGameWorld):
         self.display = display
 
         self.__perks: list[IPerk] = []
+        self.__initialize_perks()
 
         # Initialize the tile map
         self.tile_map: ITileMap = tile_map
@@ -32,9 +33,9 @@ class GameWorld(IGameWorld):
         self.monster_spawner: IMonsterSpawner = spawner
 
     def __initialize_perks(self):
-        initial_perk = NormalBulletFactory(self.__player, self.__game)
+        initial_perk = NormalBulletFactory(self.__player)
 
-        self.PERKS_U = [initial_perk, TurretBulletFactory(self.__player, self.__game)]
+        self.PERKS_U = [initial_perk, TurretBulletFactory(self.__player)]
         self.PERKS_S = [RegenerationPerk(self.__player), MaxHealthPerk(self.__player), DamageMultiplierPerk(self.__player)]
 
         for perk in self.PERKS_S:
@@ -43,10 +44,6 @@ class GameWorld(IGameWorld):
             self.__perks.append(perk)
 
         self.__player.handle_perk(initial_perk)
-
-    def load_game(self, game):
-        self.__game = game
-        self.__initialize_perks()
 
     def get_perks_for_display(self):
         amount = 3
