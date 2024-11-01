@@ -173,7 +173,7 @@ class Display(IDisplay):
                     return
 
                 if quit_button.collidepoint(event.pos):
-                    # save_game()
+                    game.save_game()
                     game.close_game_loop()
                     pygame.quit()
                     return

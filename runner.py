@@ -15,8 +15,6 @@ from presentation.sprite import PlayerSprite
 from persistence.gamedao import GameJSONDAO
 from business.handlers.clock import GameClockSingleton
 
-partidadao = GameJSONDAO()
-
 def initialize_player(saved_data: dict | None):
     """Initializes the player object"""
     x, y = settings.SCREEN_WIDTH / 2, settings.SCREEN_HEIGHT / 2
@@ -42,6 +40,8 @@ def main():
 
     #TODO: Si el jugador muere, no guardar los datos :v. Ademas establecer un metodo de reset de partida, con la configuración inicial.
 
+    partidadao = GameJSONDAO()
+
     # Loads the saved game
     saved_data = partidadao.load_game()
     time = saved_data.get('clock')
@@ -53,12 +53,11 @@ def main():
     input_handler = InputHandler(world)
 
     # Create a game instance and start it
-    game = Game(world, input_handler)
+    game = Game(world, input_handler, partidadao)
 
     game.run()
 
     # Properly quit Pygame
-    partidadao.save_game(game)
     pygame.quit()
 
 if __name__ == "__main__":

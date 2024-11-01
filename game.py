@@ -19,7 +19,7 @@ class Game:
     This is the game entrypoint.
     """
 
-    def __init__(self, game_world: IGameWorld, input_handler: IInputHandler):
+    def __init__(self, game_world: IGameWorld, input_handler: IInputHandler, dao):
         self.__logger = logging.getLogger(self.__class__.__name__)
         self.__clock = pygame.time.Clock()
         self.__world = game_world
@@ -27,6 +27,7 @@ class Game:
         self.__running = True
         self.__paused = False
         self.__dead = False
+        self.__dao = dao
 
     @property
     def paused(self):
@@ -78,3 +79,4 @@ class Game:
                 self.__dead = True
             except:
                 pass
+        self.__dao.save_game()
