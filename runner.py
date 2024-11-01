@@ -42,10 +42,9 @@ def main():
 
     # Loads the saved game
     saved_data = partidadao.load_game()
+    time = saved_data.get('clock')
+    GameClockSingleton(time)
 
-    # Initialize the game objects
-    clock = saved_data.get('clock')
-    GameClockSingleton(clock)
     display = Display()
     world = initialize_game_world(display, saved_data)
     display.load_world(world)

@@ -34,15 +34,10 @@ class InputHandler(IInputHandler):
         elif keys[pygame.K_d]:
             d_x, d_y = 1, 0
 
-
         self.__world.player.move(d_x, d_y)
         
         if not BoundariesHandler.is_entity_within_world_boundaries(self.__world.player):
             self.__world.player.move(-d_x, -d_y)
-
-    def __get_pause(self, keys, game):
-        if keys[pygame.K_p]:
-            return not game.paused
             
     def is_pause_pressed(self):
         keys = pygame.key.get_pressed()

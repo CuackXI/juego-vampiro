@@ -60,7 +60,7 @@ class Game:
             try:
                 self.process_game_events()
 
-                if self.__input_handler.is_pause_pressed() and not self.__dead:
+                if not self.__world.in_upgrade and self.__input_handler.is_pause_pressed() and not self.__dead:
                     self.__paused = self.__input_handler.process_pause(self)
 
                 if self.__paused or self.__world.in_upgrade or self.__dead:
