@@ -5,6 +5,7 @@ from business.entities.interfaces import IBullet, IExperienceGem, IMonster, IPla
 from business.world.interfaces import IGameWorld, IMonsterSpawner, ITileMap
 from business.entities.perks import *
 from business.entities.bullet_factory import *
+from business.entities.monster import Monster
 from business.handlers.boundaries_handler import BoundariesHandler
 from business.exceptions import * 
 from presentation.interfaces import IDisplay
@@ -12,7 +13,7 @@ from presentation.interfaces import IDisplay
 class GameWorld(IGameWorld):
     """Represents the game world."""
 
-    def __init__(self, spawner: IMonsterSpawner, tile_map: ITileMap, player: IPlayer, display: IDisplay):
+    def __init__(self, spawner: IMonsterSpawner, tile_map: ITileMap, player: IPlayer, display: IDisplay, saved_data: dict | None = None):
         # Initialize the player and lists for monsters, bullets and gems
         self.__player: IPlayer = player
         self.__monsters: list[IMonster] = []
@@ -20,7 +21,6 @@ class GameWorld(IGameWorld):
         self.__experience_gems: list[IExperienceGem] = []
         self.in_upgrade = False
         self.__game = None
-        self.__current_upgrade_type = None
         self.display = display
 
         self.__perks: list[IPerk] = []
@@ -31,6 +31,12 @@ class GameWorld(IGameWorld):
 
         # Initialize the monster spawner
         self.monster_spawner: IMonsterSpawner = spawner
+
+        if saved_data:
+            self.__load_saved_data(saved_data)
+
+    def __load_saved_data(self, saved_data: dict):
+        self.monster_spawner.load_saved_data(self, saved_data.get('monsters'))
 
     def __initialize_perks(self):
         initial_perk = NormalBulletFactory(self.__player)
@@ -103,10 +109,6 @@ class GameWorld(IGameWorld):
     @property
     def game(self):
         return self.__game
-
-    @property
-    def current_upgrade(self):
-        return self.__current_upgrade_type
 
     @property
     def player(self) -> IPlayer:

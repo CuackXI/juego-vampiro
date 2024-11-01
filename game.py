@@ -20,7 +20,6 @@ class Game:
     """
 
     def __init__(self, game_world: IGameWorld, input_handler: IInputHandler):
-        self.__game_clock = 0
         self.__logger = logging.getLogger(self.__class__.__name__)
         self.__clock = pygame.time.Clock()
         self.__world = game_world
@@ -30,16 +29,16 @@ class Game:
         self.__dead = False
 
     @property
-    def game_clock(self):
-        return self.__game_clock
-
-    @property
     def paused(self):
         return self.__paused
 
     @property
     def elapsed_time(self):
         return pygame.time.get_ticks()
+    
+    @property
+    def world(self):
+        return self.__world
 
     def close_game_loop(self):
         self.__running = False
@@ -77,3 +76,5 @@ class Game:
                 self.__clock.tick(settings.FPS)
             except DeadPlayerException:
                 self.__dead = True
+            except:
+                pass

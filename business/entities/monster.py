@@ -18,14 +18,34 @@ class Monster(MovableEntity, IMonster):
     BASE_ATTACK_RANGE = 50
     BASE_ATTACK_COOLDOWN = 1000
 
-    def __init__(self, src_x: int, src_y: int, sprite: Sprite):
+    def __init__(self, src_x: int, src_y: int, sprite: Sprite, saved_data: dict | None = None):
         super().__init__(src_x, src_y, 2, sprite)
-        self.__max_healt = Monster.BASE_HEALTH
-        self.__health: int = self.__max_healt
+        self.__max_health = Monster.BASE_HEALTH
+        self.__health: int = self.__max_health
         self.__damage = Monster.BASE_DAMAGE
         self.__attack_range = Monster.BASE_ATTACK_RANGE
         self.__attack_cooldown = CooldownHandler(Monster.BASE_ATTACK_COOLDOWN)
+        if saved_data:
+            self.__load_saved_data(saved_data)
         # self._logger.debug("Created %s", self)
+
+    def __load_saved_data(self, saved_data: dict):
+        self._pos_x = saved_data['pos_x']
+        self._pos_y = saved_data['pos_y']
+        self.__max_health = saved_data['max_health']
+        self.__health = saved_data['health']
+        self.__damage = saved_data['damage']
+        self.__attack_range = saved_data['attack_range']
+
+    def to_json(self):
+        return {
+            'pos_x': self._pos_x,
+            'pos_y': self._pos_y,
+            'max_health': self.__max_health,
+            'health': self.__health,
+            'damage': self.__damage,
+            'attack_range': self.__attack_range
+        }
 
     def attack(self, target: IDamageable):
         """Attacks the target."""
@@ -42,7 +62,7 @@ class Monster(MovableEntity, IMonster):
 
     @property
     def max_health(self):
-        return self.__max_healt
+        return self.__max_health
 
     def __get_normalized_direction(self, entity: "IHasPosition"):
         x1, y1 = self.pos_x, self.pos_y

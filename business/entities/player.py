@@ -33,7 +33,7 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
         7: 1
     }
 
-    def __init__(self, pos_x: int, pos_y: int, sprite: Sprite):
+    def __init__(self, pos_x: int, pos_y: int, sprite: Sprite, saved_data: dict | None = None):
         super().__init__(pos_x, pos_y, Player.BASE_SPEED, sprite)
 
         self.__experience = 0
@@ -49,8 +49,27 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
         self.__static_inventory = []
         self.__updatable_inventory = []
 
+        if saved_data:
+            self.__load_saved_data(saved_data)
+
+    def __load_saved_data(self, saved_data: dict):
+        self._pos_x = saved_data['pos_x']
+        self._pos_y = saved_data['pos_y']
+        self.__experience = saved_data['experience']
+        self.__level = saved_data['level']
+        self.__health = saved_data['health']
+
     def __str__(self):
         return f"Player(hp={self.__health}, xp={self.__experience}, lvl={self.__level}, pos=({self._pos_x}, {self._pos_y}))"
+
+    def to_json(self):
+        return {
+            'pos_x': self._pos_x,
+            'pos_y': self._pos_y,
+            'experience': self.__experience,
+            'level': self.__level,
+            'health': self.__health
+        }
 
     @property
     def experience(self):

@@ -153,8 +153,8 @@ class TurretBulletFactory(IBulletFactory, IPerk, IUpdatable):
         )
 
         # Create a bullet towards the nearest monster
-        bullet = TurretBullet(world.player.pos_x, world.player.pos_y, monster.pos_x, monster.pos_y, 
-                              self.speed, self.damage, self.health)
+        bullet = TurretBullet(
+            world.player.pos_x, world.player.pos_y, monster.pos_x, monster.pos_y, self.speed, self.damage, self.health)
         
         world.add_bullet(bullet)
 

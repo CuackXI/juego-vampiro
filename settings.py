@@ -1,5 +1,5 @@
 # Display
-GAME_TITLE = "VA Game"
+GAME_TITLE = "Tuki Survivors"
 FPS = 60
 
 # Tile dimensions

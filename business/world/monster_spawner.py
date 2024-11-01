@@ -23,6 +23,17 @@ class MonsterSpawner(IMonsterSpawner):
         self.__display = display
         self.__spawn_cooldown = CH.CooldownHandler(MonsterSpawner.BASE_DELAY)
 
+    def load_saved_data(self, world: IGameWorld, saved_data: list):
+        """Loads the monsters from the saved game data.
+        
+        Args:
+            world (IGameWorld): The game world instance.
+            saved_data: The saved game data.
+        """
+        for monster_data in saved_data:
+            monster = Monster(0, 0, MonsterSprite(0, 0), monster_data)
+            world.add_monster(monster)
+
     def update(self, world: IGameWorld):
         if self.__spawn_cooldown.is_action_ready() and len(world.monsters) <= 20:
             self.spawn_monster(world)

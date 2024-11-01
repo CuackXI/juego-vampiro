@@ -12,18 +12,22 @@ from game import Game
 from presentation.display import Display
 from presentation.input_handler import InputHandler
 from presentation.sprite import PlayerSprite
+from persistence.gamedao import GameJSONDAO
+from business.handlers.clock import GameClockSingleton
 
-def initialize_player():
+partidadao = GameJSONDAO()
+
+def initialize_player(saved_data: dict | None):
     """Initializes the player object"""
     x, y = settings.SCREEN_WIDTH / 2, settings.SCREEN_HEIGHT / 2
-    return Player(x, y, PlayerSprite(x, y))
+    return Player(x, y, PlayerSprite(x, y), saved_data.get('player'))
 
-def initialize_game_world(display):
+def initialize_game_world(display, saved_data: dict | None):
     """Initializes the game world"""
     monster_spawner = MonsterSpawner(display)
     tile_map = TileMap()
-    player = initialize_player()
-    return GameWorld(monster_spawner, tile_map, player, display)
+    player = initialize_player(saved_data)
+    return GameWorld(monster_spawner, tile_map, player, display, saved_data)
 
 def main():
     """Main function to run the game"""
@@ -36,9 +40,14 @@ def main():
         format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     )
 
+    # Loads the saved game
+    saved_data = partidadao.load_game()
+
     # Initialize the game objects
+    clock = saved_data.get('clock')
+    GameClockSingleton(clock)
     display = Display()
-    world = initialize_game_world(display)
+    world = initialize_game_world(display, saved_data)
     display.load_world(world)
     input_handler = InputHandler(world)
 
@@ -48,6 +57,7 @@ def main():
     game.run()
 
     # Properly quit Pygame
+    partidadao.save_game(game)
     pygame.quit()
 
 if __name__ == "__main__":
