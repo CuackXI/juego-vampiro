@@ -40,6 +40,8 @@ def main():
         format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     )
 
+    #TODO: Si el jugador muere, no guardar los datos :v. Ademas establecer un metodo de reset de partida, con la configuración inicial.
+
     # Loads the saved game
     saved_data = partidadao.load_game()
     time = saved_data.get('clock')

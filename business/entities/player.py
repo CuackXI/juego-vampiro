@@ -115,7 +115,7 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
     def max_health(self) -> int:
         for perk in self.__static_inventory:
             if isinstance(perk, MaxHealthPerk):
-                return self.__max_health + perk.upgrade_amount
+                return self.__max_health + perk.upgrade_amount()
 
         return self.__max_health
 
@@ -127,7 +127,7 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
     def health_regen(self):
         for perk in self.__static_inventory:
             if isinstance(perk, RegenerationPerk):
-                return self.__health_regen + perk.upgrade_amount 
+                return self.__health_regen + perk.upgrade_amount()
         return self.__health_regen
 
     @property

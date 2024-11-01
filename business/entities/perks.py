@@ -14,9 +14,8 @@ class RegenerationPerk(IPerk):
         self.__level = 1
         self.__player = player
 
-    @property
-    def upgrade_amount(self):
-        return RegenerationPerk.BASE_LEVEL_STATS[self.__level]
+    def upgrade_amount(self, extra = 0):
+        return RegenerationPerk.BASE_LEVEL_STATS[self.__level + extra]
 
     @property
     def upgradable(self):
@@ -28,9 +27,9 @@ class RegenerationPerk(IPerk):
         
     def __str__(self):
         if self in self.__player.inventory:
-            return f'AUMENTO DE REGENERACIÓN: {self.upgrade_amount} -> NIVEL {self.__level + 1}'
+            return f'AUMENTO DE REGENERACIÓN: {self.upgrade_amount(extra = 1)} -> NIVEL {self.__level + 1}'
         
-        return f'AUMENTO DE REGENERACIÓN: {self.upgrade_amount}'
+        return f'AUMENTO DE REGENERACIÓN: {self.upgrade_amount()}'
 
 class MaxHealthPerk(IPerk):
     BASE_LEVEL_STATS = {
@@ -45,9 +44,8 @@ class MaxHealthPerk(IPerk):
         self.__level = 1
         self.__player = player
 
-    @property
-    def upgrade_amount(self):
-        return MaxHealthPerk.BASE_LEVEL_STATS[self.__level]
+    def upgrade_amount(self, extra = 0):
+        return MaxHealthPerk.BASE_LEVEL_STATS[self.__level + extra]
 
     @property
     def upgradable(self):
@@ -59,9 +57,9 @@ class MaxHealthPerk(IPerk):
 
     def __str__(self):
         if self in self.__player.inventory:
-            return f'AUMENTO DE VIDA MÁXIMA: {self.upgrade_amount} -> NIVEL {self.__level + 1}'
+            return f'AUMENTO DE VIDA MÁXIMA: {self.upgrade_amount(extra = 1)} -> NIVEL {self.__level + 1}'
         
-        return f'AUMENTO DE VIDA MÁXIMA: {self.upgrade_amount}'
+        return f'AUMENTO DE VIDA MÁXIMA: {self.upgrade_amount()}'
 
 class DamageMultiplierPerk(IPerk):
     BASE_LEVEL_STATS = { #All + 1 from player
