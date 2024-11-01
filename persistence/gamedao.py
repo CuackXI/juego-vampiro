@@ -44,3 +44,10 @@ class GameJSONDAO(IGameDAO):
     def load_game(self):
         data = self.__read_data()
         return data
+    
+    def clear_save(self):
+        data = self.__read_data()
+
+        data = {}
+
+        self.__save_data(data)

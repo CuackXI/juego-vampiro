@@ -12,3 +12,7 @@ class IGameDAO:
     def load_game(self) -> dict:
         """Loads the saved game.
         """
+
+    @abc.abstractmethod
+    def clear_save(self):
+        """Clears the current save file"""

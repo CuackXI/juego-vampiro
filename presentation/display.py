@@ -146,8 +146,8 @@ class Display(IDisplay):
         quit_button = pygame.Rect(150, 250, 200, 50)
 
         font = pygame.font.Font(None, 36)
-        continue_text = font.render("Continue", True, (255, 255, 255))
-        quit_text = font.render("Quit", True, (255, 255, 255))
+        continue_text = font.render("Continuar", True, (255, 255, 255))
+        quit_text = font.render("Salir y guardar", True, (255, 255, 255))
 
         self.__screen.blit(opacity_square, (0, 0))
 
@@ -161,7 +161,7 @@ class Display(IDisplay):
         pygame.draw.rect(self.__screen, (0, 0, 0), quit_button)
 
         self.__screen.blit(continue_text, (continue_button.x + 40, continue_button.y + 10))
-        self.__screen.blit(quit_text, (quit_button.x + 70, quit_button.y + 10))
+        self.__screen.blit(quit_text, (quit_button.x + 17, quit_button.y + 10))
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -173,8 +173,8 @@ class Display(IDisplay):
                     return
 
                 if quit_button.collidepoint(event.pos):
-                    game.save_game()
                     game.close_game_loop()
+                    game.save_game()
                     pygame.quit()
                     return
 
@@ -222,12 +222,12 @@ class Display(IDisplay):
         game_over_font = pygame.font.Font(None, 72)
         font = pygame.font.Font(None, 36)
 
-        game_over_text = game_over_font.render("Game over!", True, (255, 150, 150))
+        game_over_text = game_over_font.render("Juego terminado!", True, (255, 150, 150))
 
         self.__screen.blit(game_over_text, ((settings.SCREEN_WIDTH // 2) - 150, (settings.SCREEN_HEIGHT // 2) - 10))
 
         quit_button = pygame.Rect(150, 250, 200, 50)
-        quit_text = font.render("Quit", True, (255, 255, 255))
+        quit_text = font.render("Salir", True, (255, 255, 255))
 
         quit_button.x = (settings.SCREEN_WIDTH // 2) - (quit_button.width // 2)
         quit_button.y = (settings.SCREEN_HEIGHT // 2) + 200
@@ -242,7 +242,6 @@ class Display(IDisplay):
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if quit_button.collidepoint(event.pos):
-                    # save_game()
                     game.close_game_loop()
                     pygame.quit()
                     return

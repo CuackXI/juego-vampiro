@@ -51,6 +51,13 @@ class Game:
                 self.__logger.debug("QUIT event detected")
                 self.__running = False
 
+    def save_game(self):
+        if not self.__dead:
+            self.__dao.save_game(self)
+
+    def clear_save(self):
+        self.__dao.clear_save()
+
     def unpause_event(self):
         self.__paused = not self.__paused
 
@@ -79,4 +86,3 @@ class Game:
                 self.__dead = True
             except:
                 pass
-        self.__dao.save_game()
