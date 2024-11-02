@@ -24,6 +24,11 @@ class NormalBulletFactory(IBulletFactory, IPerk):
 
         self.__cooldown_handler = CH.CooldownHandler(self.cooldown)
 
+    def to_json(self):
+        return {
+            'level': self.__level
+        }
+
     def create_bullet(self, world: IGameWorld):
         self.__shoot_at_nearest_enemy(world)
     
@@ -33,7 +38,7 @@ class NormalBulletFactory(IBulletFactory, IPerk):
     
     @property
     def upgradable(self):
-        return self.__level != 2
+        return self.__level != max(NormalBulletFactory.BASE_LEVEL_STATS.keys())
 
     def update(self, world: IGameWorld):
         if self.__cooldown_handler.is_action_ready():
@@ -102,6 +107,11 @@ class TurretBulletFactory(IBulletFactory, IPerk, IUpdatable):
 
         self.__cooldown_handler = CH.CooldownHandler(self.cooldown)
 
+    def to_json(self):
+        return {
+            'level': self.__level
+        }
+    
     def create_bullet(self, world: IGameWorld):
         self.__shoot_at_nearest_enemy(world)
     
@@ -111,7 +121,7 @@ class TurretBulletFactory(IBulletFactory, IPerk, IUpdatable):
 
     @property
     def upgradable(self):
-        return self.__level != 2
+        return self.__level != max(TurretBulletFactory.BASE_LEVEL_STATS.keys())
 
     def update(self, world: IGameWorld):
         if self.__cooldown_handler.is_action_ready():
@@ -158,6 +168,83 @@ class TurretBulletFactory(IBulletFactory, IPerk, IUpdatable):
         
         world.add_bullet(bullet)
 
-class FollowingBulletFactory(IBulletFactory, IPerk):
+class FollowingBulletFactory(IBulletFactory, IPerk, IUpdatable):
     
-    pass #bala que persiga a un monstruo
+    BASE_LEVEL_STATS = {
+        1: {
+            'COOLDOWN': 2000,
+            'DAMAGE': 10,
+            'SPEED': 5,
+            'HEALTH': 2000
+        },
+        2: {
+            'COOLDOWN': 5000,
+            'DAMAGE': 10,
+            'SPEED': 5,
+            'HEALTH': 200
+        }
+    }
+
+    def __init__(self, player: IPlayer):
+        self.__level = 1
+        self.__player = player
+
+        self.__cooldown_handler = CH.CooldownHandler(self.cooldown)
+
+    def to_json(self):
+        return {
+            'level': self.__level
+        }
+
+    def create_bullet(self, world: IGameWorld):
+        self.__shoot_at_nearest_enemy(world)
+    
+    def upgrade(self):
+        if self.__level + 1 in FollowingBulletFactory.BASE_LEVEL_STATS.keys():
+            self.__level += 1
+
+    @property
+    def upgradable(self):
+        return self.__level != max(FollowingBulletFactory.BASE_LEVEL_STATS.keys())
+
+    def update(self, world: IGameWorld):
+        if self.__cooldown_handler.is_action_ready():
+            self.__cooldown_handler.put_on_cooldown()
+            self.create_bullet(world)
+
+    @property
+    def cooldown(self):
+        return FollowingBulletFactory.BASE_LEVEL_STATS[self.__level]['COOLDOWN']
+
+    @property
+    def damage(self):
+        return FollowingBulletFactory.BASE_LEVEL_STATS[self.__level]['DAMAGE'] * self.__player.damage_multiplier
+
+    @property
+    def speed(self):
+        return FollowingBulletFactory.BASE_LEVEL_STATS[self.__level]['SPEED']
+    
+    @property
+    def health(self):
+        return FollowingBulletFactory.BASE_LEVEL_STATS[self.__level]['HEALTH']
+
+    def __str__(self) -> str:
+        if self in self.__player.inventory:
+            return f'ARMA TELEDERIGIDA -> NIVEL {self.__level + 1}'
+        
+        return 'DESBLOQUEAR ARMA TELEDERIGIDA'
+
+    def __shoot_at_nearest_enemy(self, world: IGameWorld):
+        if not world.monsters:
+            return
+
+        monster = min(
+            world.monsters,
+            key=lambda monster: (
+                (monster.pos_x - world.player.pos_x) ** 2 + (monster.pos_y - world.player.pos_y) ** 2
+            ),
+        )   
+
+        bullet = FollowingBullet(world.player.pos_x, world.player.pos_y, monster, self.speed, self.damage, self.health)
+
+        world.add_bullet(bullet)

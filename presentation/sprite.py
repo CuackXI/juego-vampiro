@@ -119,6 +119,18 @@ class TurretBulletSprite(Sprite):
 
         super().__init__(image, rect)
 
+class FollowingBulletSprite(Sprite):
+    """A class representing the bullet sprite."""
+
+    def __init__(self, pos_x: float, pos_y: float):
+        image_size = 40
+        image = pygame.Surface((image_size, image_size), pygame.SRCALPHA)
+        pygame.draw.circle(image, (0, 0, 0), (image_size // 2, image_size // 2), image_size // 2)
+
+        rect: pygame.Rect = image.get_rect(center=(int(pos_x), int(pos_y)))
+
+        super().__init__(image, rect)
+
 class ExperienceGemSprite(Sprite):
     """A class representing the experience gem sprite."""
 

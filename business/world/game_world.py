@@ -24,7 +24,6 @@ class GameWorld(IGameWorld):
         self.display = display
 
         self.__perks: list[IPerk] = []
-        self.__initialize_perks()
 
         # Initialize the tile map
         self.tile_map: ITileMap = tile_map
@@ -34,14 +33,15 @@ class GameWorld(IGameWorld):
 
         if saved_data:
             self.__load_saved_data(saved_data)
+            self.__initialize_perks(saved_data = saved_data)
+        else:
+            self.__initialize_perks()
 
     def __load_saved_data(self, saved_data: dict):
         self.monster_spawner.load_saved_data(self, saved_data.get('monsters'))
 
-    def __initialize_perks(self):
-        initial_perk = NormalBulletFactory(self.__player)
-
-        self.PERKS_U = [initial_perk, TurretBulletFactory(self.__player)]
+    def __initialize_perks(self, saved_data = None):
+        self.PERKS_U = [NormalBulletFactory(self.__player), TurretBulletFactory(self.__player), FollowingBulletFactory(self.__player)]
         self.PERKS_S = [RegenerationPerk(self.__player), MaxHealthPerk(self.__player), DamageMultiplierPerk(self.__player)]
 
         for perk in self.PERKS_S:
@@ -49,7 +49,16 @@ class GameWorld(IGameWorld):
         for perk in self.PERKS_U:
             self.__perks.append(perk)
 
-        self.__player.handle_perk(initial_perk)
+        if saved_data is not None:
+            player = saved_data.get('player')
+
+            for perk_type in player['inventory']:
+                for perk in self.__perks:
+                    if perk_type == str(type(perk)):
+                        for _ in range(player['inventory'][perk_type]['level']):
+                            self.give_perk_to_player(perk)
+        else:
+            self.__player.handle_perk(self.PERKS_U[2])
 
     def get_perks_for_display(self):
         amount = 3
@@ -65,7 +74,6 @@ class GameWorld(IGameWorld):
         return random_perks
 
     def give_perk_to_player(self, perk):
-        """ESTO DEBERIA SER TEMPORAL PERO ES PARA PROBAR ALGO"""
         self.__player.handle_perk(perk)
 
     def update(self):

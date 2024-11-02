@@ -72,6 +72,6 @@ class MonsterSpawner(IMonsterSpawner):
                 monster = Monster(pos_x, pos_y, MonsterSprite(pos_x, pos_y))
                 world.add_monster(monster)
 
-                break  # Monster added, break the loop
+                break
             except EntityOutOfBounds:
-                print("Trying another position for spawning monster.")
+                pass

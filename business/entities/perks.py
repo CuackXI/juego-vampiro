@@ -14,6 +14,11 @@ class RegenerationPerk(IPerk):
         self.__level = 1
         self.__player = player
 
+    def to_json(self):
+        return {
+            'level': self.__level
+        }
+
     def upgrade_amount(self, extra = 0):
         return RegenerationPerk.BASE_LEVEL_STATS[self.__level + extra]
 
@@ -43,6 +48,11 @@ class MaxHealthPerk(IPerk):
     def __init__(self, player) -> None:
         self.__level = 1
         self.__player = player
+
+    def to_json(self):
+        return {
+            'level': self.__level
+        }
 
     def upgrade_amount(self, extra = 0):
         return MaxHealthPerk.BASE_LEVEL_STATS[self.__level + extra]

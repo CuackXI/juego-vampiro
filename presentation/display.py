@@ -164,9 +164,6 @@ class Display(IDisplay):
         self.__screen.blit(quit_text, (quit_button.x + 17, quit_button.y + 10))
 
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if continue_button.collidepoint(event.pos):
                     game.unpause_event()
@@ -177,6 +174,9 @@ class Display(IDisplay):
                     game.save_game()
                     pygame.quit()
                     return
+                
+            if event.type == pygame.QUIT:
+                pygame.quit()
 
     def __draw_clock(self):
         clock = GameClockSingleton()
@@ -224,12 +224,26 @@ class Display(IDisplay):
 
         game_over_text = game_over_font.render("Juego terminado!", True, (255, 150, 150))
 
-        self.__screen.blit(game_over_text, ((settings.SCREEN_WIDTH // 2) - 150, (settings.SCREEN_HEIGHT // 2) - 10))
+        self.__screen.blit(game_over_text, ((settings.SCREEN_WIDTH // 2) - 190, (settings.SCREEN_HEIGHT // 2) - 10))
+
+        # Boton de reset
+
+        reset_button = pygame.Rect(150, 250, 200, 50)
+        reset_text = font.render("Reiniciar", True, (255, 255, 255))
+
+        reset_button.x = (settings.SCREEN_WIDTH // 2) - (reset_button.width // 2) - 150
+        reset_button.y = (settings.SCREEN_HEIGHT // 2) + 200
+
+        pygame.draw.rect(self.__screen, (0, 0, 0), reset_button)
+
+        self.__screen.blit(reset_text, (reset_button.x + 40, reset_button.y + 10))
+
+        # Boton de salir
 
         quit_button = pygame.Rect(150, 250, 200, 50)
         quit_text = font.render("Salir", True, (255, 255, 255))
 
-        quit_button.x = (settings.SCREEN_WIDTH // 2) - (quit_button.width // 2)
+        quit_button.x = (settings.SCREEN_WIDTH // 2) - (quit_button.width // 2) + 150
         quit_button.y = (settings.SCREEN_HEIGHT // 2) + 200
 
         pygame.draw.rect(self.__screen, (0, 0, 0), quit_button)
@@ -237,14 +251,18 @@ class Display(IDisplay):
         self.__screen.blit(quit_text, (quit_button.x + 70, quit_button.y + 10))
 
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if quit_button.collidepoint(event.pos):
                     game.close_game_loop()
+                    game.clear_save()
                     pygame.quit()
                     return
+                elif reset_button.collidepoint(event.pos):
+                    game.reset_game()
+                    return
+                
+            if event.type == pygame.QUIT:
+                pygame.quit()
 
     def __draw_upgrade_menu(self):
         perks = self.__get_perks()
@@ -281,14 +299,15 @@ class Display(IDisplay):
 
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
-                for i in range(len(upgrade_buttons)):
-                    if upgrade_buttons[i].collidepoint(event.pos):
+                for i, button in enumerate(upgrade_buttons):
+                    if button.collidepoint(event.pos):
                         self.__world.in_upgrade = False
                         if len(perks) != 0:
                             self.__world.give_perk_to_player(perks[i])
                             self.__perks_for_display.clear()
                         return      
-            elif event.type == pygame.QUIT:
+                    
+            if event.type == pygame.QUIT:
                 pygame.quit()
 
     def render_frame(self, paused = None, in_upgrade = None, dead = None, game = None):

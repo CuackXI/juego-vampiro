@@ -25,7 +25,7 @@ def initialize_game_world(display, saved_data: dict | None):
     monster_spawner = MonsterSpawner(display)
     tile_map = TileMap()
     player = initialize_player(saved_data)
-    return GameWorld(monster_spawner, tile_map, player, display, saved_data)
+    return GameWorld(monster_spawner, tile_map, player, display, saved_data) 
 
 def main():
     """Main function to run the game"""
@@ -37,8 +37,6 @@ def main():
         level=logging.DEBUG,  # Change between INFO, WARNING or DEBUG as needed
         format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     )
-
-    #TODO: Si el jugador muere, no guardar los datos :v. Ademas establecer un metodo de reset de partida, con la configuración inicial.
 
     partidadao = GameJSONDAO()
 

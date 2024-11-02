@@ -32,19 +32,13 @@ class Monster(MovableEntity, IMonster):
     def __load_saved_data(self, saved_data: dict):
         self._pos_x = saved_data['pos_x']
         self._pos_y = saved_data['pos_y']
-        self.__max_health = saved_data['max_health']
         self.__health = saved_data['health']
-        self.__damage = saved_data['damage']
-        self.__attack_range = saved_data['attack_range']
 
     def to_json(self):
         return {
             'pos_x': self._pos_x,
             'pos_y': self._pos_y,
-            'max_health': self.__max_health,
             'health': self.__health,
-            'damage': self.__damage,
-            'attack_range': self.__attack_range
         }
 
     def attack(self, target: IDamageable):

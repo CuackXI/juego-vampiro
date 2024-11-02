@@ -68,7 +68,8 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
             'pos_y': self._pos_y,
             'experience': self.__experience,
             'level': self.__level,
-            'health': self.__health
+            'health': self.__health,
+            'inventory':{str(type(perk)): perk.to_json() for perk in self.inventory},
         }
 
     @property
@@ -116,7 +117,6 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
         for perk in self.__static_inventory:
             if isinstance(perk, MaxHealthPerk):
                 return self.__max_health + perk.upgrade_amount()
-
         return self.__max_health
 
     @property
@@ -174,9 +174,6 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
             self.__static_inventory.append(perk)
         else:
             perk.upgrade()
-
-        print(self.__updatable_inventory)
-        print(self.__static_inventory)
 
     def update(self, world: IGameWorld):
         self.sprite.update()
