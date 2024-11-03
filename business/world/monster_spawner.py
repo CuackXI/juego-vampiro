@@ -6,6 +6,7 @@ import pygame
 
 from business.entities.monsters.monster import Monster
 from business.entities.monsters.boss import BossMonster
+from business.entities.monsters.boss2 import BigBossMonster
 from business.world.interfaces import IGameWorld, IMonsterSpawner
 from presentation.interfaces import IDisplay
 import business.handlers.cooldown_handler as CH
@@ -21,9 +22,10 @@ class MonsterSpawner(IMonsterSpawner):
         self.__display = display
 
         self.__monsters = [Monster]
-        self.__bosses = [BossMonster]
+        self.__bosses = [BossMonster, BigBossMonster]
         
         self.__minute_boss_added = False
+        self.__second_minute_boss_added = False
 
         self.__spawn_cooldown = CH.CooldownHandler(MonsterSpawner.BASE_DELAY)
 
@@ -40,7 +42,7 @@ class MonsterSpawner(IMonsterSpawner):
                 world.add_monster(monster)
 
     def update(self, world: IGameWorld):
-        if self.__spawn_cooldown.is_action_ready() and len(world.monsters) <= 40:
+        if self.__spawn_cooldown.is_action_ready() and len(world.monsters) <= 10:
             self.spawn_monster(world)
             self.__spawn_cooldown.put_on_cooldown()
 
@@ -77,9 +79,12 @@ class MonsterSpawner(IMonsterSpawner):
                 world.add_monster(monster(pos_x, pos_y))
 
                 if GameClockSingleton().game_clock > 60000 and not self.__minute_boss_added:
-                    boss = random.choice(self.__bosses)
-                    world.add_monster(boss(pos_x, pos_y))
+                    world.add_monster(BossMonster(pos_x, pos_y))
                     self.__minute_boss_added = True
+
+                if GameClockSingleton().game_clock > 120000 and not self.__second_minute_boss_added :
+                    world.add_monster(BigBossMonster(pos_x, pos_y))
+                    self.__second_minute_boss_added = True
 
                 break
             except EntityOutOfBounds:
