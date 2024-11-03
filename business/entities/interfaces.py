@@ -147,11 +147,11 @@ class IPlayer(IUpdatable, ICanMove, IDamageable, ICanDealDamage):
     """Interface for the player entity."""
 
     @abstractmethod
-    def pickup_gem(self, gem: IExperienceGem):
-        """Picks up an experience gem.
+    def pickup_item(self, item: IItem):
+        """Picks up an item.
 
         Args:
-            gem (IExperienceGem): The experience gem to pick up.
+            item (IItem): The item.
         """
 
     @abstractmethod

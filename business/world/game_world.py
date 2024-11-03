@@ -9,7 +9,7 @@ from business.entities.bullet import *
 from business.handlers.boundaries_handler import BoundariesHandler
 from business.exceptions import * 
 from presentation.interfaces import IDisplay
-from business.entities.experience_gem import ExperienceGem
+from business.entities.items.experience_gem import ExperienceGem
 
 class GameWorld(IGameWorld):
     """Represents the game world."""

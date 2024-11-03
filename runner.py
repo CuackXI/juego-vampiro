@@ -46,6 +46,7 @@ def main():
 
     reset = game.run()
 
+    # Delete variables and instances to properly reset the game
     del game
     del world
     del input_handler

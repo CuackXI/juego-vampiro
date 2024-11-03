@@ -29,7 +29,7 @@ class CollisionHandler:
     def __handle_items(items: List[IItem], player: IPlayer, world: IGameWorld):
         for item in items:
             if item.in_player_range(player):
-                player.pickup_gem(item, world)
+                player.pickup_item(item, world)
                 world.remove_item(item)
         
     @staticmethod

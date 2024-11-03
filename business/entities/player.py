@@ -3,8 +3,9 @@
 import pygame
 
 from business.entities.entity import MovableEntity
-from business.entities.experience_gem import ExperienceGem
-from business.entities.interfaces import ICanDealDamage, IDamageable, IPlayer
+from business.entities.items.experience_gem import ExperienceGem
+from business.entities.items.guaymallen import Guaymallen
+from business.entities.interfaces import ICanDealDamage, IDamageable, IPlayer, IItem
 import business.upgrades.bullet_factories as bf
 from business.handlers.cooldown_handler import CooldownHandler
 from business.upgrades.perks import *
@@ -166,13 +167,20 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
 
         self.sprite.take_damage()
 
-    def heal(self):
-        self.__health += self.health_regen
+    def heal(self, amount, color = None):
+        self.__health += amount
         if self.__health > self.max_health:
             self.__health = self.max_health
 
-    def pickup_gem(self, gem: ExperienceGem, world: IGameWorld):
-        self.__gain_experience(gem.amount, world)
+        if color:
+            self.sprite.heal()
+
+    def pickup_item(self, item: IItem, world: IGameWorld):
+        if isinstance(item, ExperienceGem):
+            self.__gain_experience(item.amount, world)
+
+        elif isinstance(item, Guaymallen):
+            self.heal(self.max_health * 0.2, color = True)
 
     def __gain_experience(self, amount: int, world: IGameWorld):
         self.__experience += amount
@@ -202,5 +210,5 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
             perk.update(world)
 
         if self.__health_regen_cooldown.is_action_ready() and self.__health < self.max_health:
-            self.heal()
+            self.heal(self.health_regen)
             self.__health_regen_cooldown.put_on_cooldown()

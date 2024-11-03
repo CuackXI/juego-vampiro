@@ -14,42 +14,30 @@ class Sprite(pygame.sprite.Sprite):
         self._rect: pygame.Rect = rect
         super().__init__(*groups)
         self.__is_in_damage_countdown = 0
+        self.__is_in_heal_countdown = 0
         self.__original_image: pygame.Surface = image
 
     @property
     def image(self) -> pygame.Surface:
-        """The image of the sprite.
-
-        Returns:
-            pygame.Surface: The image of the sprite.
-        """
+        """The image of the sprite."""
         return self._image
 
     @property
     def rect(self) -> pygame.Rect:
-        """The rect of the sprite.
-
-        Returns:
-            pygame.Rect: The rect of the sprite. A rect is a rectangle that defines the position and size of the sprite.
-        """
+        """The rect of the sprite."""
         return self._rect
 
     def update_pos(self, pos_x: float, pos_y: float):
-        """Update the position of the sprite.
-
-        Args:
-            pos_x (float): The x-coordinate of the sprite.
-            pos_y (float): The y-coordinate of the sprite.
-        """
+        """Update the position of the sprite."""
         self._rect.center = (int(pos_x), int(pos_y))
 
     def __restore_image(self):
         self._image = self.__original_image.copy()
 
     def __change_color(self, color: tuple[int, int, int]):
-        self._image = self.__original_image.copy()  # Make a copy of the original image
-        self._image.fill(color, special_flags=pygame.BLEND_MULT)  # Change color
-        self._image.set_colorkey((0, 0, 0))  # Set transparency if necessary
+        self._image = self.__original_image.copy()
+        self._image.fill(color, special_flags=pygame.BLEND_MULT)
+        self._image.set_colorkey((0, 0, 0))
 
     def __decrease_damage_countdown(self):
         self.__is_in_damage_countdown -= 1
@@ -57,17 +45,30 @@ class Sprite(pygame.sprite.Sprite):
             self.__is_in_damage_countdown = 0
             self.__restore_image()
 
+    def __decrease_heal_countdown(self):
+        self.__is_in_heal_countdown -= 1
+        if self.__is_in_heal_countdown <= 0:
+            self.__is_in_heal_countdown = 0
+            self.__restore_image()
+
     def take_damage(self):
         """Take damage."""
         self.__change_color((255, 0, 0))
         self.__is_in_damage_countdown = 20
 
+    def heal(self):
+        """Heal the player by turning the sprite green for 0.2 seconds."""
+        self.__change_color((0, 255, 0))
+
+        self.__is_in_heal_countdown = 24
+
     def update(self, *args, **kwargs):
-        """Update the sprite behavior"""
-        super().__init__(*args, **kwargs)
+        """Update the sprite behavior."""
+        super().update(*args, **kwargs)
         if self.__is_in_damage_countdown > 0:
             self.__decrease_damage_countdown()
-
+        if self.__is_in_heal_countdown > 0:
+            self.__decrease_heal_countdown()
 
 class PlayerSprite(Sprite):
     """A class representing the player sprite."""
@@ -146,6 +147,20 @@ class ExperienceGemSprite(Sprite):
             ExperienceGemSprite.ASSET, settings.TILE_HEIGHT, settings.TILE_HEIGHT, 2, 2
         )
         image: pygame.Surface = tileset.get_tile(3)
+        rect: pygame.Rect = image.get_rect(center=(int(pos_x), int(pos_y)))
+
+        super().__init__(image, rect)
+
+class GuaymallenSprite(Sprite):
+    """A class representing the guaymallen sprite."""
+
+    ASSET = "./assets/guaymallen.webp"
+
+    def __init__(self, pos_x: float, pos_y: float):
+        tileset = Tileset(
+            GuaymallenSprite.ASSET, settings.TILE_HEIGHT, settings.TILE_HEIGHT, 1, 1
+        )
+        image: pygame.Surface = tileset.get_tile(0)
         rect: pygame.Rect = image.get_rect(center=(int(pos_x), int(pos_y)))
 
         super().__init__(image, rect)
