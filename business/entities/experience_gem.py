@@ -16,7 +16,8 @@ class ExperienceGem(Entity, IExperienceGem):
     def to_json(self):
         return {
             'pos_x': self.pos_x,
-            'pos_y': self.pos_y
+            'pos_y': self.pos_y,
+            'amount': self.__amount
         }
 
     @property

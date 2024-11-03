@@ -9,6 +9,7 @@ from business.entities.bullet import *
 from business.handlers.boundaries_handler import BoundariesHandler
 from business.exceptions import * 
 from presentation.interfaces import IDisplay
+from business.entities.experience_gem import ExperienceGem
 
 class GameWorld(IGameWorld):
     """Represents the game world."""
@@ -43,6 +44,7 @@ class GameWorld(IGameWorld):
         self.monster_spawner.load_saved_data(self, saved_data.get('monsters'))
 
         self.__load_bullets(saved_data)
+        self.__load_gems(saved_data)
 
     def __initialize_perks(self, saved_data = None):
         self.PERKS_U = [NormalBulletFactory(self.__player), TurretBulletFactory(self.__player), FollowingBulletFactory(self.__player)]
@@ -87,6 +89,18 @@ class GameWorld(IGameWorld):
 
             if 'FollowingBullet' in bullet_type:
                 FollowingBulletFactory(self.__player).load_bullets(saved_data[bullet_type], self)
+
+    def __load_gems(self, saved_data):
+        saved_data = saved_data.get('gems')
+
+        for gem_type in saved_data:
+            if 'ExperienceGem' in gem_type:
+                for gem_data in saved_data[gem_type]:
+                    pos_x = gem_data['pos_x']
+                    pos_y = gem_data['pos_y']
+                    amount = gem_data['amount']
+
+                    self.add_experience_gem(ExperienceGem(pos_x, pos_y, amount))
 
     def get_perks_for_display(self):
         amount = 3
