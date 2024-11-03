@@ -1,4 +1,5 @@
-from business.entities.interfaces import IBulletFactory, IPerk, IPlayer, IUpdatable
+from business.entities.interfaces import IPlayer, IUpdatable
+from business.upgrades.interfaces import IBulletFactory, IPerk
 from business.entities.bullet import *
 import business.handlers.cooldown_handler as CH
 
@@ -24,10 +25,31 @@ class NormalBulletFactory(IBulletFactory, IPerk):
 
         self.__cooldown_handler = CH.CooldownHandler(self.cooldown)
 
+    def load_cooldown(self, amount):
+        self.__cooldown_handler.last_action_time = amount
+
     def to_json(self):
         return {
-            'level': self.__level
+            'level': self.__level,
+            'attack_cooldown': self.__cooldown_handler.last_action_time
         }
+
+    @staticmethod
+    def load_bullets(data, world: IGameWorld):
+        for bullet_data in data:
+            pos_x = bullet_data['pos_x']
+            pos_y = bullet_data['pos_y']
+            dir_x = bullet_data['dir_x']
+            dir_y = bullet_data['dir_y']
+            damage = bullet_data['damage']
+            health = bullet_data['health']
+            speed = bullet_data['speed']
+
+            dst_x = pos_x + dir_x
+            dst_y = pos_y + dir_y
+
+            bullet = NormalBullet(pos_x,pos_y,dst_x,dst_y,speed,damage,health)
+            world.add_bullet(bullet)
 
     def create_bullet(self, world: IGameWorld):
         self.__shoot_at_nearest_enemy(world)
@@ -80,7 +102,7 @@ class NormalBulletFactory(IBulletFactory, IPerk):
         )
 
         # Create a bullet towards the nearest monster
-        bullet = Bullet(world.player.pos_x, world.player.pos_y, monster.pos_x, monster.pos_y, 
+        bullet = NormalBullet(world.player.pos_x, world.player.pos_y, monster.pos_x, monster.pos_y, 
         self.speed, self.damage, self.health)
         world.add_bullet(bullet)
 
@@ -107,11 +129,32 @@ class TurretBulletFactory(IBulletFactory, IPerk, IUpdatable):
 
         self.__cooldown_handler = CH.CooldownHandler(self.cooldown)
 
+    def load_cooldown(self, amount):
+        self.__cooldown_handler.last_action_time = amount
+
     def to_json(self):
         return {
-            'level': self.__level
+            'level': self.__level,
+            'attack_cooldown': self.__cooldown_handler.last_action_time
         }
-    
+
+    @staticmethod
+    def load_bullets(data, world: IGameWorld):
+        for bullet_data in data:
+            pos_x = bullet_data['pos_x']
+            pos_y = bullet_data['pos_y']
+            dir_x = bullet_data['dir_x']
+            dir_y = bullet_data['dir_y']
+            damage = bullet_data['damage']
+            health = bullet_data['health']
+            speed = bullet_data['speed']
+
+            dst_x = pos_x + dir_x
+            dst_y = pos_y + dir_y
+
+            bullet = TurretBullet(pos_x,pos_y,dst_x,dst_y,speed,damage,health)
+            world.add_bullet(bullet)
+
     def create_bullet(self, world: IGameWorld):
         self.__shoot_at_nearest_enemy(world)
     
@@ -191,10 +234,26 @@ class FollowingBulletFactory(IBulletFactory, IPerk, IUpdatable):
 
         self.__cooldown_handler = CH.CooldownHandler(self.cooldown)
 
+    def load_cooldown(self, amount):
+        self.__cooldown_handler.last_action_time = amount
+
     def to_json(self):
         return {
-            'level': self.__level
+            'level': self.__level,
+            'attack_cooldown': self.__cooldown_handler.last_action_time
         }
+
+    @staticmethod
+    def load_bullets(data, world: IGameWorld):
+        for bullet_data in data:
+            pos_x = bullet_data['pos_x']
+            pos_y = bullet_data['pos_y']
+            damage = bullet_data['damage']
+            health = bullet_data['health']
+            speed = bullet_data['speed']
+
+            bullet = FollowingBullet(pos_x,pos_y,None,speed,damage,health)
+            world.add_bullet(bullet)
 
     def create_bullet(self, world: IGameWorld):
         self.__shoot_at_nearest_enemy(world)
@@ -245,6 +304,9 @@ class FollowingBulletFactory(IBulletFactory, IPerk, IUpdatable):
             ),
         )   
 
-        bullet = FollowingBullet(world.player.pos_x, world.player.pos_y, monster, self.speed, self.damage, self.health)
+        try:
+            bullet = FollowingBullet(world.player.pos_x, world.player.pos_y, monster, self.speed, self.damage, self.health)
+        except Exception as error:
+            print(error)
 
         world.add_bullet(bullet)

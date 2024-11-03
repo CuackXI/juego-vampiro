@@ -1,7 +1,7 @@
 import settings
 
 class GameClockSingleton:
-    """A singleton class for managing the game clock."""
+    """A singleton for managing the game clock."""
     
     _instance = None
 
@@ -14,5 +14,5 @@ class GameClockSingleton:
         return cls._instance
         
     def update(self):
-        """Updates every tick by the amount of ms determined by the FPS"""
+        """Updates every tick by the amount of ms determined by the FPS of the settings"""
         self.game_clock += 1000 / settings.FPS

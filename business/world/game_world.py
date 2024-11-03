@@ -3,9 +3,9 @@
 import random
 from business.entities.interfaces import IBullet, IExperienceGem, IMonster, IPlayer
 from business.world.interfaces import IGameWorld, IMonsterSpawner, ITileMap
-from business.entities.perks import *
-from business.entities.bullet_factory import *
-from business.entities.monster import Monster
+from business.upgrades.perks import *
+from business.upgrades.bullet_factories import *
+from business.entities.bullet import *
 from business.handlers.boundaries_handler import BoundariesHandler
 from business.exceptions import * 
 from presentation.interfaces import IDisplay
@@ -23,6 +23,8 @@ class GameWorld(IGameWorld):
         self.__game = None
         self.display = display
 
+        self.PERKS_U = []
+        self.PERKS_S = []
         self.__perks: list[IPerk] = []
 
         # Initialize the tile map
@@ -40,6 +42,8 @@ class GameWorld(IGameWorld):
     def __load_saved_data(self, saved_data: dict):
         self.monster_spawner.load_saved_data(self, saved_data.get('monsters'))
 
+        self.__load_bullets(saved_data)
+
     def __initialize_perks(self, saved_data = None):
         self.PERKS_U = [NormalBulletFactory(self.__player), TurretBulletFactory(self.__player), FollowingBulletFactory(self.__player)]
         self.PERKS_S = [RegenerationPerk(self.__player), MaxHealthPerk(self.__player), DamageMultiplierPerk(self.__player)]
@@ -52,13 +56,37 @@ class GameWorld(IGameWorld):
         if saved_data is not None:
             player = saved_data.get('player')
 
-            for perk_type in player['inventory']:
-                for perk in self.__perks:
+            # Load static perks
+            for perk_type in player['static']:
+                for perk in self.PERKS_S:
                     if perk_type == str(type(perk)):
-                        for _ in range(player['inventory'][perk_type]['level']):
+                        for _ in range(player['static'][perk_type]['level']):
                             self.give_perk_to_player(perk)
+
+            # Load updatable perks
+            for perk_type in player['updatable']:
+                for perk in self.PERKS_U:
+                    print(perk_type, perk)
+
+                    if perk_type == str(type(perk)):
+                        for _ in range(player['updatable'][perk_type]['level']):
+                            self.give_perk_to_player(perk)
+                            perk.load_cooldown(player['updatable'][perk_type]['attack_cooldown'])
         else:
-            self.__player.handle_perk(self.PERKS_U[2])
+            self.__player.handle_perk(self.PERKS_U[0])
+
+    def __load_bullets(self, saved_data):
+        saved_data = saved_data.get('bullets')
+
+        for bullet_type in saved_data:
+            if 'NormalBullet' in bullet_type:
+                NormalBulletFactory(self.__player).load_bullets(saved_data[bullet_type], self)
+
+            if 'Turret' in bullet_type:
+                TurretBulletFactory(self.__player).load_bullets(saved_data[bullet_type], self)
+
+            if 'FollowingBullet' in bullet_type:
+                FollowingBulletFactory(self.__player).load_bullets(saved_data[bullet_type], self)
 
     def get_perks_for_display(self):
         amount = 3

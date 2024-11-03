@@ -1,6 +1,7 @@
 import os
 import json
 
+from collections import defaultdict
 from persistence.daointerfaces import IGameDAO
 from business.handlers.clock import GameClockSingleton
 
@@ -9,7 +10,7 @@ class GameJSONDAO(IGameDAO):
 
     BASE_GAME_DATA = {}
 
-    def __init__(self, json_path = "game.json") -> None:
+    def __init__(self, json_path = "data/game.json") -> None:
         """Initializes the DAO."""
         self.__json_path = json_path
         if not os.path.exists(self.__json_path):
@@ -29,15 +30,21 @@ class GameJSONDAO(IGameDAO):
     def save_game(self, game):
         data = self.__read_data()
 
-        monsters = [monster.to_json() for monster in game.world.monsters]
+        monsters = defaultdict(list)
+        for monster in game.world.monsters:
+            monsters[str(type(monster))].append(monster.to_json())
+
+        bullets = defaultdict(list)
+        for bullet in game.world.bullets:
+            bullets[str(type(bullet))].append(bullet.to_json())
+
         player = game.world.player.to_json()
         clock = GameClockSingleton().game_clock
 
         data['monsters'] = monsters
+        data['bullets'] = bullets
         data['player'] = player
         data['clock'] = clock
-
-        print(data)
 
         self.__save_data(data)
 

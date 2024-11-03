@@ -46,14 +46,16 @@ class Game:
 
     def process_game_events(self):
         for event in pygame.event.get():
-            # pygame.QUIT event means the user clicked X to close your window
-            if event.type == pygame.QUIT:  # pylint: disable=E1101
+            if event.type == pygame.QUIT:
                 self.__logger.debug("QUIT event detected")
                 self.__running = False
 
     def save_game(self):
-        if not self.__dead:
-            self.__dao.save_game(self)
+        try:
+            if not self.__dead:
+                self.__dao.save_game(self)
+        except Exception as e:
+            print(e)
 
     def clear_save(self):
         self.__dao.clear_save()

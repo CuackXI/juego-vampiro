@@ -25,20 +25,22 @@ class Monster(MovableEntity, IMonster):
         self.__damage = Monster.BASE_DAMAGE
         self.__attack_range = Monster.BASE_ATTACK_RANGE
         self.__attack_cooldown = CooldownHandler(Monster.BASE_ATTACK_COOLDOWN)
+
         if saved_data:
             self.__load_saved_data(saved_data)
-        # self._logger.debug("Created %s", self)
 
     def __load_saved_data(self, saved_data: dict):
         self._pos_x = saved_data['pos_x']
         self._pos_y = saved_data['pos_y']
         self.__health = saved_data['health']
+        self.__attack_cooldown.last_action_time = saved_data['attack_cooldown']
 
     def to_json(self):
         return {
             'pos_x': self._pos_x,
             'pos_y': self._pos_y,
             'health': self.__health,
+            'attack_cooldown': self.__attack_cooldown.last_action_time
         }
 
     def attack(self, target: IDamageable):

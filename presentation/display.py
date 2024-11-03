@@ -163,20 +163,17 @@ class Display(IDisplay):
         self.__screen.blit(continue_text, (continue_button.x + 40, continue_button.y + 10))
         self.__screen.blit(quit_text, (quit_button.x + 17, quit_button.y + 10))
 
-        for event in pygame.event.get():
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if continue_button.collidepoint(event.pos):
-                    game.unpause_event()
-                    return
+        mouse_pos = pygame.mouse.get_pos()
 
-                if quit_button.collidepoint(event.pos):
-                    game.close_game_loop()
-                    game.save_game()
-                    pygame.quit()
-                    return
-                
-            if event.type == pygame.QUIT:
+        if pygame.mouse.get_pressed()[0]:
+            if continue_button.collidepoint(mouse_pos):
+                game.unpause_event()
+                return
+            elif quit_button.collidepoint(mouse_pos):
+                game.close_game_loop()
+                game.save_game()
                 pygame.quit()
+                return
 
     def __draw_clock(self):
         clock = GameClockSingleton()
@@ -250,19 +247,17 @@ class Display(IDisplay):
 
         self.__screen.blit(quit_text, (quit_button.x + 70, quit_button.y + 10))
 
-        for event in pygame.event.get():
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if quit_button.collidepoint(event.pos):
-                    game.close_game_loop()
-                    game.clear_save()
-                    pygame.quit()
-                    return
-                elif reset_button.collidepoint(event.pos):
-                    game.reset_game()
-                    return
-                
-            if event.type == pygame.QUIT:
+        mouse_pos = pygame.mouse.get_pos()
+
+        if pygame.mouse.get_pressed()[0]:
+            if quit_button.collidepoint(mouse_pos):
+                game.close_game_loop()
+                game.clear_save()
                 pygame.quit()
+                return
+            elif reset_button.collidepoint(mouse_pos):
+                game.reset_game()
+                return
 
     def __draw_upgrade_menu(self):
         perks = self.__get_perks()
@@ -297,18 +292,15 @@ class Display(IDisplay):
             pygame.draw.rect(self.__screen, (0, 0, 0), upgrade_button)
             self.__screen.blit(upgrade_text, (upgrade_button.x + 40, upgrade_button.y + 10))
 
-        for event in pygame.event.get():
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                for i, button in enumerate(upgrade_buttons):
-                    if button.collidepoint(event.pos):
-                        self.__world.in_upgrade = False
-                        if len(perks) != 0:
-                            self.__world.give_perk_to_player(perks[i])
-                            self.__perks_for_display.clear()
-                        return      
-                    
-            if event.type == pygame.QUIT:
-                pygame.quit()
+        mouse_pos = pygame.mouse.get_pos()
+
+        for i, button in enumerate(upgrade_buttons):
+            if button.collidepoint(mouse_pos) and pygame.mouse.get_pressed()[0]:
+                self.__world.in_upgrade = False
+                if len(perks) != 0:
+                    self.__world.give_perk_to_player(perks[i])
+                    self.__perks_for_display.clear()
+                return
 
     def render_frame(self, paused = None, in_upgrade = None, dead = None, game = None):
         self.camera.update(self.__world.player.sprite.rect)

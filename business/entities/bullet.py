@@ -6,15 +6,27 @@ from business.entities.entity import MovableEntity
 from business.entities.interfaces import IBullet
 from business.world.interfaces import IGameWorld
 from presentation.sprite import BulletSprite, TurretBulletSprite, FollowingBulletSprite
-class Bullet(MovableEntity, IBullet):
+
+class NormalBullet(MovableEntity, IBullet):
     """A bullet that moves towards a target direction."""
 
     def __init__(self, src_x, src_y, dst_x, dst_y, speed, damage, health):
         super().__init__(src_x, src_y, speed, BulletSprite(src_x, src_y))
-        self.__dir_x, self.__dir_y = self.__calculate_direction(dst_x - src_x, dst_y - src_y)
 
+        self.__dir_x, self.__dir_y = self.__calculate_direction(dst_x - src_x, dst_y - src_y)
         self.__damage = damage
         self.__health = health
+
+    def to_json(self):
+        return {
+            'pos_x': self.pos_x,
+            'pos_y': self.pos_y,
+            'dir_x': self.__dir_x,
+            'dir_y': self.__dir_y,
+            'damage': self.__damage,
+            'health': self.__health,
+            'speed': self.speed
+        }
 
     def __calculate_direction(self, dx, dy):
         distance = math.hypot(dx, dy)
@@ -44,10 +56,21 @@ class TurretBullet(MovableEntity, IBullet):
 
     def __init__(self, src_x, src_y, dst_x, dst_y, speed, damage, health):
         super().__init__(src_x, src_y, speed, TurretBulletSprite(src_x, src_y))
+        
         self.__dir_x, self.__dir_y = self.__calculate_direction(dst_x - src_x, dst_y - src_y)
-
         self.__damage = damage
         self.__health = health
+
+    def to_json(self):
+        return {
+            'pos_x': self.pos_x,
+            'pos_y': self.pos_y,
+            'dir_x': self.__dir_x,
+            'dir_y': self.__dir_y,
+            'damage': self.__damage,
+            'health': self.__health,
+            'speed': self.speed
+        }
 
     def __calculate_direction(self, dx, dy):
         distance = math.hypot(dx, dy)
@@ -81,11 +104,16 @@ class FollowingBullet(MovableEntity, IBullet):
         self.__damage = damage
         self.__health = health
 
-        self.__dir_x, self.__dir_y = self.__calculate_direction(self.__target_monster.pos_x - src_x, self.__target_monster.pos_y - src_y)
-
+        if target_monster:
+            self.__dir_x, self.__dir_y = self.__calculate_direction(self.__target_monster.pos_x - src_x, self.__target_monster.pos_y - src_y)
+            
     def to_json(self):
         return {
-            'pos_x'
+            'pos_x': self.pos_x,
+            'pos_y': self.pos_y,
+            'damage': self.__damage,
+            'health': self.__health,
+            'speed': self.speed
         }
 
     def __calculate_direction(self, dx, dy):

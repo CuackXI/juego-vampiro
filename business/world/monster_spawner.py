@@ -19,7 +19,6 @@ class MonsterSpawner(IMonsterSpawner):
     BASE_DELAY = 250
 
     def __init__(self, display: IDisplay):
-        self.__logger = logging.getLogger(__name__)
         self.__display = display
         self.__spawn_cooldown = CH.CooldownHandler(MonsterSpawner.BASE_DELAY)
 
@@ -30,9 +29,10 @@ class MonsterSpawner(IMonsterSpawner):
             world (IGameWorld): The game world instance.
             saved_data: The saved game data.
         """
-        for monster_data in saved_data:
-            monster = Monster(0, 0, MonsterSprite(0, 0), monster_data)
-            world.add_monster(monster)
+        for monster_type in saved_data:
+            for monster_data in saved_data[monster_type]:
+                monster = Monster(0, 0, MonsterSprite(0, 0), monster_data)
+                world.add_monster(monster)
 
     def update(self, world: IGameWorld):
         if self.__spawn_cooldown.is_action_ready() and len(world.monsters) <= 20:
@@ -48,7 +48,6 @@ class MonsterSpawner(IMonsterSpawner):
         """
         while True:
             try:
-                # Get the current camera view bounds
                 camera_left = self.__display.camera.camera_rect.left
                 camera_right = self.__display.camera.camera_rect.right
                 camera_top = self.__display.camera.camera_rect.top

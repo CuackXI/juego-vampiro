@@ -5,9 +5,9 @@ import pygame
 from business.entities.entity import MovableEntity
 from business.entities.experience_gem import ExperienceGem
 from business.entities.interfaces import ICanDealDamage, IDamageable, IPlayer
-import business.entities.bullet_factory as bf
+import business.upgrades.bullet_factories as bf
 from business.handlers.cooldown_handler import CooldownHandler
-from business.entities.perks import *
+from business.upgrades.perks import *
 from business.world.interfaces import IGameWorld
 from presentation.sprite import Sprite
 
@@ -58,6 +58,7 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
         self.__experience = saved_data['experience']
         self.__level = saved_data['level']
         self.__health = saved_data['health']
+        self.__health_regen_cooldown.last_action_time = saved_data['health_regen_cooldown']
 
     def __str__(self):
         return f"Player(hp={self.__health}, xp={self.__experience}, lvl={self.__level}, pos=({self._pos_x}, {self._pos_y}))"
@@ -69,7 +70,9 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
             'experience': self.__experience,
             'level': self.__level,
             'health': self.__health,
-            'inventory':{str(type(perk)): perk.to_json() for perk in self.inventory},
+            'health_regen_cooldown': self.__health_regen_cooldown.last_action_time,
+            'static':{str(type(perk)): perk.to_json() for perk in self.__static_inventory},
+            'updatable':{str(type(perk)): perk.to_json() for perk in self.__updatable_inventory}
         }
 
     @property

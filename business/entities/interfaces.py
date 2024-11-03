@@ -118,50 +118,8 @@ class IMonster(IUpdatable, ICanMove, IDamageable, ICanDealDamage):
 
 class IBullet(IUpdatable, ICanMove, IDamageable, ICanDealDamage):
     """Interface for bullet entities."""
-
-class IPerk():
-    @abstractmethod
-    def upgrade(self):
-        """It upgrades the perk to the next level."""
-
-    @property
-    @abstractmethod
-    def perk_type(self) -> str:
-        """The type of perk.
-
-        Returns:
-            str: The type.
-        """
-        
-    @abstractmethod
-    def upgrade_amount(self) -> int | float:
-        """The amount by which it upgrades a player stat.
-
-        Returns:
-            int | float: The amount.
-        """
-
-    @property
-    @abstractmethod
-    def upgradable(self) -> bool:
-        """If the current perk at the current level can be upgradable.
-
-        Returns:
-            bool: If it's upgradable.
-        """
-
-class IExperienceGem(IUpdatable, IHasPosition):
-    """Interface for experience gem entities."""
-
-    @property
-    @abstractmethod
-    def amount(self) -> int:
-        """The amount of experience the gem gives.
-
-        Returns:
-            int: The amount of experience the gem gives.
-        """
-
+    
+class IItem(IHasPosition):
     @abstractmethod
     def in_player_range(self, player) -> bool:
         """Detects if the player is in range of the gem.
@@ -171,6 +129,18 @@ class IExperienceGem(IUpdatable, IHasPosition):
 
         Returns:
             bool: If it's in range.
+        """
+
+class IExperienceGem(IItem, IHasPosition):
+    """Interface for experience gem entities."""
+
+    @property
+    @abstractmethod
+    def amount(self) -> int:
+        """The amount of experience the gem gives.
+
+        Returns:
+            int: The amount of experience the gem gives.
         """
 
 class IPlayer(IUpdatable, ICanMove, IDamageable, ICanDealDamage):
@@ -236,44 +206,3 @@ class IPlayer(IUpdatable, ICanMove, IDamageable, ICanDealDamage):
     @abstractmethod
     def handle_perk(self):
         """Handles what happens with a perk with the current inventory"""
-
-class IBulletFactory(IUpdatable):
-    @abstractmethod
-    def create_bullet(self):
-        """Instances bullet of the specified type in the direction given by the player."""
-
-    @property
-    @abstractmethod
-    def damage(self) -> float:
-        """The damage that the bullet will deal.
-
-        Returns:
-            float: The damage amount.
-        """
-
-    @property
-    @abstractmethod
-    def speed(self) -> float:
-        """The speed at which the bullet will move.
-
-        Returns:
-            float: The speed amount.
-        """
-
-    @property
-    @abstractmethod
-    def health(self) -> float:
-        """The health that the bullet will have.
-
-        Returns:
-            float: The health amount.
-        """
-
-    @property
-    @abstractmethod
-    def cooldown(self) -> int:
-        """The cooldown in which it creates bullets.
-
-        Returns:
-            int: The cooldown in miliseconds.
-        """

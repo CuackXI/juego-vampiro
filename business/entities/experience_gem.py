@@ -13,6 +13,12 @@ class ExperienceGem(Entity, IExperienceGem):
         super().__init__(pos_x, pos_y, ExperienceGemSprite(pos_x, pos_y))
         self.__amount = amount
 
+    def to_json(self):
+        return {
+            'pos_x': self.pos_x,
+            'pos_y': self.pos_y
+        }
+
     @property
     def amount(self) -> int:
         return self.__amount
@@ -22,6 +28,3 @@ class ExperienceGem(Entity, IExperienceGem):
     
     def in_player_range(self, player):
         return self._get_distance_to(player) <= player.pick_range
-
-    def update(self, world: IGameWorld):
-        pass

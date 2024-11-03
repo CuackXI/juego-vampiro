@@ -1,4 +1,4 @@
-from business.entities.interfaces import IPerk
+from business.upgrades.interfaces import IPerk
 
 class RegenerationPerk(IPerk):
 
@@ -13,12 +13,7 @@ class RegenerationPerk(IPerk):
     def __init__(self, player) -> None:
         self.__level = 1
         self.__player = player
-
-    def to_json(self):
-        return {
-            'level': self.__level
-        }
-
+        
     def upgrade_amount(self, extra = 0):
         return RegenerationPerk.BASE_LEVEL_STATS[self.__level + extra]
 
@@ -29,7 +24,12 @@ class RegenerationPerk(IPerk):
     def upgrade(self):
         if self.__level + 1 in RegenerationPerk.BASE_LEVEL_STATS.keys():
             self.__level += 1
-        
+
+    def to_json(self):
+        return {
+            'level': self.__level
+        }
+
     def __str__(self):
         if self in self.__player.inventory:
             return f'AUMENTO DE REGENERACIÓN: {self.upgrade_amount(extra = 1)} -> NIVEL {self.__level + 1}'
@@ -49,11 +49,6 @@ class MaxHealthPerk(IPerk):
         self.__level = 1
         self.__player = player
 
-    def to_json(self):
-        return {
-            'level': self.__level
-        }
-
     def upgrade_amount(self, extra = 0):
         return MaxHealthPerk.BASE_LEVEL_STATS[self.__level + extra]
 
@@ -64,6 +59,11 @@ class MaxHealthPerk(IPerk):
     def upgrade(self):
         if self.__level + 1 in MaxHealthPerk.BASE_LEVEL_STATS.keys():
             self.__level += 1
+
+    def to_json(self):
+        return {
+            'level': self.__level
+        }
 
     def __str__(self):
         if self in self.__player.inventory:
@@ -94,6 +94,11 @@ class DamageMultiplierPerk(IPerk):
     def upgrade(self):
         if self.__level + 1 in DamageMultiplierPerk.BASE_LEVEL_STATS.keys():
             self.__level += 1
+
+    def to_json(self):
+        return {
+            'level': self.__level
+        }
 
     def __str__(self):
         if self in self.__player.inventory:
