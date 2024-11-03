@@ -17,6 +17,7 @@ class Display(IDisplay):
     COLOR_MENUS_BG = (0, 0, 0, 190)
     COLOR_BUTTON = (255, 255, 255)
     COLOR_BUTTON_TEXT = (0, 0, 0)
+    COLOR_UI_OVERLAY = (0, 0, 0, 130)
 
     def __init__(self):
         self.__screen = pygame.display.set_mode(settings.SCREEN_DIMENSION)
@@ -118,14 +119,34 @@ class Display(IDisplay):
 
         self.__draw_player_health_bar()
 
-        # Draw the experience text
+    def __draw_player_level(self):
         font = pygame.font.SysFont(None, 48)
         experience_text = font.render(
-            f"LEVEL {self.__world.player.level} XP: {self.__world.player.experience}/{self.__world.player.experience_to_next_level}",
+            f"NIVEL {self.__world.player.level} XP: {self.__world.player.experience}/{self.__world.player.experience_to_next_level}",
             True,
             (255, 255, 255),
         )
         self.__screen.blit(experience_text, (10, 10))
+
+    def __draw_player_inventory(self):
+        inventory = self.__world.player.inventory
+
+        font = pygame.font.SysFont(None, 20)
+        title_text = font.render(
+            f"Inventario:",
+            True,
+            (255, 255, 255),
+        )
+        self.__screen.blit(title_text, (10, 50))
+
+        opacity_square = pygame.Surface(((len(inventory) * 55) + 10, 65), pygame.SRCALPHA)
+        opacity_square.fill(self.COLOR_UI_OVERLAY)
+
+        self.__screen.blit(opacity_square, (10, 70))
+
+        for i in range(len(inventory)):
+            perk_sprite = inventory[i].sprite
+            self.__screen.blit(perk_sprite.image, (15 + (i * 55), 75))
 
     def __draw_pause_menu(self, game: Game):
         x = self.__world.player.pos_x
@@ -194,7 +215,7 @@ class Display(IDisplay):
         text_width, text_height = time_text.get_size()
 
         opacity_square = pygame.Surface((text_width + 20, text_height + 10), pygame.SRCALPHA)
-        opacity_square.fill((0, 0, 0, 77))
+        opacity_square.fill(self.COLOR_UI_OVERLAY)
 
         box_x = (settings.SCREEN_WIDTH- text_width) // 2 - 10
         box_y = 10
@@ -275,11 +296,17 @@ class Display(IDisplay):
             self.__screen.blit(header_text, ((settings.SCREEN_WIDTH // 2) - 190, (settings.SCREEN_HEIGHT // 2) - 60))
 
             for i in range(len(perks)):
-                upgrade_button = pygame.Rect(0, 0, settings.SCREEN_WIDTH - 100, 45)
-                upgrade_button.x = 50
+                upgrade_button = pygame.Rect(0, 0, settings.SCREEN_WIDTH - 600, 45)
+                upgrade_button.x = 300
                 upgrade_button.y = 400 + (i * 70)
 
                 upgrade_buttons.append(upgrade_button)
+
+                # Assuming the perk has a property 'sprite' which contains the instantiated sprite
+                perk_sprite = perks[i].sprite
+                if perk_sprite:
+                    # Draw the perk sprite to the left of the button
+                    self.__screen.blit(perk_sprite.image, (upgrade_button.x - 50, upgrade_button.y))
 
                 upgrade_text = font.render(str(perks[i]), True, self.COLOR_BUTTON_TEXT)
                 pygame.draw.rect(self.__screen, self.COLOR_BUTTON, upgrade_button)
@@ -336,7 +363,9 @@ class Display(IDisplay):
         if paused:
             self.__draw_pause_menu(game)
 
+        self.__draw_player_inventory()
         self.__draw_clock()
+        self.__draw_player_level()
 
         # Update the display
         pygame.display.flip()

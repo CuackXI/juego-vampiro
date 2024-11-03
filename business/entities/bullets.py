@@ -3,9 +3,10 @@
 import math
 
 from business.entities.entity import MovableEntity
-from business.entities.interfaces import IBullet, IMonster
+from business.entities.interfaces import IBullet, IMonster, IDespawnable
 from business.world.interfaces import IGameWorld
 from presentation.sprite import BulletSprite, TurretBulletSprite, FollowingBulletSprite
+from business.handlers.cooldown_handler import CooldownHandler
 
 class NormalBullet(MovableEntity, IBullet):
     """A bullet that moves towards a target direction."""
@@ -105,26 +106,33 @@ class TurretBullet(MovableEntity, IBullet):
     def __str__(self):
         return f"Bullet(pos=({self._pos_x, self._pos_y}), dir=({self.__dir_x, self.__dir_y}))"
     
-class FollowingBullet(MovableEntity, IBullet):
-    def __init__(self, src_x, src_y, target_monster: IMonster, speed, damage, health):
+class FollowingBullet(MovableEntity, IBullet, IDespawnable):
+    BASE_DESPAWN_COOLDOWN = 2500
+
+    def __init__(self, src_x, src_y, target_monster: IMonster, speed, damage, health, saved_cooldown: float | None = None):
         super().__init__(src_x, src_y, speed, FollowingBulletSprite(src_x, src_y))
-        
-        self.__source = src_x, src_y
+
         self.__target_monster = target_monster
         self.__damage = damage
         self.__max_health = health
-        self.__health = self.__max_health 
+        self.__health = self.__max_health
+        self.__despawn_cooldown = CooldownHandler(self.BASE_DESPAWN_COOLDOWN)
+
+        self.__despawn_cooldown.put_on_cooldown()
+        if saved_cooldown:
+            self.__despawn_cooldown.last_action_time = saved_cooldown
 
         if target_monster:
             self.__dir_x, self.__dir_y = self.__calculate_direction(self.__target_monster.pos_x - src_x, self.__target_monster.pos_y - src_y)
-            
+
     def to_json(self):
         return {
             'pos_x': self.pos_x,
             'pos_y': self.pos_y,
             'damage': self.__damage,
             'health': self.__health,
-            'speed': self.speed
+            'speed': self.speed,
+            'despawn_cooldown': self.__despawn_cooldown.last_action_time
         }
 
     def __calculate_direction(self, dx, dy):
@@ -143,6 +151,10 @@ class FollowingBullet(MovableEntity, IBullet):
     @property
     def health(self) -> float:
         return self.__health
+
+    @property
+    def can_despawn(self) -> bool:
+        return self.__despawn_cooldown.is_action_ready()
 
     def take_damage(self, amount):
         self.__health = max(0, self.__health - amount)
@@ -172,6 +184,7 @@ class FollowingBullet(MovableEntity, IBullet):
             self.__dir_x, self.__dir_y = self.__calculate_direction(dx, dy)
 
             self.move(self.__dir_x, self.__dir_y)
+            self.sprite.update()
 
     @property
     def damage_amount(self):

@@ -98,8 +98,9 @@ class GameWorld(IGameWorld):
                     pos_x = gem_data['pos_x']
                     pos_y = gem_data['pos_y']
                     amount = gem_data['amount']
+                    cooldown = gem_data['despawn_cooldown']
 
-                    self.add_item(ExperienceGem(pos_x, pos_y, amount))
+                    self.add_item(ExperienceGem(pos_x, pos_y, amount, cooldown))
 
     def get_perks_for_display(self):
         amount = 3

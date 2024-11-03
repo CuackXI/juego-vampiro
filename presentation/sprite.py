@@ -22,10 +22,18 @@ class Sprite(pygame.sprite.Sprite):
         """The image of the sprite."""
         return self._image
 
+    @image.setter
+    def image(self, value):
+        self._image = value
+
     @property
     def rect(self) -> pygame.Rect:
         """The rect of the sprite."""
         return self._rect
+
+    @rect.setter
+    def rect(self, value):
+        self._rect = value
 
     def update_pos(self, pos_x: float, pos_y: float):
         """Update the position of the sprite."""
@@ -82,7 +90,6 @@ class PlayerSprite(Sprite):
 
         super().__init__(image, rect)
 
-
 class MonsterSprite(Sprite):
     """A class representing the monster sprite."""
 
@@ -137,39 +144,45 @@ class BigBossMonsterSprite(Sprite):
 class BulletSprite(Sprite):
     """A class representing the bullet sprite."""
 
-    def __init__(self, pos_x: float, pos_y: float):
-        image_size = 30
+    ASSET = "./assets/upgrades_set.png"
 
-        image = pygame.Surface((image_size, image_size), pygame.SRCALPHA)  # pylint: disable=E1101
-        pygame.draw.circle(image, (255, 255, 0), (image_size // 2, image_size // 2), image_size // 2)
-        rect: pygame.rect = image.get_rect(center=(int(pos_x), int(pos_y)))
+    def __init__(self, pos_x: float, pos_y: float):
+        tileset = Tileset(
+            BulletSprite.ASSET, settings.TILE_HEIGHT, settings.TILE_HEIGHT, 8, 1
+        )
+        image: pygame.Surface = tileset.get_tile(0)
+        rect: pygame.Rect = image.get_rect(center=(int(pos_x), int(pos_y)))
 
         super().__init__(image, rect)
     
 class TurretBulletSprite(Sprite):
-    """A class representing the bullet sprite."""
+    """A class representing the turret bullet sprite."""
+
+    ASSET = "./assets/upgrades_set.png"
 
     def __init__(self, pos_x: float, pos_y: float):
-        image_size = 20
-        image = pygame.Surface((image_size, image_size), pygame.SRCALPHA)
-        pygame.draw.circle(image, (255, 100, 100), (image_size // 2, image_size // 2), image_size // 2)
-
+        tileset = Tileset(
+            TurretBulletSprite.ASSET, settings.TILE_HEIGHT, settings.TILE_HEIGHT, 8, 1
+        )
+        image: pygame.Surface = tileset.get_tile(3)
         rect: pygame.Rect = image.get_rect(center=(int(pos_x), int(pos_y)))
 
         super().__init__(image, rect)
 
 class FollowingBulletSprite(Sprite):
-    """A class representing the bullet sprite."""
+    """A class representing the following bullet sprite."""
+
+    ASSET = "./assets/upgrades_set.png"
 
     def __init__(self, pos_x: float, pos_y: float):
-        image_size = 40
-        image = pygame.Surface((image_size, image_size), pygame.SRCALPHA)
-        pygame.draw.circle(image, (0, 0, 0), (image_size // 2, image_size // 2), image_size // 2)
-
+        tileset = Tileset(
+            FollowingBulletSprite.ASSET, settings.TILE_HEIGHT, settings.TILE_HEIGHT, 8, 1
+        )
+        image: pygame.Surface = tileset.get_tile(2)
         rect: pygame.Rect = image.get_rect(center=(int(pos_x), int(pos_y)))
 
         super().__init__(image, rect)
-
+        
 class ExperienceGemSprite(Sprite):
     """A class representing the experience gem sprite."""
 
@@ -187,13 +200,69 @@ class ExperienceGemSprite(Sprite):
 class GuaymallenSprite(Sprite):
     """A class representing the guaymallen sprite."""
 
-    ASSET = "./assets/guaymallen.webp"
+    ASSET = "./assets/upgrades_set.png"
 
     def __init__(self, pos_x: float, pos_y: float):
         tileset = Tileset(
-            GuaymallenSprite.ASSET, settings.TILE_HEIGHT, settings.TILE_HEIGHT, 1, 1
+            BulletSprite.ASSET, settings.TILE_HEIGHT, settings.TILE_HEIGHT, 8, 1
         )
-        image: pygame.Surface = tileset.get_tile(0)
+        image: pygame.Surface = tileset.get_tile(4)
+        rect: pygame.Rect = image.get_rect(center=(int(pos_x), int(pos_y)))
+
+        super().__init__(image, rect)
+
+class RegenerationPerkSprite(Sprite):
+    """A class representing the regeneration perk sprite."""
+
+    ASSET = "./assets/upgrades_set.png"
+
+    def __init__(self, pos_x: float, pos_y: float):
+        tileset = Tileset(
+            RegenerationPerkSprite.ASSET, settings.TILE_HEIGHT, settings.TILE_HEIGHT, 8, 1
+        )
+        image: pygame.Surface = tileset.get_tile(5)
+        rect: pygame.Rect = image.get_rect(center=(int(pos_x), int(pos_y)))
+
+        super().__init__(image, rect)
+
+class MaxHealthPerkSprite(Sprite):
+    """A class representing the max health perk sprite."""
+
+    ASSET = "./assets/upgrades_set.png"
+
+    def __init__(self, pos_x: float, pos_y: float):
+        tileset = Tileset(
+            MaxHealthPerkSprite.ASSET, settings.TILE_HEIGHT, settings.TILE_HEIGHT, 8, 1
+        )
+        image: pygame.Surface = tileset.get_tile(7)
+        rect: pygame.Rect = image.get_rect(center=(int(pos_x), int(pos_y)))
+
+        super().__init__(image, rect)
+
+class DamageMultiplierPerkSprite(Sprite):
+    """A class representing the damage multiplier perk sprite."""
+
+    ASSET = "./assets/upgrades_set.png"
+
+    def __init__(self, pos_x: float, pos_y: float):
+        tileset = Tileset(
+            DamageMultiplierPerkSprite.ASSET, settings.TILE_HEIGHT, settings.TILE_HEIGHT, 8, 1
+        )
+        image: pygame.Surface = tileset.get_tile(1)
+        rect: pygame.Rect = image.get_rect(center=(int(pos_x), int(pos_y)))
+
+        super().__init__(image, rect)
+
+class SpeedPerkSprite(Sprite):
+    """A class representing the speed perk sprite."""
+
+    ASSET = "./assets/upgrades_set.png"
+
+    def __init__(self, pos_x: float, pos_y: float):
+        tileset = Tileset(
+            SpeedPerkSprite.ASSET, settings.TILE_HEIGHT, settings.TILE_HEIGHT, 8, 1
+        )
+        image: pygame.Surface = tileset.get_tile(6)
         rect: pygame.Rect = image.get_rect(center=(int(pos_x), int(pos_y)))
 
         super().__init__(image, rect)

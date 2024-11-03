@@ -2,6 +2,7 @@ from abc import abstractmethod
 
 from persistence.json_interfaces import JSONable
 from business.common.interfaces import IUpdatable
+from presentation.sprite import Sprite
 
 class IPerk(JSONable):
     @abstractmethod
@@ -14,6 +15,15 @@ class IPerk(JSONable):
 
         Returns:
             int | float: The amount.
+        """
+
+    @property
+    @abstractmethod
+    def sprite(self) -> Sprite:
+        """The perk sprite.
+
+        Returns:
+            Sprite: The sprite.
         """
 
     @property

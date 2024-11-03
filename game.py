@@ -102,4 +102,4 @@ class Game:
             
             except Exception as error:
                 # For debugging
-                print(error)
+                print(f'{type(error)} : {error}')

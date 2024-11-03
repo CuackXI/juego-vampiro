@@ -3,25 +3,38 @@
 from business.entities.entity import Entity
 from business.entities.interfaces import IExperienceGem, IPlayer
 from presentation.sprite import ExperienceGemSprite
+from business.handlers.cooldown_handler import CooldownHandler
 
 
 class ExperienceGem(Entity, IExperienceGem):
     """Represents an experience gem in the game world."""
+    
+    BASE_DESPAWN_COOLDOWN = 10000
 
-    def __init__(self, pos_x: float, pos_y: float, amount: int):
+    def __init__(self, pos_x: float, pos_y: float, amount: int, saved_cooldown: float | None = None):
         super().__init__(pos_x, pos_y, ExperienceGemSprite(pos_x, pos_y))
+        self.__despawn_cooldown = CooldownHandler(ExperienceGem.BASE_DESPAWN_COOLDOWN)
         self.__amount = amount
+
+        self.__despawn_cooldown.put_on_cooldown()
+        if saved_cooldown:
+            self.__despawn_cooldown.last_action_time = saved_cooldown
 
     def to_json(self):
         return {
             'pos_x': self.pos_x,
             'pos_y': self.pos_y,
-            'amount': self.__amount
+            'amount': self.__amount,
+            'despawn_cooldown': self.__despawn_cooldown.last_action_time
         }
 
     @property
     def amount(self) -> int:
         return self.__amount
+
+    @property
+    def can_despawn(self) -> bool:
+        return self.__despawn_cooldown.is_action_ready()
 
     def __str__(self):
         return f"ExperienceGem(amount={self.__amount}, pos=({self.pos_x}, {self.pos_y}))"

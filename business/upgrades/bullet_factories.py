@@ -2,6 +2,7 @@ from business.entities.interfaces import IPlayer, IUpdatable
 from business.upgrades.interfaces import IBulletFactory
 from business.entities.bullets import *
 from business.handlers.cooldown_handler import CooldownHandler
+from presentation.sprite import BulletSprite, TurretBulletSprite, FollowingBulletSprite
 
 class NormalBulletFactory(IBulletFactory):
     BASE_LEVEL_STATS = {
@@ -22,6 +23,7 @@ class NormalBulletFactory(IBulletFactory):
     def __init__(self, player: IPlayer):
         self.__level = 1
         self.__player = player
+        self.__sprite = BulletSprite(0, 0)
 
         self.__cooldown_handler = CooldownHandler(self.cooldown)
 
@@ -58,6 +60,10 @@ class NormalBulletFactory(IBulletFactory):
         if self.__level + 1 in NormalBulletFactory.BASE_LEVEL_STATS.keys():
             self.__level += 1
     
+    @property
+    def sprite(self):
+        return self.__sprite
+
     @property
     def upgradable(self):
         return self.__level != max(NormalBulletFactory.BASE_LEVEL_STATS.keys())
@@ -130,6 +136,7 @@ class TurretBulletFactory(IBulletFactory, IUpdatable):
     def __init__(self, player: IPlayer):
         self.__level = 1
         self.__player = player
+        self.__sprite = TurretBulletSprite(0, 0)
 
         self.__cooldown_handler = CooldownHandler(self.cooldown)
 
@@ -165,6 +172,10 @@ class TurretBulletFactory(IBulletFactory, IUpdatable):
     def upgrade(self):
         if self.__level + 1 in TurretBulletFactory.BASE_LEVEL_STATS.keys():
             self.__level += 1
+
+    @property
+    def sprite(self):
+        return self.__sprite
 
     @property
     def upgradable(self):
@@ -239,6 +250,7 @@ class FollowingBulletFactory(IBulletFactory, IUpdatable):
     def __init__(self, player: IPlayer):
         self.__level = 1
         self.__player = player
+        self.__sprite = FollowingBulletSprite(0, 0)
 
         self.__cooldown_handler = CooldownHandler(self.cooldown)
 
@@ -259,8 +271,9 @@ class FollowingBulletFactory(IBulletFactory, IUpdatable):
             damage = bullet_data['damage']
             health = bullet_data['health']
             speed = bullet_data['speed']
+            cooldown = bullet_data['despawn_cooldown']
 
-            bullet = FollowingBullet(pos_x,pos_y,None,speed,damage,health)
+            bullet = FollowingBullet(pos_x, pos_y, None, speed, damage, health, cooldown)
             world.add_bullet(bullet)
 
     def create_bullet(self, world: IGameWorld):
@@ -269,6 +282,10 @@ class FollowingBulletFactory(IBulletFactory, IUpdatable):
     def upgrade(self):
         if self.__level + 1 in FollowingBulletFactory.BASE_LEVEL_STATS.keys():
             self.__level += 1
+
+    @property
+    def sprite(self):
+        return self.__sprite
 
     @property
     def upgradable(self):

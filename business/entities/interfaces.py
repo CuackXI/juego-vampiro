@@ -146,7 +146,19 @@ class IItem(IHasPosition, IUpdatable, JSONable):
             bool: If it's in range.
         """
 
-class IExperienceGem(IItem):
+class IDespawnable():
+    """Interface for entities that can despawn after a set amount of time."""
+
+    @property
+    @abstractmethod
+    def can_despawn(self) -> bool:
+        """If the entity can despawn at a certain point.
+
+        Returns:
+            bool: If it can despawn.
+        """
+
+class IExperienceGem(IDespawnable, IItem):
     """Interface for experience gem entities."""
 
     @property

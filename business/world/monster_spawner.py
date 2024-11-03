@@ -47,6 +47,9 @@ class MonsterSpawner(IMonsterSpawner):
                 elif 'boss.BossMonster' in monster_type:
                     monster = BossMonster(0, 0, monster_data)
                     world.add_monster(monster)
+                elif 'boss2.BigBossMonster' in monster_type:
+                    monster = BigBossMonster(0, 0, monster_data)
+                    world.add_monster(monster)
 
         self.__minute_boss_added = saved_data['monster_spawner']['minute_boss_added']
         self.__second_minute_boss_added = saved_data['monster_spawner']['second_minute_boss_added']
