@@ -48,7 +48,7 @@ class GameWorld(IGameWorld):
 
     def __initialize_perks(self, saved_data = None):
         self.PERKS_U = [NormalBulletFactory(self.__player), TurretBulletFactory(self.__player), FollowingBulletFactory(self.__player)]
-        self.PERKS_S = [RegenerationPerk(self.__player), MaxHealthPerk(self.__player), DamageMultiplierPerk(self.__player)]
+        self.PERKS_S = [RegenerationPerk(self.__player), MaxHealthPerk(self.__player), DamageMultiplierPerk(self.__player), SpeedPerk(self.__player)]
 
         for perk in self.PERKS_S:
             self.__perks.append(perk)
@@ -68,13 +68,12 @@ class GameWorld(IGameWorld):
             # Load updatable perks
             for perk_type in player['updatable']:
                 for perk in self.PERKS_U:
-                    print(perk_type, perk)
-
                     if perk_type == str(type(perk)):
                         for _ in range(player['updatable'][perk_type]['level']):
                             self.give_perk_to_player(perk)
                             perk.load_cooldown(player['updatable'][perk_type]['attack_cooldown'])
         else:
+            # NormalBulletFactory - INITIAL PERK
             self.__player.handle_perk(self.PERKS_U[0])
 
     def __load_bullets(self, saved_data):

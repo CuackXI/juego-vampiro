@@ -24,6 +24,7 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
     BASE_HEALTH_REGEN = 0.5
     BASE_PICK_RANGE = 35.0
     BASE_SPEED = 5.0
+    BASE_SPEED_MULTIPLIER = 1.0
     BASE_LEVELS_EXP = {
         2: 1,
         3: 1,
@@ -45,6 +46,7 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
         self.__cooldown_multiplier = Player.BASE_COOLDOWN_MULTIPLIER
         self.__pick_range = Player.BASE_PICK_RANGE
         self.__health_regen_cooldown = CooldownHandler(Player.BASE_HEALTH_REGEN_COOLDWON)
+        self.__speed_multiplier = Player.BASE_SPEED_MULTIPLIER
 
         self.__static_inventory = []
         self.__updatable_inventory = []
@@ -108,6 +110,14 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
         return self.__damage_multiplier
 
     @property
+    def speed_multiplier(self):
+        for perk in self.__static_inventory:
+            if isinstance(perk, SpeedPerk):
+                return self.__speed_multiplier + perk.upgrade_amount() 
+
+        return self.__speed_multiplier
+
+    @property
     def damage_amount(self):
         pass
 
@@ -143,6 +153,13 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
             perks.append(perk)
 
         return perks
+
+    def move(self, direction_x: float, direction_y: float):
+        self._pos_x += direction_x * self._speed * self.speed_multiplier
+        self._pos_y += direction_y * self._speed * self.speed_multiplier
+
+        self.sprite.update_pos(self._pos_x, self._pos_y)
+
 
     def take_damage(self, amount):
         self.__health = max(0, self.__health - amount)
