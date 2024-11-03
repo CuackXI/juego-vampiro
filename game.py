@@ -11,6 +11,7 @@ from business.handlers.death_handler import DeathHandler
 from business.world.interfaces import IGameWorld
 from presentation.interfaces import IInputHandler
 from business.handlers.clock import GameClockSingleton
+from business.exceptions import *
 
 class Game:
     """
@@ -18,6 +19,8 @@ class Game:
 
     This is the game entrypoint.
     """
+
+    RESET_EVENT = 'RESET'
 
     def __init__(self, game_world: IGameWorld, input_handler: IInputHandler, dao):
         self.__logger = logging.getLogger(self.__class__.__name__)
@@ -81,10 +84,13 @@ class Game:
                     CollisionHandler.handle_collisions(self.__world)
                     DeathHandler.check_deaths(self.__world)
                     GameClockSingleton().update()
-
+        
                 self.__world.display.render_frame(self.__paused, self.__world.in_upgrade, self.__dead, self)
                 self.__clock.tick(settings.FPS)
             except DeadPlayerException:
                 self.__dead = True
-            except:
-                pass
+            except ResetGame:
+                self.clear_save()
+                return Game.RESET_EVENT
+            except Exception as error:
+                print(error)

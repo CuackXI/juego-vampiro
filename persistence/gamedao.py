@@ -38,16 +38,16 @@ class GameJSONDAO(IGameDAO):
         for bullet in game.world.bullets:
             bullets[str(type(bullet))].append(bullet.to_json())
 
-        experience_gems = defaultdict(list)
-        for gem in game.world.experience_gems:
-            experience_gems[str(type(gem))].append(gem.to_json())
+        items = defaultdict(list)
+        for item in game.world.items:
+            items[str(type(item))].append(item.to_json())
 
         player = game.world.player.to_json()
         clock = GameClockSingleton().game_clock
 
         data['monsters'] = monsters
         data['bullets'] = bullets
-        data['gems'] = experience_gems
+        data['items'] = items
         data['player'] = player
         data['clock'] = clock
 

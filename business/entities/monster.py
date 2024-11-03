@@ -3,10 +3,11 @@
 from typing import List
 
 from business.entities.entity import MovableEntity
-from business.entities.interfaces import IDamageable, IHasPosition, IHasSprite, IMonster
+from business.entities.interfaces import IDamageable, IHasPosition, IMonster
 from business.handlers.cooldown_handler import CooldownHandler
 from business.world.interfaces import IGameWorld
-from presentation.sprite import Sprite
+from presentation.sprite import MonsterSprite
+from business.handlers.clock import GameClockSingleton
 import math
 
 class Monster(MovableEntity, IMonster):
@@ -18,10 +19,17 @@ class Monster(MovableEntity, IMonster):
     BASE_ATTACK_RANGE = 50
     BASE_ATTACK_COOLDOWN = 1000
 
-    def __init__(self, src_x: int, src_y: int, sprite: Sprite, saved_data: dict | None = None):
-        super().__init__(src_x, src_y, 2, sprite)
+    def __init__(self, src_x: int, src_y: int, saved_data: dict | None = None):
+        if GameClockSingleton().game_clock / 50000 < 1:
+            self.__multiplier = 1
+        else:
+            self.__multiplier = GameClockSingleton().game_clock / 50000
+
+        super().__init__(src_x, src_y, Monster.BASE_SPEED * self.__multiplier, MonsterSprite(0, 0, self.__multiplier))
+
+        self.__speed = Monster.BASE_SPEED
         self.__max_health = Monster.BASE_HEALTH
-        self.__health: int = self.__max_health
+        self.__health = self.max_health
         self.__damage = Monster.BASE_DAMAGE
         self.__attack_range = Monster.BASE_ATTACK_RANGE
         self.__attack_cooldown = CooldownHandler(Monster.BASE_ATTACK_COOLDOWN)
@@ -54,11 +62,11 @@ class Monster(MovableEntity, IMonster):
 
     @property
     def damage_amount(self):
-        return self.__damage
+        return self.__damage * self.__multiplier
 
     @property
     def max_health(self):
-        return self.__max_health
+        return self.__max_health * self.__multiplier
 
     def __get_normalized_direction(self, entity: "IHasPosition"):
         x1, y1 = self.pos_x, self.pos_y
@@ -69,7 +77,7 @@ class Monster(MovableEntity, IMonster):
         magnitud = math.sqrt(vector_x**2 + vector_y**2)
 
         if magnitud == 0:
-            magnitud = 0.001 # ZERO DIVISION ERROR
+            magnitud = 0.00000001 # ZERO DIVISION ERROR
 
         direccion_x = vector_x / magnitud
         direccion_y = vector_y / magnitud
@@ -79,10 +87,6 @@ class Monster(MovableEntity, IMonster):
         dir_x, dir_y = self.__get_normalized_direction(world.player)
 
         return dir_x, dir_y
-
-    def __movement_collides_with_entities(self, dx: float, dy: float, entities: List[IHasSprite]) -> bool:
-        new_position = self.sprite.rect.move(dx, dy).inflate(-10, -10)
-        return any(e.sprite.rect.colliderect(new_position) for e in entities)
 
     def update(self, world: IGameWorld):
         direction_x, direction_y = self.__get_direction_towards_the_player(world)
@@ -103,8 +107,14 @@ class Monster(MovableEntity, IMonster):
         return f"Monster(hp={self.health}, pos={self.pos_x, self.pos_y})"
 
     @property
-    def health(self) -> int:
+    def health(self) -> float:
         return self.__health
+    
+    @property
+    def speed(self) -> float:
+        if self.__speed * self.__multiplier > 10:
+            return 10
+        return self.__speed * self.__multiplier
 
     def take_damage(self, amount):
         self.__health = max(0, self.__health - amount)

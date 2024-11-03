@@ -2,7 +2,7 @@
 
 from abc import ABC, abstractmethod
 
-from business.entities.interfaces import IBullet, IExperienceGem, IMonster, IPlayer
+from business.entities.interfaces import IBullet, IExperienceGem, IMonster, IPlayer, IItem
 
 class IGameWorld(ABC):
     """Interface for the game world.
@@ -27,19 +27,19 @@ class IGameWorld(ABC):
         """
 
     @abstractmethod
-    def add_experience_gem(self, gem: IExperienceGem):
-        """Adds an experience gem to the world.
+    def add_item(self, item: IItem):
+        """Adds an item to the world.
 
         Args:
-            gem (IExperienceGem): The experience gem to add.
+            item (IItem): The item.
         """
 
     @abstractmethod
-    def remove_experience_gem(self, gem: IExperienceGem):
-        """Removes an experience gem from the world.
+    def remove_item(self, item: IItem):
+        """Removes an item from the world.
 
         Args:
-            gem (IExperienceGem): The experience gem to remove.
+            item (IItem): The item.
         """
 
     @abstractmethod
@@ -100,11 +100,11 @@ class IGameWorld(ABC):
 
     @property
     @abstractmethod
-    def experience_gems(self) -> list[IExperienceGem]:
-        """Gets the list of experience gems in the world.
+    def items(self) -> list[IItem]:
+        """Gets the list of items in the world.
 
         Returns:
-            list[IExperienceGem]: A copy of the list of experience gems in the world.
+            list[IItem]: A copy of the list of items in the world.
         """
 
 
@@ -133,7 +133,6 @@ class IMonsterSpawner(IUpdatable):
         Args:
             world (IGameWorld): The game world in which to spawn the monster.
         """
-
 
 class ITileMap(ABC):
     """Interface for a tile map.

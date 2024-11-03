@@ -2,7 +2,7 @@
 
 from typing import List
 
-from business.entities.interfaces import IBullet, IExperienceGem, IHasSprite, IMonster, IPlayer
+from business.entities.interfaces import IBullet, IItem, IHasSprite, IMonster, IPlayer
 from business.world.interfaces import IGameWorld
 
 
@@ -26,8 +26,11 @@ class CollisionHandler:
         pass
 
     @staticmethod
-    def __handle_gems(gems: List[IExperienceGem], player: IPlayer, world: IGameWorld):
-        pass
+    def __handle_items(items: List[IItem], player: IPlayer, world: IGameWorld):
+        for item in items:
+            if item.in_player_range(player):
+                player.pickup_gem(item, world)
+                world.remove_item(item)
         
     @staticmethod
     def handle_collisions(world: IGameWorld):
@@ -38,4 +41,4 @@ class CollisionHandler:
         """
         CollisionHandler.__handle_bullets(world.bullets, world.monsters)
         CollisionHandler.__handle_monsters(world.monsters, world.player)
-        CollisionHandler.__handle_gems(world.experience_gems, world.player, world)
+        CollisionHandler.__handle_items(world.items, world.player, world)

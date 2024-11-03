@@ -1,7 +1,7 @@
 """This module contains the implementation of the game world."""
 
 import random
-from business.entities.interfaces import IBullet, IExperienceGem, IMonster, IPlayer
+from business.entities.interfaces import IBullet, IMonster, IPlayer, IItem
 from business.world.interfaces import IGameWorld, IMonsterSpawner, ITileMap
 from business.upgrades.perks import *
 from business.upgrades.bullet_factories import *
@@ -15,11 +15,10 @@ class GameWorld(IGameWorld):
     """Represents the game world."""
 
     def __init__(self, spawner: IMonsterSpawner, tile_map: ITileMap, player: IPlayer, display: IDisplay, saved_data: dict | None = None):
-        # Initialize the player and lists for monsters, bullets and gems
         self.__player: IPlayer = player
         self.__monsters: list[IMonster] = []
         self.__bullets: list[IBullet] = []
-        self.__experience_gems: list[IExperienceGem] = []
+        self.__items: list[IItem] = []
         self.in_upgrade = False
         self.__game = None
         self.display = display
@@ -44,7 +43,7 @@ class GameWorld(IGameWorld):
         self.monster_spawner.load_saved_data(self, saved_data.get('monsters'))
 
         self.__load_bullets(saved_data)
-        self.__load_gems(saved_data)
+        self.__load_items(saved_data)
 
     def __initialize_perks(self, saved_data = None):
         self.PERKS_U = [NormalBulletFactory(self.__player), TurretBulletFactory(self.__player), FollowingBulletFactory(self.__player)]
@@ -89,17 +88,17 @@ class GameWorld(IGameWorld):
             if 'FollowingBullet' in bullet_type:
                 FollowingBulletFactory(self.__player).load_bullets(saved_data[bullet_type], self)
 
-    def __load_gems(self, saved_data):
-        saved_data = saved_data.get('gems')
+    def __load_items(self, saved_data):
+        saved_data = saved_data.get('items')
 
-        for gem_type in saved_data:
-            if 'ExperienceGem' in gem_type:
-                for gem_data in saved_data[gem_type]:
+        for item_type in saved_data:
+            if 'ExperienceGem' in item_type:
+                for gem_data in saved_data[item_type]:
                     pos_x = gem_data['pos_x']
                     pos_y = gem_data['pos_y']
                     amount = gem_data['amount']
 
-                    self.add_experience_gem(ExperienceGem(pos_x, pos_y, amount))
+                    self.add_item(ExperienceGem(pos_x, pos_y, amount))
 
     def get_perks_for_display(self):
         amount = 3
@@ -128,8 +127,8 @@ class GameWorld(IGameWorld):
         for monster in self.monsters:
             monster.update(self)
 
-        for gem in self.experience_gems:
-            gem.update(self)
+        for item in self.items:
+            item.update(self)
 
     def activate_upgrade(self):
         self.in_upgrade = True
@@ -143,11 +142,11 @@ class GameWorld(IGameWorld):
     def remove_monster(self, monster: IMonster):
         self.__monsters.remove(monster)
 
-    def add_experience_gem(self, gem: IExperienceGem):
-        self.__experience_gems.append(gem)
+    def add_item(self, item):
+        self.__items.append(item)
 
-    def remove_experience_gem(self, gem: IExperienceGem):
-        self.__experience_gems.remove(gem)
+    def remove_item(self, item):
+        self.__items.remove(item)
 
     def add_bullet(self, bullet: IBullet):
         self.__bullets.append(bullet)
@@ -172,5 +171,5 @@ class GameWorld(IGameWorld):
         return self.__bullets[:]
 
     @property
-    def experience_gems(self) -> list[IExperienceGem]:
-        return self.__experience_gems[:]
+    def items(self) -> list[IItem]:
+        return self.__items[:]

@@ -2,7 +2,7 @@
 import logging
 
 import pygame
-
+import gc
 import settings
 from business.entities.player import Player
 from business.world.game_world import GameWorld
@@ -29,18 +29,10 @@ def initialize_game_world(display, saved_data: dict | None):
 
 def main():
     """Main function to run the game"""
-    # Initialize pygame
     pygame.init()
-
-    # Logging configuration
-    logging.basicConfig(
-        level=logging.DEBUG,  # Change between INFO, WARNING or DEBUG as needed
-        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    )
 
     partidadao = GameJSONDAO()
 
-    # Loads the saved game
     saved_data = partidadao.load_game()
     time = saved_data.get('clock')
     GameClockSingleton(time)
@@ -50,12 +42,22 @@ def main():
     display.load_world(world)
     input_handler = InputHandler(world)
 
-    # Create a game instance and start it
     game = Game(world, input_handler, partidadao)
 
-    game.run()
+    reset = game.run()
 
-    # Properly quit Pygame
+    del game
+    del world
+    del input_handler
+    del display
+    del partidadao
+    GameClockSingleton().delete()
+
+    gc.collect()
+
+    if reset == Game.RESET_EVENT:
+        main()
+
     pygame.quit()
 
 if __name__ == "__main__":

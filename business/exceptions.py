@@ -6,3 +6,6 @@ class DeadPlayerException(Exception):
 
 class EntityOutOfBounds(Exception):
     """When an entity spawns outside the map."""
+
+class ResetGame(Exception):
+    """Game event where the game needs to be reseted."""

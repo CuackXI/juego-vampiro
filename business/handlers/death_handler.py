@@ -25,15 +25,11 @@ class DeathHandler:
         for monster in world.monsters:
             if monster.health <= 0:
                 if random.randint(1,2) == 2:
-                    world.add_experience_gem(ExperienceGem(monster.pos_x, monster.pos_y, 1))
+                    world.add_item(ExperienceGem(monster.pos_x, monster.pos_y, 1))
                 world.remove_monster(monster)
+                
             elif not BoundariesHandler.is_entity_within_world_boundaries(monster):
                 world.remove_monster(monster)
-
-        for gem in world.experience_gems:
-            if gem.in_player_range(world.player):
-                world.player.pickup_gem(gem, world)
-                world.remove_experience_gem(gem)
 
         if world.player.health <= 0:
             raise DeadPlayerException

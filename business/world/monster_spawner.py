@@ -16,7 +16,7 @@ from business.exceptions import EntityOutOfBounds
 class MonsterSpawner(IMonsterSpawner):
     """Spawns monsters in the game world."""
 
-    BASE_DELAY = 250
+    BASE_DELAY = 100
 
     def __init__(self, display: IDisplay):
         self.__display = display
@@ -31,11 +31,11 @@ class MonsterSpawner(IMonsterSpawner):
         """
         for monster_type in saved_data:
             for monster_data in saved_data[monster_type]:
-                monster = Monster(0, 0, MonsterSprite(0, 0), monster_data)
+                monster = Monster(0, 0, monster_data)
                 world.add_monster(monster)
 
     def update(self, world: IGameWorld):
-        if self.__spawn_cooldown.is_action_ready() and len(world.monsters) <= 20:
+        if self.__spawn_cooldown.is_action_ready() and len(world.monsters) <= 40:
             self.spawn_monster(world)
             self.__spawn_cooldown.put_on_cooldown()
 
@@ -68,7 +68,7 @@ class MonsterSpawner(IMonsterSpawner):
                     pos_x = camera_right
                     pos_y = random.randint(camera_top, camera_bottom)
 
-                monster = Monster(pos_x, pos_y, MonsterSprite(pos_x, pos_y))
+                monster = Monster(pos_x, pos_y)
                 world.add_monster(monster)
 
                 break

@@ -1,9 +1,9 @@
 """Module for displaying the game world."""
 
 import pygame
-import logging
 import settings
 from business.world.game_world import GameWorld
+from business.exceptions import *
 from presentation.camera import Camera
 from presentation.interfaces import IDisplay
 from presentation.tileset import Tileset
@@ -256,21 +256,21 @@ class Display(IDisplay):
                 pygame.quit()
                 return
             elif reset_button.collidepoint(mouse_pos):
-                game.reset_game()
+                raise ResetGame
                 return
 
     def __draw_upgrade_menu(self):
         perks = self.__get_perks()
 
-        opacity_square = pygame.Surface((settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT), pygame.SRCALPHA)
-        opacity_square.fill((0, 0, 0, 30))
-        self.__screen.blit(opacity_square, (0, 0))
-
-        upgrade_buttons = []
-
-        font = pygame.font.Font(None, 36)
-
         if len(perks) != 0:
+            opacity_square = pygame.Surface((settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT), pygame.SRCALPHA)
+            opacity_square.fill((0, 0, 0, 30))
+            self.__screen.blit(opacity_square, (0, 0))
+
+            upgrade_buttons = []
+
+            font = pygame.font.Font(None, 36)
+
             for i in range(len(perks)):
                 upgrade_button = pygame.Rect(0, 0, settings.SCREEN_WIDTH - 100, settings.SCREEN_HEIGHT // 20)
                 upgrade_button.x = 50
@@ -282,15 +282,8 @@ class Display(IDisplay):
                 pygame.draw.rect(self.__screen, (0, 0, 0), upgrade_button)
                 self.__screen.blit(upgrade_text, (upgrade_button.x + 40, upgrade_button.y + 10))
         else:
-            upgrade_button = pygame.Rect(0, 0, settings.SCREEN_WIDTH - 100, settings.SCREEN_HEIGHT // 20)
-            upgrade_button.x = 50
-            upgrade_button.y = 700
-
-            upgrade_buttons.append(upgrade_button)
-
-            upgrade_text = font.render(("Sin mejoras disponibles"), True, (255, 255, 255))
-            pygame.draw.rect(self.__screen, (0, 0, 0), upgrade_button)
-            self.__screen.blit(upgrade_text, (upgrade_button.x + 40, upgrade_button.y + 10))
+            self.__world.in_upgrade = False
+            return
 
         mouse_pos = pygame.mouse.get_pos()
 
@@ -309,10 +302,10 @@ class Display(IDisplay):
         self.__render_ground_tiles()
 
         # Draw all the experience gems
-        for gem in self.__world.experience_gems:
-            if self.camera.camera_rect.colliderect(gem.sprite.rect):
-                adjusted_rect = self.camera.apply(gem.sprite.rect)
-                self.__screen.blit(gem.sprite.image, adjusted_rect)
+        for item in self.__world.items:
+            if self.camera.camera_rect.colliderect(item.sprite.rect):
+                adjusted_rect = self.camera.apply(item.sprite.rect)
+                self.__screen.blit(item.sprite.image, adjusted_rect)
 
         # Draw all monsters
         for monster in self.__world.monsters:
