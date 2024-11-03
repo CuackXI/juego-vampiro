@@ -4,6 +4,7 @@ import random
 
 import pygame
 
+from business.entities.interfaces import *
 from business.entities.monsters.monster import Monster
 from business.entities.monsters.boss import BossMonster
 from business.entities.monsters.boss2 import BigBossMonster
@@ -21,8 +22,8 @@ class MonsterSpawner(IMonsterSpawner):
     def __init__(self, display: IDisplay):
         self.__display = display
 
-        self.__monsters = [Monster]
-        self.__bosses = [BossMonster, BigBossMonster]
+        self.__monsters: list[IMonster] = [Monster]
+        self.__bosses: list[IMonster] = [BossMonster, BigBossMonster]
         
         self.__minute_boss_added = False
         self.__second_minute_boss_added = False

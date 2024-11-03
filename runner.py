@@ -1,19 +1,17 @@
 """Runs the game"""
-import logging
-
-import pygame
 import gc
+import pygame
 import settings
 from business.entities.player import Player
 from business.world.game_world import GameWorld
 from business.world.monster_spawner import MonsterSpawner
 from business.world.tile_map import TileMap
+from business.handlers.clock import GameClockSingleton
 from game import Game
 from presentation.display import Display
 from presentation.input_handler import InputHandler
 from presentation.sprite import PlayerSprite
 from persistence.gamedao import GameJSONDAO
-from business.handlers.clock import GameClockSingleton
 
 def initialize_player(saved_data: dict | None):
     """Initializes the player object"""
@@ -44,19 +42,17 @@ def main():
 
     game = Game(world, input_handler, partidadao)
 
-    reset = game.run()
+    event = game.run()
 
-    # Delete variables and instances to properly reset the game
+    # Delete instances from memory to properly reset the game
     del game
-    del world
-    del input_handler
-    del display
     del partidadao
     GameClockSingleton().delete()
 
+    # Call garbage collector to delete those instances
     gc.collect()
 
-    if reset == Game.RESET_EVENT:
+    if event == Game.RESET_EVENT:
         main()
 
     pygame.quit()

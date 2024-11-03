@@ -3,7 +3,7 @@
 import math
 
 from business.entities.entity import MovableEntity
-from business.entities.interfaces import IBullet
+from business.entities.interfaces import IBullet, IMonster
 from business.world.interfaces import IGameWorld
 from presentation.sprite import BulletSprite, TurretBulletSprite, FollowingBulletSprite
 
@@ -15,7 +15,8 @@ class NormalBullet(MovableEntity, IBullet):
 
         self.__dir_x, self.__dir_y = self.__calculate_direction(dst_x - src_x, dst_y - src_y)
         self.__damage = damage
-        self.__health = health
+        self.__max_health = health
+        self.__health = self.__max_health 
 
     def to_json(self):
         return {
@@ -35,7 +36,11 @@ class NormalBullet(MovableEntity, IBullet):
         return 0, 0
 
     @property
-    def health(self) -> int:
+    def max_health(self) -> float:
+        return self.__max_health
+
+    @property
+    def health(self) -> float:
         return self.__health
 
     def take_damage(self, amount):
@@ -59,7 +64,8 @@ class TurretBullet(MovableEntity, IBullet):
         
         self.__dir_x, self.__dir_y = self.__calculate_direction(dst_x - src_x, dst_y - src_y)
         self.__damage = damage
-        self.__health = health
+        self.__max_health = health
+        self.__health = self.__max_health 
 
     def to_json(self):
         return {
@@ -79,7 +85,11 @@ class TurretBullet(MovableEntity, IBullet):
         return 0, 0
 
     @property
-    def health(self) -> int:
+    def max_health(self) -> float:
+        return self.__max_health
+
+    @property
+    def health(self) -> float:
         return self.__health
 
     def take_damage(self, amount):
@@ -96,13 +106,14 @@ class TurretBullet(MovableEntity, IBullet):
         return f"Bullet(pos=({self._pos_x, self._pos_y}), dir=({self.__dir_x, self.__dir_y}))"
     
 class FollowingBullet(MovableEntity, IBullet):
-    def __init__(self, src_x, src_y, target_monster, speed, damage, health):
+    def __init__(self, src_x, src_y, target_monster: IMonster, speed, damage, health):
         super().__init__(src_x, src_y, speed, FollowingBulletSprite(src_x, src_y))
         
         self.__source = src_x, src_y
         self.__target_monster = target_monster
         self.__damage = damage
-        self.__health = health
+        self.__max_health = health
+        self.__health = self.__max_health 
 
         if target_monster:
             self.__dir_x, self.__dir_y = self.__calculate_direction(self.__target_monster.pos_x - src_x, self.__target_monster.pos_y - src_y)
@@ -126,13 +137,17 @@ class FollowingBullet(MovableEntity, IBullet):
         return 0, 0
 
     @property
-    def health(self) -> int:
+    def max_health(self) -> float:
+        return self.__max_health
+
+    @property
+    def health(self) -> float:
         return self.__health
 
     def take_damage(self, amount):
         self.__health = max(0, self.__health - amount)
 
-    def __get_nearest_monster(self, world: IGameWorld):
+    def __get_nearest_monster(self, world: IGameWorld) -> IMonster:
         if not world.monsters:
             return None
 
@@ -154,14 +169,6 @@ class FollowingBullet(MovableEntity, IBullet):
 
             dx = self.__target_monster.pos_x - self.pos_x
             dy = self.__target_monster.pos_y - self.pos_y
-            self.__dir_x, self.__dir_y = self.__calculate_direction(dx, dy)
-
-            self.move(self.__dir_x, self.__dir_y)
-
-        else:
-            dx = self.__source[0]
-            dy = self.__source[1]
-
             self.__dir_x, self.__dir_y = self.__calculate_direction(dx, dy)
 
             self.move(self.__dir_x, self.__dir_y)

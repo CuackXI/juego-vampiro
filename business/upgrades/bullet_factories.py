@@ -1,9 +1,9 @@
 from business.entities.interfaces import IPlayer, IUpdatable
-from business.upgrades.interfaces import IBulletFactory, IPerk
+from business.upgrades.interfaces import IBulletFactory
 from business.entities.bullets import *
 import business.handlers.cooldown_handler as CH
 
-class NormalBulletFactory(IBulletFactory, IPerk):
+class NormalBulletFactory(IBulletFactory):
     BASE_LEVEL_STATS = {
         1: {
             'COOLDOWN': 1000,
@@ -106,7 +106,11 @@ class NormalBulletFactory(IBulletFactory, IPerk):
         self.speed, self.damage, self.health)
         world.add_bullet(bullet)
 
-class TurretBulletFactory(IBulletFactory, IPerk, IUpdatable):
+    def upgrade_amount(self):
+        # Not possible to be implemented
+        pass
+
+class TurretBulletFactory(IBulletFactory, IUpdatable):
 
     BASE_LEVEL_STATS = {
         1: {
@@ -211,7 +215,11 @@ class TurretBulletFactory(IBulletFactory, IPerk, IUpdatable):
         
         world.add_bullet(bullet)
 
-class FollowingBulletFactory(IBulletFactory, IPerk, IUpdatable):
+    def upgrade_amount(self):
+        # Not possible to be implemented
+        pass
+
+class FollowingBulletFactory(IBulletFactory, IUpdatable):
     
     BASE_LEVEL_STATS = {
         1: {
@@ -310,3 +318,7 @@ class FollowingBulletFactory(IBulletFactory, IPerk, IUpdatable):
             print(error)
 
         world.add_bullet(bullet)
+
+    def upgrade_amount(self):
+        # Not possible to be implemented
+        pass

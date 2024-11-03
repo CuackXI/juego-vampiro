@@ -3,6 +3,7 @@
 import random
 from business.entities.interfaces import IBullet, IMonster, IPlayer, IItem
 from business.world.interfaces import IGameWorld, IMonsterSpawner, ITileMap
+from business.upgrades.interfaces import *
 from business.upgrades.perks import *
 from business.upgrades.bullet_factories import *
 from business.entities.bullets import *
@@ -19,9 +20,9 @@ class GameWorld(IGameWorld):
         self.__monsters: list[IMonster] = []
         self.__bullets: list[IBullet] = []
         self.__items: list[IItem] = []
-        self.in_upgrade = False
+        self.__in_upgrade = False
         self.__game = None
-        self.display = display
+        self.__display = display
 
         self.PERKS_U = []
         self.PERKS_S = []
@@ -45,9 +46,9 @@ class GameWorld(IGameWorld):
         self.__load_bullets(saved_data)
         self.__load_items(saved_data)
 
-    def __initialize_perks(self, saved_data = None):
-        self.PERKS_U = [NormalBulletFactory(self.__player), TurretBulletFactory(self.__player), FollowingBulletFactory(self.__player)]
-        self.PERKS_S = [RegenerationPerk(self.__player), MaxHealthPerk(self.__player), DamageMultiplierPerk(self.__player), SpeedPerk(self.__player)]
+    def __initialize_perks(self, saved_data: dict | None = None):
+        self.PERKS_U: list[IBulletFactory] = [NormalBulletFactory(self.__player), TurretBulletFactory(self.__player), FollowingBulletFactory(self.__player)]
+        self.PERKS_S: list[IPerk] = [RegenerationPerk(self.__player), MaxHealthPerk(self.__player), DamageMultiplierPerk(self.__player), SpeedPerk(self.__player)]
 
         for perk in self.PERKS_S:
             self.__perks.append(perk)
@@ -75,7 +76,7 @@ class GameWorld(IGameWorld):
             # NormalBulletFactory - INITIAL PERK
             self.__player.handle_perk(self.PERKS_U[0])
 
-    def __load_bullets(self, saved_data):
+    def __load_bullets(self, saved_data: dict):
         saved_data = saved_data.get('bullets')
 
         for bullet_type in saved_data:
@@ -88,7 +89,7 @@ class GameWorld(IGameWorld):
             if 'FollowingBullet' in bullet_type:
                 FollowingBulletFactory(self.__player).load_bullets(saved_data[bullet_type], self)
 
-    def __load_items(self, saved_data):
+    def __load_items(self, saved_data: dict):
         saved_data = saved_data.get('items')
 
         for item_type in saved_data:
@@ -131,7 +132,7 @@ class GameWorld(IGameWorld):
             item.update(self)
 
     def activate_upgrade(self):
-        self.in_upgrade = True
+        self.__in_upgrade = True
 
     def add_monster(self, monster: IMonster):
         if BoundariesHandler.is_entity_within_world_boundaries(monster):
@@ -153,6 +154,18 @@ class GameWorld(IGameWorld):
 
     def remove_bullet(self, bullet: IBullet):
         self.__bullets.remove(bullet)
+
+    @property
+    def display(self):
+        return self.__display
+
+    @property
+    def in_upgrade(self):
+        return self.__in_upgrade
+    
+    @in_upgrade.setter
+    def in_upgrade(self, value):
+        self.__in_upgrade = value
 
     @property
     def game(self):

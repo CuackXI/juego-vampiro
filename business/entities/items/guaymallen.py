@@ -1,8 +1,7 @@
 """Module for the Guaymallen class."""
 
 from business.entities.entity import Entity
-from business.entities.interfaces import IItem
-from business.world.interfaces import IGameWorld
+from business.entities.interfaces import IItem, IPlayer
 from presentation.sprite import GuaymallenSprite
 
 
@@ -27,5 +26,5 @@ class Guaymallen(Entity, IItem):
     def __str__(self):
         return f"Guaymallen(amount={self.__amount}, pos=({self.pos_x}, {self.pos_y}))"
     
-    def in_player_range(self, player):
+    def in_player_range(self, player: IPlayer):
         return self._get_distance_to(player) <= player.pick_range

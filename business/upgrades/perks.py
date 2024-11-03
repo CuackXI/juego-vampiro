@@ -1,4 +1,5 @@
 from business.upgrades.interfaces import IPerk
+from business.entities.interfaces import IPlayer
 
 class RegenerationPerk(IPerk):
 
@@ -10,7 +11,7 @@ class RegenerationPerk(IPerk):
         5: 12
     }
 
-    def __init__(self, player) -> None:
+    def __init__(self, player: IPlayer) -> None:
         self.__level = 1
         self.__player = player
         
@@ -45,7 +46,7 @@ class MaxHealthPerk(IPerk):
         5: 250
     }
 
-    def __init__(self, player) -> None:
+    def __init__(self, player: IPlayer) -> None:
         self.__level = 1
         self.__player = player
 
@@ -80,7 +81,7 @@ class DamageMultiplierPerk(IPerk):
         5: 4
     }
 
-    def __init__(self, player) -> None:
+    def __init__(self, player: IPlayer) -> None:
         self.__level = 1
         self.__player = player
 
@@ -115,7 +116,7 @@ class SpeedPerk(IPerk):
         5: 1
     }
 
-    def __init__(self, player) -> None:
+    def __init__(self, player: IPlayer) -> None:
         self.__level = 1
         self.__player = player
 

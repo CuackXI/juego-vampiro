@@ -14,7 +14,7 @@ class CollisionHandler:
         return an_entity.sprite.rect.colliderect(another_entity.sprite.rect)
 
     @staticmethod
-    def __handle_bullets(bullets: List[IBullet], monsters: List[IMonster]):
+    def __handle_bullets(bullets: list[IBullet], monsters: list[IMonster]):
         for bullet in bullets:
             for monster in monsters:
                 if CollisionHandler.__collides_with(bullet, monster):
@@ -22,11 +22,11 @@ class CollisionHandler:
                     bullet.take_damage(bullet.damage_amount)
 
     @staticmethod
-    def __handle_monsters(monsters: List[IMonster], player: IPlayer):
+    def __handle_monsters(monsters: list[IMonster], player: IPlayer):
         pass
 
     @staticmethod
-    def __handle_items(items: List[IItem], player: IPlayer, world: IGameWorld):
+    def __handle_items(items: list[IItem], player: IPlayer, world: IGameWorld):
         for item in items:
             if item.in_player_range(player):
                 player.pickup_item(item, world)

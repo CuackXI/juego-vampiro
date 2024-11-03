@@ -58,4 +58,4 @@ class GameJSONDAO(IGameDAO):
         return data
     
     def clear_save(self):
-        self.__save_data({})
+        self.__save_data(GameJSONDAO.BASE_GAME_DATA)

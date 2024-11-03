@@ -3,10 +3,9 @@
 import logging
 from abc import abstractmethod
 
-from business.entities.interfaces import ICanMove, IDamageable, IHasPosition, IHasSprite
+from business.entities.interfaces import *
 from business.world.interfaces import IGameWorld
 from presentation.sprite import Sprite
-from business.handlers.boundaries_handler import BoundariesHandler
 
 class Entity(IHasPosition, IHasSprite):
     """Base class for all entities in the game."""

@@ -6,12 +6,11 @@ from business.entities.entity import MovableEntity
 from business.entities.items.experience_gem import ExperienceGem
 from business.entities.items.guaymallen import Guaymallen
 from business.entities.interfaces import ICanDealDamage, IDamageable, IPlayer, IItem
-import business.upgrades.bullet_factories as bf
+from business.upgrades.interfaces import IBulletFactory
 from business.handlers.cooldown_handler import CooldownHandler
 from business.upgrades.perks import *
 from business.world.interfaces import IGameWorld
 from presentation.sprite import Sprite
-
 
 class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
     """Player entity.
@@ -49,8 +48,8 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
         self.__health_regen_cooldown = CooldownHandler(Player.BASE_HEALTH_REGEN_COOLDWON)
         self.__speed_multiplier = Player.BASE_SPEED_MULTIPLIER
 
-        self.__static_inventory = []
-        self.__updatable_inventory = []
+        self.__static_inventory: list[IPerk] = []
+        self.__updatable_inventory: list[IBulletFactory] = []
 
         if saved_data:
             self.__load_saved_data(saved_data)
@@ -192,8 +191,8 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
                 
             world.activate_upgrade()
 
-    def handle_perk(self, perk):
-        if isinstance(perk, bf.IBulletFactory):
+    def handle_perk(self, perk: IPerk):
+        if isinstance(perk, IBulletFactory):
             if perk not in self.__updatable_inventory:
                 self.__updatable_inventory.append(perk)
             else:

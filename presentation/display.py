@@ -2,32 +2,36 @@
 
 import pygame
 import settings
-from business.world.game_world import GameWorld
+from business.world.interfaces import IGameWorld
 from business.exceptions import *
 from presentation.camera import Camera
 from presentation.interfaces import IDisplay
 from presentation.tileset import Tileset
 from business.handlers.clock import GameClockSingleton
-import random
+from business.entities.interfaces import IPlayer, IMonster
 from game import Game
 
 class Display(IDisplay):
     """Class for displaying the game world."""
 
     def __init__(self):
-        # Set the window display mode
         self.__screen = pygame.display.set_mode(settings.SCREEN_DIMENSION)
 
-        # Set the window title
         pygame.display.set_caption(settings.GAME_TITLE)
 
-        # Initialize the camera
-        self.camera = Camera()
+        self.__camera = Camera()
 
         self.__perks_for_display = []
 
         self.__ground_tileset = self.__load_ground_tileset()
-        self.__world: GameWorld = None
+        self.__world: IGameWorld = None
+
+    def load_world(self, world: IGameWorld):
+        self.__world = world
+
+    @property
+    def camera(self) -> Camera:
+        return self.__camera
 
     def __get_perks(self):
         if len(self.__perks_for_display) == 0:
@@ -41,7 +45,6 @@ class Display(IDisplay):
         )
 
     def __render_ground_tiles(self):
-        # Calculate the range of tiles to render based on the camera position
         start_col = max(0, self.camera.camera_rect.left // settings.TILE_WIDTH)
         end_col = min(
             settings.WORLD_COLUMNS, (self.camera.camera_rect.right // settings.TILE_WIDTH) + 1
@@ -53,11 +56,8 @@ class Display(IDisplay):
 
         for row in range(start_row, end_row):
             for col in range(start_col, end_col):
-                # Get the tile index from the tile map
-                # tile_index = self.__world.tile_map.get(row, col)
                 tile_image = self.__ground_tileset.get_tile(1)
 
-                # Calculate the position on the screen
                 x = col * settings.TILE_WIDTH - self.camera.camera_rect.left
                 y = row * settings.TILE_HEIGHT - self.camera.camera_rect.top
 
@@ -65,36 +65,32 @@ class Display(IDisplay):
 
     def __draw_player_health_bar(self):
         """Draws the player's health bar and health value on the screen."""
-        player = self.__world.player
+        player: IPlayer = self.__world.player
 
-        # Define the health bar dimensions
         bar_width = settings.TILE_WIDTH
         bar_height = 5
         bar_x = player.sprite.rect.centerx - bar_width // 2 - self.camera.camera_rect.left
         bar_y = player.sprite.rect.bottom + 5 - self.camera.camera_rect.top
 
-        # Draw the background bar (red)
         bg_rect = pygame.Rect(bar_x, bar_y, bar_width, bar_height)
         pygame.draw.rect(self.__screen, (255, 0, 0), bg_rect)
 
-        # Draw the health bar (green)
         health_percentage = player.health / player.max_health
         health_width = int(bar_width * health_percentage)
         health_rect = pygame.Rect(bar_x, bar_y, health_width, bar_height)
         pygame.draw.rect(self.__screen, (0, 255, 0), health_rect)
 
-        # Render the health value
         health_text = f"{int(player.health)}"
-        font = pygame.font.Font(None, 24)  # Use default font and set size
-        text_surface = font.render(health_text, True, (255, 255, 255))  # White text
-        text_x = bar_x + (bar_width - text_surface.get_width()) // 2  # Center below the health bar
-        text_y = bar_y + bar_height + 5  # Position below the health bar
+        font = pygame.font.Font(None, 24)
+        text_surface = font.render(health_text, True, (255, 255, 255))
+        text_x = bar_x + (bar_width - text_surface.get_width()) // 2
+        text_y = bar_y + bar_height + 5
 
         # Draw the health value text
         self.__screen.blit(text_surface, (text_x, text_y))
 
-    def __draw_monster_health_bar(self, monster):
-        """Draws the monster's health bar and health value on the screen."""
+    def __draw_monster_health_bar(self, monster: IMonster):
+        """Draws the monster's health bar and health value on the screen, only if its health is under its max health."""
         
         # Define the health bar dimensions
         bar_width = settings.TILE_WIDTH
@@ -127,10 +123,7 @@ class Display(IDisplay):
         )
         self.__screen.blit(experience_text, (10, 10))
 
-    def load_world(self, world: GameWorld):
-        self.__world = world
-
-    def __draw_pause_menu(self, game):
+    def __draw_pause_menu(self, game: Game):
         x = self.__world.player.pos_x
         y = self.__world.player.pos_y
 
@@ -204,7 +197,7 @@ class Display(IDisplay):
 
         self.__screen.blit(time_text, (box_x + 10, box_y + 5))
 
-    def __draw_game_over_screen(self, game):
+    def __draw_game_over_screen(self, game: Game):
         x = self.__world.player.pos_x
         y = self.__world.player.pos_y
 
@@ -257,7 +250,6 @@ class Display(IDisplay):
                 return
             elif reset_button.collidepoint(mouse_pos):
                 raise ResetGame
-                return
 
     def __draw_upgrade_menu(self):
         perks = self.__get_perks()
@@ -267,7 +259,7 @@ class Display(IDisplay):
             opacity_square.fill((0, 0, 0, 30))
             self.__screen.blit(opacity_square, (0, 0))
 
-            upgrade_buttons = []
+            upgrade_buttons: list[pygame.Rect] = []
 
             font = pygame.font.Font(None, 36)
 

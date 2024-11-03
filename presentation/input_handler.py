@@ -5,6 +5,7 @@ import pygame
 from business.world.game_world import GameWorld
 from presentation.interfaces import IInputHandler
 from business.handlers.boundaries_handler import BoundariesHandler
+from game import Game
 
 class InputHandler(IInputHandler):
     """Handles user input for the game."""
@@ -53,6 +54,5 @@ class InputHandler(IInputHandler):
         keys = pygame.key.get_pressed()
         self.__get_player_movement(keys)
 
-    def process_pause(self, game):
-        """Toggles the paused state of the game."""
+    def process_pause(self, game: Game):
         return not game.paused

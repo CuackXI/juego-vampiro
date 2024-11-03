@@ -2,7 +2,9 @@
 
 from abc import ABC, abstractmethod
 
-from business.entities.interfaces import IBullet, IExperienceGem, IMonster, IPlayer, IItem
+from business.entities.interfaces import IBullet, IMonster, IPlayer, IItem
+from business.upgrades.interfaces import IPerk
+from presentation.interfaces import IDisplay
 
 class IGameWorld(ABC):
     """Interface for the game world.
@@ -61,6 +63,28 @@ class IGameWorld(ABC):
     @abstractmethod
     def update(self):
         """Updates the state of the world and all updatable entities within it."""
+
+    @abstractmethod
+    def get_perks_for_display(self):
+        """Gets a random set of perks for the upgrade menu."""
+
+    @abstractmethod
+    def give_perk_to_player(self, perk: IPerk):
+        """Gives a certain perk to the world player."""
+
+    @abstractmethod
+    def activate_upgrade(self):
+        """Creates the activate upgrade state."""
+
+    @property
+    @abstractmethod
+    def display(self) -> IDisplay:
+        """The world display."""
+
+    @property
+    @abstractmethod
+    def in_upgrade(self):
+        """If the world is in upgrade state."""
 
     @property
     @abstractmethod
@@ -125,6 +149,14 @@ class IMonsterSpawner(IUpdatable):
 
     A monster spawner is responsible for spawning monsters in the game world.
     """
+
+    @abstractmethod
+    def load_saved_data(self, data: dict):
+        """Loads the latest saved data of the monsters in screen.
+
+        Args:
+            data (dict): The data.
+        """
 
     @abstractmethod
     def spawn_monster(self, world: IGameWorld):

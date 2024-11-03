@@ -17,11 +17,11 @@ class Camera:
     """
 
     def __init__(self):
-        self.camera_rect = pygame.Rect(0, 0, settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT)
+        self.camera_rect: pygame.Rect = pygame.Rect(0, 0, settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT)
         self.world_width = settings.WORLD_WIDTH
         self.world_height = settings.WORLD_HEIGHT
 
-    def apply(self, rect):
+    def apply(self, rect: pygame.Rect):
         """Apply the camera offset to a rectangle.
 
         Args:
@@ -29,19 +29,16 @@ class Camera:
         """
         return rect.move(-self.camera_rect.left, -self.camera_rect.top)
 
-    def update(self, target_rect):
+    def update(self, target_rect: pygame.Rect):
         """Update the camera position based on the target rectangle.
 
         Args:
             target_rect (pygame.Rect): The target rectangle to follow.
         """
-        # Center the camera on the target
         x = target_rect.centerx - settings.SCREEN_WIDTH // 2
         y = target_rect.centery - settings.SCREEN_HEIGHT // 2
 
-        # Limit scrolling to world boundaries
         x = max(0, min(x, self.world_width - settings.SCREEN_WIDTH))
         y = max(0, min(y, self.world_height - settings.SCREEN_HEIGHT))
 
-        # Update the camera rectangle
         self.camera_rect = pygame.Rect(x, y, settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT)

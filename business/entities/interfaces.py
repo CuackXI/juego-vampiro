@@ -2,48 +2,10 @@
 
 from abc import ABC, abstractmethod
 
+from business.upgrades.interfaces import IPerk
+from persistence.json_interfaces import JSONable
 from presentation.sprite import Sprite
-
-class ICanDealDamage(ABC):
-    """Interface for entities that can deal damage."""
-
-    @property
-    @abstractmethod
-    def damage_amount(self) -> int:
-        """The amount of damage the entity can deal.
-
-        Returns:
-            int: The amount of damage the entity can deal.
-        """
-
-
-class IDamageable(ABC):
-    """Interface for entities that can take damage."""
-
-    @property
-    @abstractmethod
-    def health(self) -> int:
-        """The health of the entity.
-
-        Returns:
-            int: The health of the entity.
-        """
-
-    @abstractmethod
-    def take_damage(self, amount: int):
-        """Take damage.
-
-        Args:
-            amount (int): The amount of damage to take.
-        """
-
-
-class IUpdatable(ABC):
-    """Interface for entities that can be updated."""
-
-    @abstractmethod
-    def update(self, world):
-        """Update the state of the entity."""
+from business.common.interfaces import IUpdatable
 
 
 class IHasSprite(ABC):
@@ -51,7 +13,7 @@ class IHasSprite(ABC):
 
     @property
     @abstractmethod
-    def sprite(self) -> Sprite:
+    def sprite(self) -> "Sprite":
         """The sprite of the entity.
 
         Returns:
@@ -104,22 +66,75 @@ class ICanMove(IHasPosition):
             direction_y (float): The direction in y-coordinate.
         """
 
+class ICanDealDamage(ABC):
+    """Interface for entities that can deal damage."""
 
-class IMonster(IUpdatable, ICanMove, IDamageable, ICanDealDamage):
+    @property
+    @abstractmethod
+    def damage_amount(self) -> int:
+        """The amount of damage the entity can deal.
+
+        Returns:
+            int: The amount of damage the entity can deal.
+        """
+
+class IDamageable(ABC):
+    """Interface for entities that can take damage."""
+
+    @property
+    @abstractmethod
+    def max_health(self) -> float:
+        """The maximum possible health of the entity.
+
+        Returns:
+            float: The health amount.
+        """
+
+    @property
+    @abstractmethod
+    def health(self) -> int:
+        """The health of the entity.
+
+        Returns:
+            int: The health of the entity.
+        """
+
+    @abstractmethod
+    def take_damage(self, amount: float):
+        """Take damage.
+
+        Args:
+            amount (int): The amount of damage to take.
+        """
+
+class ICanHeal(ABC):
+    """Interface for entities that can heal themselves"""
+
+    @abstractmethod
+    def heal(self, amount: float):
+        """Heals the entity by that amount.
+
+        Args:
+            amount (float): The amount.
+        """
+
+class IMonster(IUpdatable, ICanMove, IDamageable, ICanDealDamage, JSONable):
     """Interface for monster entities."""
     @property
     @abstractmethod
-    def max_health(self) -> int:
+    def max_health(self) -> float:
         """The maximum health of the entity.
 
         Returns:
-            int: The maximum health of the entity.
+            float: The maximum health of the entity.
         """
 
-class IBullet(IUpdatable, ICanMove, IDamageable, ICanDealDamage):
+class IBullet(IUpdatable, ICanMove, IDamageable, ICanDealDamage, JSONable):
     """Interface for bullet entities."""
     
-class IItem(IHasPosition):
+class IItem(IHasPosition, IUpdatable, JSONable):
+    """Interface for items that can be picked up by the player"""
+    
     @abstractmethod
     def in_player_range(self, player) -> bool:
         """Detects if the player is in range of the gem.
@@ -131,7 +146,7 @@ class IItem(IHasPosition):
             bool: If it's in range.
         """
 
-class IExperienceGem(IItem, IHasPosition):
+class IExperienceGem(IItem):
     """Interface for experience gem entities."""
 
     @property
@@ -143,11 +158,11 @@ class IExperienceGem(IItem, IHasPosition):
             int: The amount of experience the gem gives.
         """
 
-class IPlayer(IUpdatable, ICanMove, IDamageable, ICanDealDamage):
+class IPlayer(IUpdatable, ICanMove, IDamageable, ICanDealDamage, ICanHeal, JSONable):
     """Interface for the player entity."""
 
     @abstractmethod
-    def pickup_item(self, item: IItem):
+    def pickup_item(self, item: "IItem"):
         """Picks up an item.
 
         Args:
@@ -193,16 +208,29 @@ class IPlayer(IUpdatable, ICanMove, IDamageable, ICanDealDamage):
         Returns:
             float: The multiplier that will be applied on bullets.
         """
-    
+
     @property
     @abstractmethod
-    def inventory(self) -> list:
+    def inventory(self) -> "list[IPerk]":
         """A list of all the perks the player has obtained.
 
         Returns:
-            list: The list of perks.
+            list[IPerk]: The list of perks.
+        """
+
+    @property
+    @abstractmethod
+    def pick_range(self) -> float:
+        """The distance in pixels from which the player can pick items.
+
+        Returns:
+            float: The distance in pixels.
         """
 
     @abstractmethod
-    def handle_perk(self):
-        """Handles what happens with a perk with the current inventory"""
+    def handle_perk(self, perk: "IPerk"):
+        """Handles what happens with a perk with the current inventory
+
+        Args:
+            perk (IPerk): The perk.
+        """

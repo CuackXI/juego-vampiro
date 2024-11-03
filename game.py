@@ -5,13 +5,15 @@ import logging
 import pygame
 
 import settings
-from business.exceptions import DeadPlayerException
 from business.handlers.colission_handler import CollisionHandler
 from business.handlers.death_handler import DeathHandler
 from business.world.interfaces import IGameWorld
-from presentation.interfaces import IInputHandler
 from business.handlers.clock import GameClockSingleton
-from business.exceptions import *
+from business.exceptions import DeadPlayerException, ResetGame
+from presentation.interfaces import IInputHandler
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from persistence.daointerfaces import IGameDAO
 
 class Game:
     """
@@ -22,7 +24,7 @@ class Game:
 
     RESET_EVENT = 'RESET'
 
-    def __init__(self, game_world: IGameWorld, input_handler: IInputHandler, dao):
+    def __init__(self, game_world: IGameWorld, input_handler: IInputHandler, dao: "IGameDAO"):
         self.__logger = logging.getLogger(self.__class__.__name__)
         self.__clock = pygame.time.Clock()
         self.__world = game_world
@@ -34,36 +36,41 @@ class Game:
 
     @property
     def paused(self):
+        """If the game is being paused."""
         return self.__paused
 
     @property
     def elapsed_time(self):
+        """The elapsed time using pygame clock"""
         return pygame.time.get_ticks()
     
     @property
     def world(self):
+        """The gameworld"""
         return self.__world
 
     def close_game_loop(self):
+        """Method to close the game loop"""
         self.__running = False
 
     def process_game_events(self):
+        """Process common pygame events"""
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.__logger.debug("QUIT event detected")
                 self.__running = False
 
     def save_game(self):
-        try:
-            if not self.__dead:
-                self.__dao.save_game(self)
-        except Exception as e:
-            print(e)
+        """Saves the game if the player is not dead"""
+        if not self.__dead:
+            self.__dao.save_game(self)
 
     def clear_save(self):
+        """Clears the save file."""
         self.__dao.clear_save()
 
     def unpause_event(self):
+        """Unpauses the game."""
         self.__paused = not self.__paused
 
     def run(self):
@@ -92,5 +99,7 @@ class Game:
             except ResetGame:
                 self.clear_save()
                 return Game.RESET_EVENT
+            
             except Exception as error:
+                # For debugging
                 print(error)

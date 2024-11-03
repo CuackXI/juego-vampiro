@@ -1,20 +1,12 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 
-from business.entities.interfaces import *
+from persistence.json_interfaces import JSONable
+from business.common.interfaces import IUpdatable
 
-class IPerk():
+class IPerk(JSONable):
     @abstractmethod
     def upgrade(self):
         """It upgrades the perk to the next level."""
-
-    @property
-    @abstractmethod
-    def perk_type(self) -> str:
-        """The type of perk.
-
-        Returns:
-            str: The type.
-        """
         
     @abstractmethod
     def upgrade_amount(self) -> int | float:
@@ -33,10 +25,18 @@ class IPerk():
             bool: If it's upgradable.
         """
 
-class IBulletFactory(IUpdatable):
+class IBulletFactory(IPerk, IUpdatable):
     @abstractmethod
     def create_bullet(self):
         """Instances bullet of the specified type in the direction given by the player."""
+
+    @abstractmethod
+    def load_cooldown(self, cooldown: float):
+        """Loads the last cooldown of the CooldownHandler from the save file.
+
+        Args:
+            cooldown (float): The cooldown amount.
+        """
 
     @property
     @abstractmethod
