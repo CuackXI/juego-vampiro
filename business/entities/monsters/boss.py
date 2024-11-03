@@ -1,38 +1,30 @@
 """This module contains the Monster class, which represents a monster entity in the game."""
 
-from typing import List
-
 from business.entities.entity import MovableEntity
 from business.entities.interfaces import IDamageable, IHasPosition, IMonster
 from business.handlers.cooldown_handler import CooldownHandler
 from business.world.interfaces import IGameWorld
-from presentation.sprite import MonsterSprite
-from business.handlers.clock import GameClockSingleton
+from presentation.sprite import BossMonsterSprite
 import math
 
-class Monster(MovableEntity, IMonster):
+class BossMonster(MovableEntity, IMonster):
     """A monster entity in the game."""
 
-    BASE_SPEED = 2
-    BASE_HEALTH = 10
-    BASE_DAMAGE = 10
-    BASE_ATTACK_RANGE = 50
-    BASE_ATTACK_COOLDOWN = 1000
+    BASE_SPEED = 3
+    BASE_HEALTH = 2000
+    BASE_DAMAGE = 100
+    BASE_ATTACK_RANGE = 100
+    BASE_ATTACK_COOLDOWN = 2000
 
     def __init__(self, src_x: int, src_y: int, saved_data: dict | None = None):
-        if GameClockSingleton().game_clock / 50000 < 1:
-            self.__multiplier = 1
-        else:
-            self.__multiplier = GameClockSingleton().game_clock / 50000
+        super().__init__(src_x, src_y, BossMonster.BASE_SPEED, BossMonsterSprite(0, 0, 5))
 
-        super().__init__(src_x, src_y, Monster.BASE_SPEED * self.__multiplier, MonsterSprite(0, 0, self.__multiplier))
-
-        self.__speed = Monster.BASE_SPEED
-        self.__max_health = Monster.BASE_HEALTH
+        self.__speed = BossMonster.BASE_SPEED
+        self.__max_health = BossMonster.BASE_HEALTH
         self.__health = self.max_health
-        self.__damage = Monster.BASE_DAMAGE
-        self.__attack_range = Monster.BASE_ATTACK_RANGE
-        self.__attack_cooldown = CooldownHandler(Monster.BASE_ATTACK_COOLDOWN)
+        self.__damage = BossMonster.BASE_DAMAGE
+        self.__attack_range = BossMonster.BASE_ATTACK_RANGE
+        self.__attack_cooldown = CooldownHandler(BossMonster.BASE_ATTACK_COOLDOWN)
 
         if saved_data:
             self.__load_saved_data(saved_data)
@@ -62,11 +54,11 @@ class Monster(MovableEntity, IMonster):
 
     @property
     def damage_amount(self):
-        return self.__damage * self.__multiplier
+        return self.__damage
 
     @property
     def max_health(self):
-        return self.__max_health * self.__multiplier
+        return self.__max_health
 
     def __get_normalized_direction(self, entity: "IHasPosition"):
         x1, y1 = self.pos_x, self.pos_y
@@ -93,10 +85,6 @@ class Monster(MovableEntity, IMonster):
         if (direction_x, direction_y) == (0, 0):
             return
 
-        monsters = [m for m in world.monsters if m != self]
-        dx, dy = direction_x, direction_y
-        # TODO: Implementar mejores colisiones
-        # if not self.__movement_collides_with_entities(dx, dy, monsters):
         self.move(direction_x, direction_y)
 
         self.attack(world.player)
@@ -112,9 +100,7 @@ class Monster(MovableEntity, IMonster):
     
     @property
     def speed(self) -> float:
-        if self.__speed * self.__multiplier > 10:
-            return 10
-        return self.__speed * self.__multiplier
+        self.__speed
 
     def take_damage(self, amount):
         self.__health = max(0, self.__health - amount)

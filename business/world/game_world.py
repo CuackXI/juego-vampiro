@@ -5,7 +5,7 @@ from business.entities.interfaces import IBullet, IMonster, IPlayer, IItem
 from business.world.interfaces import IGameWorld, IMonsterSpawner, ITileMap
 from business.upgrades.perks import *
 from business.upgrades.bullet_factories import *
-from business.entities.bullet import *
+from business.entities.bullets import *
 from business.handlers.boundaries_handler import BoundariesHandler
 from business.exceptions import * 
 from presentation.interfaces import IDisplay

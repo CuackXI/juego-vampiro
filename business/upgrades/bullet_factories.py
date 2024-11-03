@@ -1,6 +1,6 @@
 from business.entities.interfaces import IPlayer, IUpdatable
 from business.upgrades.interfaces import IBulletFactory, IPerk
-from business.entities.bullet import *
+from business.entities.bullets import *
 import business.handlers.cooldown_handler as CH
 
 class NormalBulletFactory(IBulletFactory, IPerk):

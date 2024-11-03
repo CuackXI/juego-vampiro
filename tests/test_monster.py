@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import MagicMock, patch
 
 from business.entities.interfaces import IDamageable
-from business.entities.monster import Monster
+from business.entities.monsters.monster import Monster
 
 
 class TestMonster(unittest.TestCase):

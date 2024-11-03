@@ -1,17 +1,16 @@
 """This module contains the MonsterSpawner class."""
 
-import logging
 import random
 
 import pygame
 
-import settings
-from business.entities.monster import Monster
+from business.entities.monsters.monster import Monster
+from business.entities.monsters.boss import BossMonster
 from business.world.interfaces import IGameWorld, IMonsterSpawner
-from presentation.sprite import MonsterSprite
 from presentation.interfaces import IDisplay
 import business.handlers.cooldown_handler as CH
 from business.exceptions import EntityOutOfBounds
+from business.handlers.clock import GameClockSingleton
 
 class MonsterSpawner(IMonsterSpawner):
     """Spawns monsters in the game world."""
@@ -20,6 +19,12 @@ class MonsterSpawner(IMonsterSpawner):
 
     def __init__(self, display: IDisplay):
         self.__display = display
+
+        self.__monsters = [Monster]
+        self.__bosses = [BossMonster]
+        
+        self.__minute_boss_added = False
+
         self.__spawn_cooldown = CH.CooldownHandler(MonsterSpawner.BASE_DELAY)
 
     def load_saved_data(self, world: IGameWorld, saved_data: list):
@@ -68,8 +73,13 @@ class MonsterSpawner(IMonsterSpawner):
                     pos_x = camera_right
                     pos_y = random.randint(camera_top, camera_bottom)
 
-                monster = Monster(pos_x, pos_y)
-                world.add_monster(monster)
+                monster = random.choice(self.__monsters)
+                world.add_monster(monster(pos_x, pos_y))
+
+                if GameClockSingleton().game_clock > 60000 and not self.__minute_boss_added:
+                    boss = random.choice(self.__bosses)
+                    world.add_monster(boss(pos_x, pos_y))
+                    self.__minute_boss_added = True
 
                 break
             except EntityOutOfBounds:

@@ -100,6 +100,22 @@ class MonsterSprite(Sprite):
 
         super().__init__(image, rect)
 
+class BossMonsterSprite(Sprite):
+    """A class representing the boss monster sprite."""
+
+    ASSET = "./assets/boss1.png"
+
+    def __init__(self, pos_x: float, pos_y: float, size: float):
+        image = pygame.image.load(BossMonsterSprite.ASSET).convert_alpha()
+        original_width, original_height = image.get_size()
+
+        new_width = int(original_width * size)
+        new_height = int(original_height * size)
+
+        image = pygame.transform.scale(image, (new_width, new_height))
+        rect = image.get_rect(center=(int(pos_x), int(pos_y)))
+
+        super().__init__(image, rect)
 
 class BulletSprite(Sprite):
     """A class representing the bullet sprite."""
