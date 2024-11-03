@@ -1,7 +1,7 @@
 from business.entities.interfaces import IPlayer, IUpdatable
 from business.upgrades.interfaces import IBulletFactory
 from business.entities.bullets import *
-import business.handlers.cooldown_handler as CH
+from business.handlers.cooldown_handler import CooldownHandler
 
 class NormalBulletFactory(IBulletFactory):
     BASE_LEVEL_STATS = {
@@ -23,7 +23,7 @@ class NormalBulletFactory(IBulletFactory):
         self.__level = 1
         self.__player = player
 
-        self.__cooldown_handler = CH.CooldownHandler(self.cooldown)
+        self.__cooldown_handler = CooldownHandler(self.cooldown)
 
     def load_cooldown(self, amount):
         self.__cooldown_handler.last_action_time = amount
@@ -131,7 +131,7 @@ class TurretBulletFactory(IBulletFactory, IUpdatable):
         self.__level = 1
         self.__player = player
 
-        self.__cooldown_handler = CH.CooldownHandler(self.cooldown)
+        self.__cooldown_handler = CooldownHandler(self.cooldown)
 
     def load_cooldown(self, amount):
         self.__cooldown_handler.last_action_time = amount
@@ -240,7 +240,7 @@ class FollowingBulletFactory(IBulletFactory, IUpdatable):
         self.__level = 1
         self.__player = player
 
-        self.__cooldown_handler = CH.CooldownHandler(self.cooldown)
+        self.__cooldown_handler = CooldownHandler(self.cooldown)
 
     def load_cooldown(self, amount):
         self.__cooldown_handler.last_action_time = amount
