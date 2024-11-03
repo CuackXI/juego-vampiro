@@ -10,7 +10,7 @@ from business.entities.monsters.boss import BossMonster
 from business.entities.monsters.boss2 import BigBossMonster
 from business.world.interfaces import IGameWorld, IMonsterSpawner
 from presentation.interfaces import IDisplay
-import business.handlers.cooldown_handler as CH
+from business.handlers.cooldown_handler import CooldownHandler
 from business.exceptions import EntityOutOfBounds
 from business.handlers.clock import GameClockSingleton
 
@@ -28,7 +28,7 @@ class MonsterSpawner(IMonsterSpawner):
         self.__minute_boss_added = False
         self.__second_minute_boss_added = False
 
-        self.__spawn_cooldown = CH.CooldownHandler(MonsterSpawner.BASE_DELAY)
+        self.__spawn_cooldown = CooldownHandler(MonsterSpawner.BASE_DELAY)
 
     def load_saved_data(self, world: IGameWorld, saved_data: list):
         """Loads the monsters from the saved game data.
@@ -37,10 +37,25 @@ class MonsterSpawner(IMonsterSpawner):
             world (IGameWorld): The game world instance.
             saved_data: The saved game data.
         """
-        for monster_type in saved_data:
-            for monster_data in saved_data[monster_type]:
-                monster = Monster(0, 0, monster_data)
-                world.add_monster(monster)
+        mosnters_data = saved_data.get('monsters')
+
+        for monster_type in mosnters_data:
+            for monster_data in mosnters_data[monster_type]:
+                if 'monster.Monster' in monster_type:
+                    monster = Monster(0, 0, monster_data)
+                    world.add_monster(monster)
+                elif 'boss.BossMonster' in monster_type:
+                    monster = BossMonster(0, 0, monster_data)
+                    world.add_monster(monster)
+
+        self.__minute_boss_added = saved_data['monster_spawner']['minute_boss_added']
+        self.__second_minute_boss_added = saved_data['monster_spawner']['second_minute_boss_added']
+
+    def to_json(self):
+        return {
+            'minute_boss_added': self.__minute_boss_added,
+            'second_minute_boss_added': self.__second_minute_boss_added
+        }
 
     def update(self, world: IGameWorld):
         if self.__spawn_cooldown.is_action_ready() and len(world.monsters) <= 10:

@@ -45,7 +45,10 @@ class GameJSONDAO(IGameDAO):
         player = game.world.player.to_json()
         clock = GameClockSingleton().game_clock
 
+        monster_spawner = game.world.monster_spawner.to_json()
+
         data['monsters'] = monsters
+        data['monster_spawner'] = monster_spawner
         data['bullets'] = bullets
         data['items'] = items
         data['player'] = player

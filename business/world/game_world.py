@@ -32,7 +32,7 @@ class GameWorld(IGameWorld):
         self.tile_map: ITileMap = tile_map
 
         # Initialize the monster spawner
-        self.monster_spawner: IMonsterSpawner = spawner
+        self.__monster_spawner = spawner
 
         if saved_data:
             self.__load_saved_data(saved_data)
@@ -41,7 +41,7 @@ class GameWorld(IGameWorld):
             self.__initialize_perks()
 
     def __load_saved_data(self, saved_data: dict):
-        self.monster_spawner.load_saved_data(self, saved_data.get('monsters'))
+        self.monster_spawner.load_saved_data(self, saved_data)
 
         self.__load_bullets(saved_data)
         self.__load_items(saved_data)
@@ -154,6 +154,10 @@ class GameWorld(IGameWorld):
 
     def remove_bullet(self, bullet: IBullet):
         self.__bullets.remove(bullet)
+
+    @property
+    def monster_spawner(self):
+        return self.__monster_spawner
 
     @property
     def display(self):

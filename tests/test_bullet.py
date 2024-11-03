@@ -1,12 +1,12 @@
 # pylint: disable=C0114,C0115,C0116
 import unittest
 
-from business.entities.bullets import Bullet
+from business.entities.bullets import NormalBullet
 
 
 class TestBullet(unittest.TestCase):
     def setUp(self):
-        self.bullet = Bullet(0, 0, 10, 10, 5, 1)
+        self.bullet = NormalBullet(0, 0, 10, 10, 5, 1)
 
     def test_initial_health(self):
         self.assertEqual(self.bullet.health, 5)
@@ -21,7 +21,7 @@ class TestBullet(unittest.TestCase):
     def test_update_position(self):
         x_distance, y_distance = 3, 4
 
-        self.bullet = Bullet(0, 0, x_distance, y_distance, 1, 1)
+        self.bullet = NormalBullet(0, 0, x_distance, y_distance, 1, 1)
         self.bullet.update(None)
 
         x, y = self.bullet.pos_x, self.bullet.pos_y
@@ -32,7 +32,7 @@ class TestBullet(unittest.TestCase):
     def test_update_position_vertical(self):
         x_distance, y_distance = 0, 10
 
-        self.bullet = Bullet(0, 0, x_distance, y_distance, 1, 1)
+        self.bullet = NormalBullet(0, 0, x_distance, y_distance, 1, 1)
         self.bullet.update(None)
 
         x, y = self.bullet.pos_x, self.bullet.pos_y
@@ -42,7 +42,7 @@ class TestBullet(unittest.TestCase):
     def test_update_position_horizontal(self):
         x_distance, y_distance = 10, 0
 
-        self.bullet = Bullet(0, 0, x_distance, y_distance, 1, 1)
+        self.bullet = NormalBullet(0, 0, x_distance, y_distance, 1, 1)
         self.bullet.update(None)
 
         x, y = self.bullet.pos_x, self.bullet.pos_y
@@ -52,7 +52,7 @@ class TestBullet(unittest.TestCase):
     def test_update_position_non_zero_src(self):
         src_x, src_y, dst_x, dst_y = 5, 5, 10, 10
 
-        self.bullet = Bullet(src_x, src_y, dst_x, dst_y, 1, 1)
+        self.bullet = NormalBullet(src_x, src_y, dst_x, dst_y, 1, 1)
         self.bullet.update(None)
 
         x, y = self.bullet.pos_x, self.bullet.pos_y

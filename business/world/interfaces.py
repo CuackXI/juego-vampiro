@@ -5,6 +5,12 @@ from abc import ABC, abstractmethod
 from business.entities.interfaces import IBullet, IMonster, IPlayer, IItem
 from business.upgrades.interfaces import IPerk
 from presentation.interfaces import IDisplay
+from persistence.json_interfaces import JSONable
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from business.world.interfaces import IMonsterSpawner
 
 class IGameWorld(ABC):
     """Interface for the game world.
@@ -78,6 +84,11 @@ class IGameWorld(ABC):
 
     @property
     @abstractmethod
+    def monster_spawner(self) -> "IMonsterSpawner":   
+        """The world's monster spawner."""
+
+    @property
+    @abstractmethod
     def display(self) -> IDisplay:
         """The world display."""
 
@@ -144,7 +155,7 @@ class IUpdatable(ABC):
         """
 
 
-class IMonsterSpawner(IUpdatable):
+class IMonsterSpawner(IUpdatable, JSONable):
     """Interface for a monster spawner.
 
     A monster spawner is responsible for spawning monsters in the game world.
