@@ -10,7 +10,7 @@ class GameJSONDAO(IGameDAO):
 
     BASE_GAME_DATA = {}
 
-    def __init__(self, json_path = "data/game.json") -> None:
+    def __init__(self, json_path="data/game.json") -> None:
         """Initializes the DAO."""
         self.__json_path = json_path
         if not os.path.exists(self.__json_path):
@@ -18,6 +18,9 @@ class GameJSONDAO(IGameDAO):
                 json.dump(self.BASE_GAME_DATA, file, indent=4)
 
     def __read_data(self) -> dict:
+        if os.path.getsize(self.__json_path) == 0:
+            return self.BASE_GAME_DATA
+
         with open(self.__json_path, 'r', encoding="utf-8") as file:
             data = json.load(file)
 
