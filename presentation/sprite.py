@@ -81,7 +81,7 @@ class Sprite(pygame.sprite.Sprite):
 class PlayerSprite(Sprite):
     """A class representing the player sprite."""
 
-    ASSET = "./assets/adventurer-idle-00.png"
+    ASSET = "./assets/adventurer.png"
 
     def __init__(self, pos_x: float, pos_y: float):
         image: pygame.Surface = pygame.image.load(PlayerSprite.ASSET).convert_alpha()
@@ -99,8 +99,8 @@ class MonsterSprite(Sprite):
         image = pygame.image.load(MonsterSprite.ASSET).convert_alpha()
         original_width, original_height = image.get_size()
 
-        new_width = int(original_width * size)
-        new_height = int(original_height * size)
+        new_width = int((original_width + 30) * size)
+        new_height = int((original_height + 30) * size)
 
         image = pygame.transform.scale(image, (new_width, new_height))
         rect = image.get_rect(center=(int(pos_x), int(pos_y)))
@@ -110,20 +110,16 @@ class MonsterSprite(Sprite):
 class GunMonsterSprite(Sprite):
     """A class representing the gun monster sprite."""
 
-    ASSET = "./assets/monster.png"
+    ASSET = "./assets/gunmonster.png"
 
     def __init__(self, pos_x: float, pos_y: float, size: float):
         image = pygame.image.load(GunMonsterSprite.ASSET).convert_alpha()
         original_width, original_height = image.get_size()
 
-        new_width = int(original_width * size)
-        new_height = int(original_height * size)
+        new_width = int((original_width + 30) * size)
+        new_height = int((original_height + 30) * size)
+
         image = pygame.transform.scale(image, (new_width, new_height))
-
-        red_tint = pygame.Surface(image.get_size(), flags=pygame.SRCALPHA)
-        red_tint.fill((255, 150, 150))
-        image.blit(red_tint, (0, 0), special_flags=pygame.BLEND_RGBA_MULT)
-
         rect = image.get_rect(center=(int(pos_x), int(pos_y)))
 
         super().__init__(image, rect)
@@ -148,14 +144,14 @@ class BossMonsterSprite(Sprite):
 class BigBossMonsterSprite(Sprite):
     """A class representing the boss monster sprite."""
 
-    ASSET = "./assets/boss2.webp"
+    ASSET = "./assets/boss2.png"
 
     def __init__(self, pos_x: float, pos_y: float, size: float):
         image = pygame.image.load(BigBossMonsterSprite.ASSET).convert_alpha()
         original_width, original_height = image.get_size()
 
-        new_width = int(original_width * size)
-        new_height = int(original_height * size)
+        new_width = int((original_width + 200) * size)
+        new_height = int((original_height + 200) * size)
 
         image = pygame.transform.scale(image, (new_width, new_height))
         rect = image.get_rect(center=(int(pos_x), int(pos_y)))
@@ -179,16 +175,13 @@ class BulletSprite(Sprite):
 class MonsterBulletSprite(Sprite):
     """A class representing the bullet sprite."""
 
-    ASSET = "./assets/upgrades_set.png"
+    ASSET = "./assets/monsterbullet.png"
 
     def __init__(self, pos_x: float, pos_y: float):
-        tileset = Tileset(
-            MonsterBulletSprite.ASSET, settings.TILE_HEIGHT, settings.TILE_HEIGHT, 8, 1
-        )
-        image: pygame.Surface = tileset.get_tile(0)
+        image = pygame.image.load(MonsterBulletSprite.ASSET).convert_alpha()
         
-        scaled_width = int(image.get_width() * 0.6)
-        scaled_height = int(image.get_height() * 0.6)
+        scaled_width = int(image.get_width() * 0.3)
+        scaled_height = int(image.get_height() * 0.3)
         image = pygame.transform.scale(image, (scaled_width, scaled_height))
 
         image.fill((255, 150, 150), special_flags=pygame.BLEND_RGBA_MULT)

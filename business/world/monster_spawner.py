@@ -98,7 +98,12 @@ class MonsterSpawner(IMonsterSpawner):
                     pos_x = camera_right
                     pos_y = random.randint(camera_top, camera_bottom)
 
-                monster = random.choice(self.__monsters)
+                monster_choice = random.randint(1, 100)
+                if monster_choice >= 85:
+                    monster_choice = 1
+                else:
+                    monster_choice = 0
+                monster = self.__monsters[monster_choice]
                 world.add_monster(monster(pos_x, pos_y))
 
                 if GameClockSingleton().game_clock > 60000 and not self.__minute_boss_added:

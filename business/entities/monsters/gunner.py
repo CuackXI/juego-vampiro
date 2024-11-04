@@ -11,7 +11,7 @@ import math
 class GunMonster(IMonsterGun):
     """A monster entity that shoots bullets."""
 
-    BASE_SPEED = 2
+    BASE_SPEED = 1
     BASE_HEALTH = 10
     BASE_ATTACK_RANGE = 20000
 

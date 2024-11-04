@@ -10,7 +10,7 @@ import math
 class BigBossMonster(MovableEntity, IMonster):
     """A monster entity in the game."""
 
-    BASE_SPEED = 6
+    BASE_SPEED = 4
     BASE_HEALTH = 10000
     BASE_DAMAGE = 10000
     BASE_ATTACK_RANGE = 50
