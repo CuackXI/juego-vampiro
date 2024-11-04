@@ -32,6 +32,11 @@ class DeathHandler:
                 if bullet.can_despawn:
                     world.remove_bullet(bullet)
 
+        for item in world.items:
+            if isinstance(item, IDespawnable):
+                if item.can_despawn:
+                    world.remove_item(item)
+
         for monster in world.monsters:
             if monster.health <= 0:
                 if isinstance(monster, BossMonster) or isinstance(monster, BigBossMonster):
@@ -51,11 +56,6 @@ class DeathHandler:
                     
             elif not BoundariesHandler.is_entity_within_world_boundaries(monster):
                 world.remove_monster(monster)
-
-        for item in world.items:
-            if isinstance(item, IDespawnable):
-                if item.can_despawn:
-                    world.remove_item(item)
 
         if world.player.health <= 0:
             raise DeadPlayerException

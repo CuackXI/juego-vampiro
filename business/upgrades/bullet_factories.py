@@ -10,13 +10,31 @@ class NormalBulletFactory(IBulletFactory):
             'COOLDOWN': 1000,
             'DAMAGE': 5,
             'SPEED': 4,
-            'HEALTH': 100
+            'HEALTH': 50
         },
         2: {
-            'COOLDOWN': 750,
+            'COOLDOWN': 937,
             'DAMAGE': 10,
-            'SPEED': 10,
+            'SPEED': 6,
+            'HEALTH': 75
+        },
+        3: {
+            'COOLDOWN': 875,
+            'DAMAGE': 13,
+            'SPEED': 7,
             'HEALTH': 100
+        },
+        4: {
+            'COOLDOWN': 812,
+            'DAMAGE': 16,
+            'SPEED': 8,
+            'HEALTH': 125
+        },
+        5: {
+            'COOLDOWN': 750,
+            'DAMAGE': 20,
+            'SPEED': 10,
+            'HEALTH': 200
         }
     }
 
@@ -121,19 +139,36 @@ class NormalBulletFactory(IBulletFactory):
         pass
 
 class TurretBulletFactory(IBulletFactory, IUpdatable):
-
     BASE_LEVEL_STATS = {
         1: {
             'COOLDOWN': 250,
-            'DAMAGE': 1,
+            'DAMAGE': 3,
             'SPEED': 10,
             'HEALTH': 5
         },
         2: {
-            'COOLDOWN': 250,
+            'COOLDOWN': 225,
+            'DAMAGE': 4,
+            'SPEED': 12,
+            'HEALTH': 15
+        },
+        3: {
+            'COOLDOWN': 200,
             'DAMAGE': 5,
+            'SPEED': 15,
+            'HEALTH': 25
+        },
+        4: {
+            'COOLDOWN': 150,
+            'DAMAGE': 5,
+            'SPEED': 18,
+            'HEALTH': 35
+        },
+        5: {
+            'COOLDOWN': 100,
+            'DAMAGE': 6,
             'SPEED': 20,
-            'HEALTH': 5
+            'HEALTH': 50
         }
     }
 
@@ -239,19 +274,36 @@ class TurretBulletFactory(IBulletFactory, IUpdatable):
         pass
 
 class FollowingBulletFactory(IBulletFactory, IUpdatable):
-    
     BASE_LEVEL_STATS = {
         1: {
             'COOLDOWN': 2000,
             'DAMAGE': 10,
-            'SPEED': 5,
-            'HEALTH': 2000
+            'SPEED': 3,
+            'HEALTH': 20
         },
         2: {
-            'COOLDOWN': 5000,
+            'COOLDOWN': 2000,
             'DAMAGE': 10,
             'SPEED': 5,
-            'HEALTH': 200
+            'HEALTH': 50
+        },
+        3: {
+            'COOLDOWN': 2000,
+            'DAMAGE': 10,
+            'SPEED': 7,
+            'HEALTH': 100
+        },
+        4: {
+            'COOLDOWN': 2000,
+            'DAMAGE': 10,
+            'SPEED': 9,
+            'HEALTH': 175
+        },
+        5: { 
+            'COOLDOWN': 2000,
+            'DAMAGE': 10,
+            'SPEED': 10,
+            'HEALTH': 250
         }
     }
 

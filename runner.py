@@ -52,6 +52,7 @@ def main():
     # Call garbage collector to delete those instances
     gc.collect()
 
+    # Trash code pero funciona :DD
     if event == Game.RESET_EVENT:
         main()
 

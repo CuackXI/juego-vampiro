@@ -61,7 +61,7 @@ class MonsterSpawner(IMonsterSpawner):
         }
 
     def update(self, world: IGameWorld):
-        if self.__spawn_cooldown.is_action_ready() and len(world.monsters) <= 10:
+        if self.__spawn_cooldown.is_action_ready() and len(world.monsters) <= 20:
             self.spawn_monster(world)
             self.__spawn_cooldown.put_on_cooldown()
 

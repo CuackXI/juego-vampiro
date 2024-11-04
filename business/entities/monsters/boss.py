@@ -10,9 +10,9 @@ import math
 class BossMonster(MovableEntity, IMonster):
     """A monster entity in the game."""
 
-    BASE_SPEED = 3
-    BASE_HEALTH = 2000
-    BASE_DAMAGE = 100
+    BASE_SPEED = 5
+    BASE_HEALTH = 5000
+    BASE_DAMAGE = 50
     BASE_ATTACK_RANGE = 100
     BASE_ATTACK_COOLDOWN = 2000
 

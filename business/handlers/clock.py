@@ -5,9 +5,6 @@ class GameClockSingleton:
     
     _instance = None
 
-    def __init__(self):
-        self.__game_clock = 0 # Documentation
-
     def __new__(cls, saved_time=None):
         if cls._instance is None:
             cls._instance = super(GameClockSingleton, cls).__new__(cls)

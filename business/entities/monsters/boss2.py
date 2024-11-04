@@ -10,14 +10,14 @@ import math
 class BigBossMonster(MovableEntity, IMonster):
     """A monster entity in the game."""
 
-    BASE_SPEED = 1
-    BASE_HEALTH = 5000
+    BASE_SPEED = 6
+    BASE_HEALTH = 10000
     BASE_DAMAGE = 10000
     BASE_ATTACK_RANGE = 50
     BASE_ATTACK_COOLDOWN = 0
 
     def __init__(self, src_x: int, src_y: int, saved_data: dict | None = None):
-        super().__init__(src_x, src_y, BigBossMonster.BASE_SPEED, BigBossMonsterSprite(0, 0, 1))
+        super().__init__(src_x, src_y, BigBossMonster.BASE_SPEED, BigBossMonsterSprite(0, 0, 0.5))
 
         self.__speed = BigBossMonster.BASE_SPEED
         self.__max_health = BigBossMonster.BASE_HEALTH

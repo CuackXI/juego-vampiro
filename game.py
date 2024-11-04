@@ -79,8 +79,11 @@ class Game:
         self.__paused = not self.__paused
 
     def run(self):
-        """Starts the game loop."""
-        self.__logger.debug("Starting the game loop.")
+        """Starts the game loop.
+
+        Returns:
+            __type__: A game event after the loop closes.
+        """
         while self.__running:
             try:
                 self.process_game_events()
