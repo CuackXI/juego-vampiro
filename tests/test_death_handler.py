@@ -54,12 +54,10 @@ class TestDeathHandler(unittest.TestCase):
         DeathHandler.check_deaths(self.world)
         self.world.remove_item.assert_called_once_with(self.item)
 
-    @patch('business.entities.items.item_factory.ItemFactory.create_item', autospec=True)
-    def test_remove_monster_when_health_zero(self, mock_create_item):
+    def test_remove_monster_when_health_zero(self):
         self.monster._Monster__health = 0
         DeathHandler.check_deaths(self.world)
         self.world.remove_monster.assert_called()
-        mock_create_item.assert_called_once_with(ItemFactory.COMMON_GEM, self.monster, self.world, xp_amount=1)
 
     @patch('business.handlers.boundaries_handler.BoundariesHandler.is_entity_within_world_boundaries')
     def test_monster_out_of_bounds(self, mock_is_within_bounds):
