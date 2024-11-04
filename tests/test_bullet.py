@@ -1,11 +1,23 @@
 # pylint: disable=C0114,C0115,C0116
 import unittest
-
+import pygame
+from unittest.mock import patch, MagicMock
 from business.entities.bullets import NormalBullet
 
-
 class TestBullet(unittest.TestCase):
-    def setUp(self):
+    @patch('pygame.transform.scale')
+    @patch('pygame.image.load')
+    def setUp(self, mock_image_load, mock_scale):
+        pygame.init()
+        pygame.display.set_mode((1, 1), pygame.HIDDEN)
+
+        mock_surface = MagicMock(spec=pygame.Surface)
+        mock_surface.convert_alpha.return_value = mock_surface
+        mock_surface.get_size.return_value = (64, 64)
+
+        mock_image_load.return_value = mock_surface
+        mock_scale.return_value = mock_surface
+
         self.bullet = NormalBullet(0, 0, 10, 10, 5, 5, 5)
 
     def test_convert_data_to_json(self):
@@ -66,6 +78,9 @@ class TestBullet(unittest.TestCase):
         self.assertAlmostEqual(x, 5.707, 2)
         self.assertAlmostEqual(y, 5.707, 2)
 
+    def tearDown(self):
+        pygame.display.quit()
+        pygame.quit()
 
 if __name__ == "main":
     unittest.main()

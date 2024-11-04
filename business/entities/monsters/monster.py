@@ -104,6 +104,10 @@ class Monster(MovableEntity, IMonster):
     def health(self) -> float:
         return self.__health
     
+    @health.setter
+    def health(self, value):
+        self.__health = value
+    
     @property
     def speed(self) -> float:
         if self.__speed * self.__multiplier > 4:

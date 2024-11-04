@@ -1,7 +1,5 @@
 """This module contains the CooldownHandler class."""
 
-# from runner import game
-import pygame
 from business.handlers.clock import GameClockSingleton
 
 class CooldownHandler:

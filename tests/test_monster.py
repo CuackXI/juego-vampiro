@@ -1,15 +1,13 @@
 import unittest
 from unittest.mock import MagicMock, patch
 import pygame
-
-from business.entities.interfaces import IDamageable, IHasPosition
+from business.entities.interfaces import IDamageable
 from business.entities.monsters.monster import Monster
-
 
 class TestMonster(unittest.TestCase):
     def setUp(self):
         pygame.display.init()
-        pygame.display.set_mode((800, 600))
+        pygame.display.set_mode((1, 1), pygame.HIDDEN)
         self.monster = Monster(5, 5, MagicMock())
 
     def tearDown(self):
@@ -22,7 +20,7 @@ class TestMonster(unittest.TestCase):
         target_mock.pos_y = 3
 
         with patch.object(
-            self.monster._Monster__attack_cooldown,  # pylint: disable=W0212
+            self.monster._Monster__attack_cooldown,
             "is_action_ready",
             return_value=True,
         ):
@@ -43,7 +41,7 @@ class TestMonster(unittest.TestCase):
         target_mock.health = 10
 
         with patch.object(
-            self.monster._Monster__attack_cooldown,  # pylint: disable=W0212
+            self.monster._Monster__attack_cooldown,
             "is_action_ready",
             return_value=False,
         ):
