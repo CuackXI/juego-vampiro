@@ -12,6 +12,7 @@ from business.exceptions import *
 from presentation.interfaces import IDisplay
 from business.entities.items.experience_gem import *
 from business.entities.monsters.upgrades.bullet_factory import MonsterBulletFactory
+from business.entities.items.item_factory import ItemFactory
 
 class GameWorld(IGameWorld):
     """Represents the game world."""
@@ -94,42 +95,7 @@ class GameWorld(IGameWorld):
                 MonsterBulletFactory().load_bullets(saved_data[bullet_type], self)
 
     def __load_items(self, saved_data: dict):
-        saved_data = saved_data.get('items')
-
-        for item_type in saved_data:
-            if 'experience_gem.ExperienceGem' in item_type:
-                for gem_data in saved_data[item_type]:
-                    pos_x = gem_data['pos_x']
-                    pos_y = gem_data['pos_y']
-                    amount = gem_data['amount']
-                    cooldown = gem_data['despawn_cooldown']
-
-                    self.add_item(ExperienceGem(pos_x, pos_y, amount, cooldown))
-            elif 'Red' in item_type:
-                for gem_data in saved_data[item_type]:
-                    pos_x = gem_data['pos_x']
-                    pos_y = gem_data['pos_y']
-                    amount = gem_data['amount']
-                    cooldown = gem_data['despawn_cooldown']
-
-                    self.add_item(RedExperienceGem(pos_x, pos_y, amount, cooldown))
-            elif 'Green' in item_type:
-                for gem_data in saved_data[item_type]:
-                    pos_x = gem_data['pos_x']
-                    pos_y = gem_data['pos_y']
-                    amount = gem_data['amount']
-                    cooldown = gem_data['despawn_cooldown']
-
-                    self.add_item(GreenExperienceGem(pos_x, pos_y, amount, cooldown))
-            elif 'Blue' in item_type:
-                for gem_data in saved_data[item_type]:
-                    pos_x = gem_data['pos_x']
-                    pos_y = gem_data['pos_y']
-                    amount = gem_data['amount']
-                    cooldown = gem_data['despawn_cooldown']
-
-                    self.add_item(BlueExperienceGem(pos_x, pos_y, amount, cooldown))
-
+        ItemFactory.load_items(self, saved_data)
 
     def get_perks_for_display(self):
         amount = 3

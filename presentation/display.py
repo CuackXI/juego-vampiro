@@ -296,12 +296,9 @@ class Display(IDisplay):
 
         game_over_text = game_over_font.render("Ganaste!", True, (150, 255, 150))
         level_text = font.render(f"Nivel: {self.__world.player.level}", True, (255, 255, 255))
-        time_text = font.render(f"Tiempo: {time}", True, (255, 255, 255))
 
         self.__screen.blit(game_over_text, ((settings.SCREEN_WIDTH // 2) - 100, (settings.SCREEN_HEIGHT // 2) - 60))
         self.__screen.blit(level_text, ((settings.SCREEN_WIDTH // 2) - 80, (settings.SCREEN_HEIGHT // 2) + 10))
-        self.__screen.blit(time_text, ((settings.SCREEN_WIDTH // 2) - 80, (settings.SCREEN_HEIGHT // 2) + 40))
-
         # Boton de reset
 
         reset_button = pygame.Rect(150, 250, 200, 50)
@@ -427,7 +424,7 @@ class Display(IDisplay):
         text_x = bar_x - 100
         text_y = bar_y
 
-        self.__screen.blit(level_text, (text_x + 10, text_y))
+        self.__screen.blit(level_text, (text_x + 2, text_y))
 
     def render_frame(self, paused = None, in_upgrade = None, dead = None, game = None):
         self.camera.update(self.__world.player.sprite.rect)

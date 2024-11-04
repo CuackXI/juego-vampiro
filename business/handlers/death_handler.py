@@ -9,6 +9,7 @@ from business.entities.interfaces import IDespawnable
 from business.entities.monsters.monster import Monster
 from business.entities.monsters.boss import BossMonster
 from business.entities.monsters.boss2 import BigBossMonster
+from business.entities.items.item_factory import ItemFactory
 import random
 
 class DeathHandler:
@@ -40,17 +41,21 @@ class DeathHandler:
         for monster in world.monsters:
             if monster.health <= 0:
                 if isinstance(monster, BossMonster) or isinstance(monster, BigBossMonster):
-                    world.add_item(RedExperienceGem(monster.pos_x, monster.pos_y, 100))
+                    ItemFactory.create_item(ItemFactory.RED_GEM, monster, world, xp_amount=100)
+
                 elif isinstance(monster, Monster):
                     random_number = random.randint(1,100) 
                     if random_number in range(1, 70):
-                        world.add_item(ExperienceGem(monster.pos_x, monster.pos_y, 1))
+                        ItemFactory.create_item(ItemFactory.COMMON_GEM, monster, world, xp_amount=1)
+
                     elif random_number in range(70, 80):
-                        world.add_item(GreenExperienceGem(monster.pos_x, monster.pos_y, 3))
+                        ItemFactory.create_item(ItemFactory.GREEN_GEM, monster, world, xp_amount=3)
+
                     elif random_number in range(80, 85):
-                        world.add_item(BlueExperienceGem(monster.pos_x, monster.pos_y, 5))
+                        ItemFactory.create_item(ItemFactory.BLUE_GEM, monster, world, xp_amount=5)
+
                     elif random_number == 100:
-                        world.add_item(Guaymallen(monster.pos_x, monster.pos_y))
+                        ItemFactory.create_item(ItemFactory.GUAYMALLEN, monster, world)
 
                 world.remove_monster(monster)
                     

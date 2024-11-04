@@ -1,3 +1,5 @@
+"""Circular import fix module."""
+
 from abc import ABC, abstractmethod
 
 class IUpdatable(ABC):
