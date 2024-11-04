@@ -14,9 +14,9 @@ class GameClockSingleton:
         return cls._instance
     
     @classmethod
-    def delete(cls):
-        """Delete the singleton instance."""
-        cls._instance = None
+    def reset(cls):
+        """Reset the timer."""
+        cls._instance.__game_clock = 0
 
     @property
     def game_clock(self):

@@ -44,16 +44,8 @@ def main():
 
     event = game.run()
 
-    # Delete instances from memory to properly reset the game
-    del game
-    del partidadao
-    GameClockSingleton().delete()
-
-    # Call garbage collector to delete those instances
-    gc.collect()
-
-    # Trash code pero funciona :DD
     if event == Game.RESET_EVENT:
+        GameClockSingleton().reset()
         main()
 
     pygame.quit()
