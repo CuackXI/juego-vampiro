@@ -11,6 +11,7 @@ from business.handlers.boundaries_handler import BoundariesHandler
 from business.exceptions import * 
 from presentation.interfaces import IDisplay
 from business.entities.items.experience_gem import *
+from business.entities.monsters.upgrades.bullet_factory import MonsterBulletFactory
 
 class GameWorld(IGameWorld):
     """Represents the game world."""
@@ -88,6 +89,9 @@ class GameWorld(IGameWorld):
 
             if 'FollowingBullet' in bullet_type:
                 FollowingBulletFactory(self.__player).load_bullets(saved_data[bullet_type], self)
+
+            if 'MonsterBullet' in bullet_type:
+                MonsterBulletFactory().load_bullets(saved_data[bullet_type], self)
 
     def __load_items(self, saved_data: dict):
         saved_data = saved_data.get('items')

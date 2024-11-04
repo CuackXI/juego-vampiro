@@ -107,6 +107,27 @@ class MonsterSprite(Sprite):
 
         super().__init__(image, rect)
 
+class GunMonsterSprite(Sprite):
+    """A class representing the gun monster sprite."""
+
+    ASSET = "./assets/monster.png"
+
+    def __init__(self, pos_x: float, pos_y: float, size: float):
+        image = pygame.image.load(GunMonsterSprite.ASSET).convert_alpha()
+        original_width, original_height = image.get_size()
+
+        new_width = int(original_width * size)
+        new_height = int(original_height * size)
+        image = pygame.transform.scale(image, (new_width, new_height))
+
+        red_tint = pygame.Surface(image.get_size(), flags=pygame.SRCALPHA)
+        red_tint.fill((255, 150, 150))
+        image.blit(red_tint, (0, 0), special_flags=pygame.BLEND_RGBA_MULT)
+
+        rect = image.get_rect(center=(int(pos_x), int(pos_y)))
+
+        super().__init__(image, rect)
+
 class BossMonsterSprite(Sprite):
     """A class representing the boss monster sprite."""
 
@@ -151,6 +172,27 @@ class BulletSprite(Sprite):
             BulletSprite.ASSET, settings.TILE_HEIGHT, settings.TILE_HEIGHT, 8, 1
         )
         image: pygame.Surface = tileset.get_tile(0)
+        rect: pygame.Rect = image.get_rect(center=(int(pos_x), int(pos_y)))
+
+        super().__init__(image, rect)
+
+class MonsterBulletSprite(Sprite):
+    """A class representing the bullet sprite."""
+
+    ASSET = "./assets/upgrades_set.png"
+
+    def __init__(self, pos_x: float, pos_y: float):
+        tileset = Tileset(
+            MonsterBulletSprite.ASSET, settings.TILE_HEIGHT, settings.TILE_HEIGHT, 8, 1
+        )
+        image: pygame.Surface = tileset.get_tile(0)
+        
+        scaled_width = int(image.get_width() * 0.6)
+        scaled_height = int(image.get_height() * 0.6)
+        image = pygame.transform.scale(image, (scaled_width, scaled_height))
+
+        image.fill((255, 150, 150), special_flags=pygame.BLEND_RGBA_MULT)
+
         rect: pygame.Rect = image.get_rect(center=(int(pos_x), int(pos_y)))
 
         super().__init__(image, rect)
