@@ -18,10 +18,10 @@ class Monster(MovableEntity, IMonster):
     BASE_ATTACK_COOLDOWN = 1000
 
     def __init__(self, src_x: int, src_y: int, saved_data: dict | None = None):
-        if GameClockSingleton().game_clock / 50000 < 1:
+        if GameClockSingleton().game_clock / 30000 < 1:
             self.__multiplier = 1
         else:
-            self.__multiplier = GameClockSingleton().game_clock / 50000
+            self.__multiplier = GameClockSingleton().game_clock / 30000
 
         super().__init__(src_x, src_y, Monster.BASE_SPEED * self.__multiplier, MonsterSprite(0, 0, self.__multiplier))
 

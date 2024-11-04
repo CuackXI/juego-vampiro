@@ -239,6 +239,15 @@ class IPlayer(IUpdatable, ICanMove, IDamageable, ICanDealDamage, ICanHeal, JSONa
             float: The distance in pixels.
         """
 
+    @property
+    @abstractmethod
+    def experience_progress(self) -> float:
+        """Returns the player's experience progress towards the next level as a percentage.
+
+        Returns:
+            float: The progress.
+        """
+
     @abstractmethod
     def handle_perk(self, perk: "IPerk"):
         """Handles what happens with a perk with the current inventory

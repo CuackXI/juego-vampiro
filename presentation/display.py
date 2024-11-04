@@ -31,6 +31,8 @@ class Display(IDisplay):
         self.__ground_tileset = self.__load_ground_tileset()
         self.__world: IGameWorld = None
 
+        self.__button_clicked = False
+
     def load_world(self, world: IGameWorld):
         self.__world = world
 
@@ -315,14 +317,19 @@ class Display(IDisplay):
                 pygame.draw.rect(self.__screen, self.COLOR_BUTTON, upgrade_button)
                 self.__screen.blit(upgrade_text, (upgrade_button.x + 40, upgrade_button.y + 10))
         else:
-            self.__world.in_upgrade = False
+            self.__world.in_upgrade -= 1
             return
 
         mouse_pos = pygame.mouse.get_pos()
 
         for i, button in enumerate(upgrade_buttons):
             if button.collidepoint(mouse_pos) and pygame.mouse.get_pressed()[0]:
-                self.__world.in_upgrade = False
+                self.__button_clicked = True
+                self.__index = i
+
+            if button.collidepoint(mouse_pos) and not pygame.mouse.get_pressed()[0] and self.__button_clicked and self.__index == i:
+                self.__button_clicked = False
+                self.__world.in_upgrade -= 1
                 if len(perks) != 0:
                     self.__world.give_perk_to_player(perks[i])
                     self.__perks_for_display.clear()
@@ -342,6 +349,31 @@ class Display(IDisplay):
 
         formatted_time = f"{minutes}:{seconds}"
         return formatted_time
+
+    def __draw_player_level_bar(self):
+        bar_width = 400
+        bar_height = 25
+
+        bar_x = 100
+        bar_y = 20
+
+        progress_percentage = self.__world.player.experience_progress
+        filled_width = int(bar_width * progress_percentage)
+
+        bar_color = (50, 205, 50)
+        bg_color = (105, 105, 105)
+
+        pygame.draw.rect(self.__screen, bg_color, (bar_x, bar_y, bar_width, bar_height))
+
+        pygame.draw.rect(self.__screen, bar_color, (bar_x, bar_y, filled_width, bar_height))
+
+        font = pygame.font.Font(None, 36)
+        level_text = font.render(f"Nivel {self.__world.player.level}", True, (255, 255, 255))
+
+        text_x = bar_x - 100
+        text_y = bar_y
+
+        self.__screen.blit(level_text, (text_x + 10, text_y))
 
     def render_frame(self, paused = None, in_upgrade = None, dead = None, game = None):
         self.camera.update(self.__world.player.sprite.rect)
@@ -372,7 +404,7 @@ class Display(IDisplay):
         # Draw the player
         self.__draw_player()
 
-        if in_upgrade:
+        if in_upgrade != 0:
             self.__draw_upgrade_menu()
 
         if paused:
@@ -380,7 +412,7 @@ class Display(IDisplay):
 
         self.__draw_player_inventory()
         self.__draw_clock()
-        self.__draw_player_level()
+        self.__draw_player_level_bar()
 
         if dead:
             self.__draw_game_over_screen(game)

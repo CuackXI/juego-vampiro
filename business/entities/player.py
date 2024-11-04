@@ -3,7 +3,7 @@
 import pygame
 
 from business.entities.entity import MovableEntity
-from business.entities.items.experience_gem import ExperienceGem
+from business.entities.items.experience_gem import IExperienceGem
 from business.entities.items.guaymallen import Guaymallen
 from business.entities.interfaces import ICanDealDamage, IDamageable, IPlayer, IItem
 from business.upgrades.interfaces import IBulletFactory
@@ -26,12 +26,15 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
     BASE_SPEED = 5.0
     BASE_SPEED_MULTIPLIER = 1.0
     BASE_LEVELS_EXP = {
-        2: 1,
-        3: 1,
-        4: 1,
-        5: 1,
-        6: 1,
-        7: 1
+        2: 5,
+        3: 10,
+        4: 20,
+        5: 30,
+        6: 50,
+        7: 70,
+        8: 100,
+        9: 100,
+        10: 100
     }
 
     def __init__(self, pos_x: int, pos_y: int, sprite: Sprite, saved_data: dict | None = None):
@@ -154,6 +157,14 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
 
         return perks
 
+    @property
+    def experience_progress(self) -> float:
+        if self.__level == 1:
+            return (self.__experience / self.experience_to_next_level)
+        elif self.__level in self.BASE_LEVELS_EXP:
+            return (self.__experience / self.experience_to_next_level) if self.experience_to_next_level else 0
+        return 0
+
     def move(self, direction_x: float, direction_y: float):
         self._pos_x += direction_x * self._speed * self.speed_multiplier
         self._pos_y += direction_y * self._speed * self.speed_multiplier
@@ -175,7 +186,7 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
             self.sprite.heal()
 
     def pickup_item(self, item: IItem, world: IGameWorld):
-        if isinstance(item, ExperienceGem):
+        if isinstance(item, IExperienceGem):
             self.__gain_experience(item.amount, world)
 
         elif isinstance(item, Guaymallen):
@@ -183,13 +194,18 @@ class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
 
     def __gain_experience(self, amount: int, world: IGameWorld):
         self.__experience += amount
+
+        last_level = self.__level
+
         while self.__experience >= self.experience_to_next_level:
             self.__experience -= self.experience_to_next_level
             self.__level += 1
             if self.__level not in Player.BASE_LEVELS_EXP.keys():
                 self.__level -= 1
-                
-            world.activate_upgrade()
+                self.__experience = self.BASE_LEVELS_EXP[self.__level]
+                break 
+            else:
+                world.activate_upgrade(self.__level - last_level)
 
     def handle_perk(self, perk: IPerk):
         if isinstance(perk, IBulletFactory):

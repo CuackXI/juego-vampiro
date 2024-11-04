@@ -10,7 +10,7 @@ from business.entities.bullets import *
 from business.handlers.boundaries_handler import BoundariesHandler
 from business.exceptions import * 
 from presentation.interfaces import IDisplay
-from business.entities.items.experience_gem import ExperienceGem
+from business.entities.items.experience_gem import *
 
 class GameWorld(IGameWorld):
     """Represents the game world."""
@@ -20,7 +20,7 @@ class GameWorld(IGameWorld):
         self.__monsters: list[IMonster] = []
         self.__bullets: list[IBullet] = []
         self.__items: list[IItem] = []
-        self.__in_upgrade = False
+        self.__in_upgrade = 0
         self.__game = None
         self.__display = display
 
@@ -93,7 +93,7 @@ class GameWorld(IGameWorld):
         saved_data = saved_data.get('items')
 
         for item_type in saved_data:
-            if 'ExperienceGem' in item_type:
+            if 'experience_gem.ExperienceGem' in item_type:
                 for gem_data in saved_data[item_type]:
                     pos_x = gem_data['pos_x']
                     pos_y = gem_data['pos_y']
@@ -101,6 +101,31 @@ class GameWorld(IGameWorld):
                     cooldown = gem_data['despawn_cooldown']
 
                     self.add_item(ExperienceGem(pos_x, pos_y, amount, cooldown))
+            elif 'Red' in item_type:
+                for gem_data in saved_data[item_type]:
+                    pos_x = gem_data['pos_x']
+                    pos_y = gem_data['pos_y']
+                    amount = gem_data['amount']
+                    cooldown = gem_data['despawn_cooldown']
+
+                    self.add_item(RedExperienceGem(pos_x, pos_y, amount, cooldown))
+            elif 'Green' in item_type:
+                for gem_data in saved_data[item_type]:
+                    pos_x = gem_data['pos_x']
+                    pos_y = gem_data['pos_y']
+                    amount = gem_data['amount']
+                    cooldown = gem_data['despawn_cooldown']
+
+                    self.add_item(GreenExperienceGem(pos_x, pos_y, amount, cooldown))
+            elif 'Blue' in item_type:
+                for gem_data in saved_data[item_type]:
+                    pos_x = gem_data['pos_x']
+                    pos_y = gem_data['pos_y']
+                    amount = gem_data['amount']
+                    cooldown = gem_data['despawn_cooldown']
+
+                    self.add_item(BlueExperienceGem(pos_x, pos_y, amount, cooldown))
+
 
     def get_perks_for_display(self):
         amount = 3
@@ -132,8 +157,8 @@ class GameWorld(IGameWorld):
         for item in self.items:
             item.update(self)
 
-    def activate_upgrade(self):
-        self.__in_upgrade = True
+    def activate_upgrade(self, upgrades):
+        self.__in_upgrade = upgrades
 
     def add_monster(self, monster: IMonster):
         if BoundariesHandler.is_entity_within_world_boundaries(monster):

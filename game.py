@@ -83,7 +83,7 @@ class Game:
                 if not self.__world.in_upgrade and self.__input_handler.is_pause_pressed() and not self.__dead:
                     self.__paused = self.__input_handler.process_pause(self)
 
-                if self.__paused or self.__world.in_upgrade or self.__dead:
+                if self.__paused or self.__world.in_upgrade != 0 or self.__dead:
                     pass
                 else:
                     self.__input_handler.process_input()

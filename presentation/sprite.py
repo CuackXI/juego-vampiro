@@ -196,6 +196,48 @@ class ExperienceGemSprite(Sprite):
         rect: pygame.Rect = image.get_rect(center=(int(pos_x), int(pos_y)))
 
         super().__init__(image, rect)
+        
+class RedExperienceGemSprite(Sprite):
+    """A class representing the experience gem sprite."""
+
+    ASSET = "./assets/experience_gems.png"
+
+    def __init__(self, pos_x: float, pos_y: float):
+        tileset = Tileset(
+            RedExperienceGemSprite.ASSET, settings.TILE_HEIGHT, settings.TILE_HEIGHT, 2, 2
+        )
+        image: pygame.Surface = tileset.get_tile(2)
+        rect: pygame.Rect = image.get_rect(center=(int(pos_x), int(pos_y)))
+
+        super().__init__(image, rect)
+                
+class GreenExperienceGemSprite(Sprite):
+    """A class representing the experience gem sprite."""
+
+    ASSET = "./assets/experience_gems.png"
+
+    def __init__(self, pos_x: float, pos_y: float):
+        tileset = Tileset(
+            GreenExperienceGemSprite.ASSET, settings.TILE_HEIGHT, settings.TILE_HEIGHT, 2, 2
+        )
+        image: pygame.Surface = tileset.get_tile(1)
+        rect: pygame.Rect = image.get_rect(center=(int(pos_x), int(pos_y)))
+
+        super().__init__(image, rect)
+
+class BlueExperienceGemSprite(Sprite):
+    """A class representing the experience gem sprite."""
+
+    ASSET = "./assets/experience_gems.png"
+
+    def __init__(self, pos_x: float, pos_y: float):
+        tileset = Tileset(
+            BlueExperienceGemSprite.ASSET, settings.TILE_HEIGHT, settings.TILE_HEIGHT, 2, 2
+        )
+        image: pygame.Surface = tileset.get_tile(0)
+        rect: pygame.Rect = image.get_rect(center=(int(pos_x), int(pos_y)))
+
+        super().__init__(image, rect)
 
 class GuaymallenSprite(Sprite):
     """A class representing the guaymallen sprite."""

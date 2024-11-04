@@ -1,11 +1,14 @@
 """Module that contains the DeathHandler class."""
 
-from business.entities.items.experience_gem import ExperienceGem
+from business.entities.items.experience_gem import *
 from business.entities.items.guaymallen import Guaymallen
 from business.exceptions import DeadPlayerException
 from business.world.interfaces import IGameWorld
 from business.handlers.boundaries_handler import BoundariesHandler
 from business.entities.interfaces import IDespawnable
+from business.entities.monsters.monster import Monster
+from business.entities.monsters.boss import BossMonster
+from business.entities.monsters.boss2 import BigBossMonster
 import random
 
 class DeathHandler:
@@ -31,13 +34,21 @@ class DeathHandler:
 
         for monster in world.monsters:
             if monster.health <= 0:
-                random_number = random.randint(1,100) 
-                if random_number in range(1, 50):
-                    world.add_item(ExperienceGem(monster.pos_x, monster.pos_y, 1))
-                elif random_number == 100:
-                    world.add_item(Guaymallen(monster.pos_x, monster.pos_y))
+                if isinstance(monster, BossMonster) or isinstance(monster, BigBossMonster):
+                    world.add_item(RedExperienceGem(monster.pos_x, monster.pos_y, 100))
+                elif isinstance(monster, Monster):
+                    random_number = random.randint(1,100) 
+                    if random_number in range(1, 70):
+                        world.add_item(ExperienceGem(monster.pos_x, monster.pos_y, 1))
+                    elif random_number in range(70, 80):
+                        world.add_item(GreenExperienceGem(monster.pos_x, monster.pos_y, 3))
+                    elif random_number in range(80, 85):
+                        world.add_item(BlueExperienceGem(monster.pos_x, monster.pos_y, 5))
+                    elif random_number == 100:
+                        world.add_item(Guaymallen(monster.pos_x, monster.pos_y))
+
                 world.remove_monster(monster)
-                
+                    
             elif not BoundariesHandler.is_entity_within_world_boundaries(monster):
                 world.remove_monster(monster)
 

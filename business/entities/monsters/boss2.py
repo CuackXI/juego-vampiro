@@ -11,7 +11,7 @@ class BigBossMonster(MovableEntity, IMonster):
     """A monster entity in the game."""
 
     BASE_SPEED = 1
-    BASE_HEALTH = 20000
+    BASE_HEALTH = 5000
     BASE_DAMAGE = 10000
     BASE_ATTACK_RANGE = 50
     BASE_ATTACK_COOLDOWN = 0
