@@ -74,6 +74,10 @@ class NormalBulletFactory(IBulletFactory):
             self.create_bullet(world)
 
     @property
+    def level(self):
+        return self.__level
+
+    @property
     def cooldown(self):
         return NormalBulletFactory.BASE_LEVEL_STATS[self.__level]['COOLDOWN']
 
@@ -180,6 +184,10 @@ class TurretBulletFactory(IBulletFactory, IUpdatable):
     @property
     def upgradable(self):
         return self.__level != max(TurretBulletFactory.BASE_LEVEL_STATS.keys())
+
+    @property
+    def level(self):
+        return self.__level
 
     def update(self, world: IGameWorld):
         if self.__cooldown_handler.is_action_ready():
@@ -290,6 +298,10 @@ class FollowingBulletFactory(IBulletFactory, IUpdatable):
     @property
     def upgradable(self):
         return self.__level != max(FollowingBulletFactory.BASE_LEVEL_STATS.keys())
+
+    @property
+    def level(self):
+        return self.__level
 
     def update(self, world: IGameWorld):
         if self.__cooldown_handler.is_action_ready():

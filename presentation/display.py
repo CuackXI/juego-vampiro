@@ -14,7 +14,7 @@ from game import Game
 class Display(IDisplay):
     """Class for displaying the game world."""
 
-    COLOR_MENUS_BG = (0, 0, 0, 190)
+    COLOR_MENUS_BG = (0, 0, 0, 210)
     COLOR_BUTTON = (255, 255, 255)
     COLOR_BUTTON_TEXT = (0, 0, 0)
     COLOR_UI_OVERLAY = (0, 0, 0, 130)
@@ -131,8 +131,8 @@ class Display(IDisplay):
     def __draw_player_inventory(self):
         inventory = self.__world.player.inventory
 
-        font = pygame.font.SysFont(None, 20)
-        title_text = font.render(
+        level_font = pygame.font.SysFont(None, 20)
+        title_text = level_font.render(
             f"Inventario:",
             True,
             (255, 255, 255),
@@ -144,9 +144,17 @@ class Display(IDisplay):
 
         self.__screen.blit(opacity_square, (10, 70))
 
+        level_font = pygame.font.SysFont(None, 30)
         for i in range(len(inventory)):
             perk_sprite = inventory[i].sprite
+            perk_level = level_font.render(
+                f"{inventory[i].level}",
+                True,
+                (255, 255, 255),
+            )
+
             self.__screen.blit(perk_sprite.image, (15 + (i * 55), 75))
+            self.__screen.blit(perk_level, (45 + (i * 55), 115))
 
     def __draw_pause_menu(self, game: Game):
         x = self.__world.player.pos_x
@@ -196,21 +204,10 @@ class Display(IDisplay):
                 return
 
     def __draw_clock(self):
-        clock = GameClockSingleton()
-        total_seconds = clock.game_clock // 1000
-        minutes = int(total_seconds // 60)
-        seconds = int(total_seconds % 60)
-
-        if minutes < 10:
-            minutes = "0" + str(minutes)
-
-        if seconds < 10:
-            seconds = "0" + str(seconds)
-
-        formatted_time = f"{minutes}:{seconds}"
+        time = self.__time_as_text()
 
         font = pygame.font.Font(None, 36)
-        time_text = font.render(formatted_time, True, (255, 255, 255))
+        time_text = font.render(time, True, (255, 255, 255))
 
         text_width, text_height = time_text.get_size()
 
@@ -239,9 +236,15 @@ class Display(IDisplay):
         game_over_font = pygame.font.Font(None, 72)
         font = pygame.font.Font(None, 36)
 
-        game_over_text = game_over_font.render("Juego terminado!", True, (255, 150, 150))
+        time = self.__time_as_text()
 
-        self.__screen.blit(game_over_text, ((settings.SCREEN_WIDTH // 2) - 190, (settings.SCREEN_HEIGHT // 2) - 60))
+        game_over_text = game_over_font.render("Juego terminado!", True, (255, 150, 150))
+        level_text = font.render(f"Nivel: {self.__world.player.level}", True, (255, 255, 255))
+        time_text = font.render(f"Tiempo: {time}", True, (255, 255, 255))
+
+        self.__screen.blit(game_over_text, ((settings.SCREEN_WIDTH // 2) - 210, (settings.SCREEN_HEIGHT // 2) - 60))
+        self.__screen.blit(level_text, ((settings.SCREEN_WIDTH // 2) - 80, (settings.SCREEN_HEIGHT // 2) + 10))
+        self.__screen.blit(time_text, ((settings.SCREEN_WIDTH // 2) - 80, (settings.SCREEN_HEIGHT // 2) + 40))
 
         # Boton de reset
 
@@ -325,6 +328,21 @@ class Display(IDisplay):
                     self.__perks_for_display.clear()
                 return
 
+    def __time_as_text(self) -> str:
+        clock = GameClockSingleton()
+        total_seconds = clock.game_clock // 1000
+        minutes = int(total_seconds // 60)
+        seconds = int(total_seconds % 60)
+
+        if minutes < 10:
+            minutes = "0" + str(minutes)
+
+        if seconds < 10:
+            seconds = "0" + str(seconds)
+
+        formatted_time = f"{minutes}:{seconds}"
+        return formatted_time
+
     def render_frame(self, paused = None, in_upgrade = None, dead = None, game = None):
         self.camera.update(self.__world.player.sprite.rect)
 
@@ -357,15 +375,15 @@ class Display(IDisplay):
         if in_upgrade:
             self.__draw_upgrade_menu()
 
-        if dead:
-            self.__draw_game_over_screen(game)
-
         if paused:
             self.__draw_pause_menu(game)
 
         self.__draw_player_inventory()
         self.__draw_clock()
         self.__draw_player_level()
+
+        if dead:
+            self.__draw_game_over_screen(game)
 
         # Update the display
         pygame.display.flip()

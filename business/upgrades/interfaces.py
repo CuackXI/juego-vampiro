@@ -8,7 +8,7 @@ class IPerk(JSONable):
     @abstractmethod
     def upgrade(self):
         """It upgrades the perk to the next level."""
-        
+
     @abstractmethod
     def upgrade_amount(self) -> int | float:
         """The amount by which it upgrades a player stat.
@@ -29,10 +29,19 @@ class IPerk(JSONable):
     @property
     @abstractmethod
     def upgradable(self) -> bool:
-        """If the current perk at the current level can be upgradable.
+        """If the current perk at the current level can be upgraded.
 
         Returns:
             bool: If it's upgradable.
+        """
+
+    @property
+    @abstractmethod
+    def level(self) -> bool:
+        """Current level of the perk.
+
+        Returns:
+            int: The level.
         """
 
 class IBulletFactory(IPerk, IUpdatable):

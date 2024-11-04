@@ -29,6 +29,10 @@ class RegenerationPerk(IPerk):
     def upgradable(self):
         return self.__level != max(RegenerationPerk.BASE_LEVEL_STATS.keys())
 
+    @property
+    def level(self):
+        return self.__level
+
     def upgrade(self):
         if self.__level + 1 in RegenerationPerk.BASE_LEVEL_STATS.keys():
             self.__level += 1
@@ -69,6 +73,10 @@ class MaxHealthPerk(IPerk):
     @property
     def upgradable(self):
         return self.__level != max(MaxHealthPerk.BASE_LEVEL_STATS.keys())
+
+    @property
+    def level(self):
+        return self.__level
 
     def upgrade(self):
         if self.__level + 1 in MaxHealthPerk.BASE_LEVEL_STATS.keys():
@@ -111,6 +119,10 @@ class DamageMultiplierPerk(IPerk):
     def upgradable(self):
         return self.__level != max(DamageMultiplierPerk.BASE_LEVEL_STATS.keys())
 
+    @property
+    def level(self):
+        return self.__level
+
     def upgrade(self):
         if self.__level + 1 in DamageMultiplierPerk.BASE_LEVEL_STATS.keys():
             self.__level += 1
@@ -151,6 +163,10 @@ class SpeedPerk(IPerk):
     @property
     def upgradable(self):
         return self.__level != max(SpeedPerk.BASE_LEVEL_STATS.keys())
+
+    @property
+    def level(self):
+        return self.__level
 
     def upgrade(self):
         if self.__level + 1 in SpeedPerk.BASE_LEVEL_STATS.keys():
