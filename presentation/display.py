@@ -282,6 +282,68 @@ class Display(IDisplay):
                 return
             elif reset_button.collidepoint(mouse_pos):
                 raise ResetGame
+            
+    def __draw_win_screen(self, game: Game):
+        game.win()
+
+        x = self.__world.player.pos_x
+        y = self.__world.player.pos_y
+
+        x = max(0, min(x, settings.WORLD_WIDTH - settings.SCREEN_WIDTH))
+        y = max(0, min(y, settings.WORLD_HEIGHT - settings.SCREEN_HEIGHT))
+
+        opacity_square = pygame.Surface((settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT), pygame.SRCALPHA)
+        opacity_square.fill(self.COLOR_MENUS_BG)
+
+        self.__screen.blit(opacity_square, (0, 0))
+
+        game_over_font = pygame.font.Font(None, 72)
+        font = pygame.font.Font(None, 36)
+
+        time = self.__time_as_text()
+
+        game_over_text = game_over_font.render("Ganaste!", True, (150, 255, 150))
+        level_text = font.render(f"Nivel: {self.__world.player.level}", True, (255, 255, 255))
+        time_text = font.render(f"Tiempo: {time}", True, (255, 255, 255))
+
+        self.__screen.blit(game_over_text, ((settings.SCREEN_WIDTH // 2) - 100, (settings.SCREEN_HEIGHT // 2) - 60))
+        self.__screen.blit(level_text, ((settings.SCREEN_WIDTH // 2) - 80, (settings.SCREEN_HEIGHT // 2) + 10))
+        self.__screen.blit(time_text, ((settings.SCREEN_WIDTH // 2) - 80, (settings.SCREEN_HEIGHT // 2) + 40))
+
+        # Boton de reset
+
+        reset_button = pygame.Rect(150, 250, 200, 50)
+        reset_text = font.render("Reiniciar", True, self.COLOR_BUTTON_TEXT)
+
+        reset_button.x = (settings.SCREEN_WIDTH // 2) - (reset_button.width // 2) - 150
+        reset_button.y = (settings.SCREEN_HEIGHT // 2) + 200
+
+        pygame.draw.rect(self.__screen, self.COLOR_BUTTON, reset_button)
+
+        self.__screen.blit(reset_text, (reset_button.x + 40, reset_button.y + 10))
+
+        # Boton de salir
+
+        quit_button = pygame.Rect(150, 250, 200, 50)
+        quit_text = font.render("Salir", True, self.COLOR_BUTTON_TEXT)
+
+        quit_button.x = (settings.SCREEN_WIDTH // 2) - (quit_button.width // 2) + 150
+        quit_button.y = (settings.SCREEN_HEIGHT // 2) + 200
+
+        pygame.draw.rect(self.__screen, self.COLOR_BUTTON, quit_button)
+
+        self.__screen.blit(quit_text, (quit_button.x + 70, quit_button.y + 10))
+
+        mouse_pos = pygame.mouse.get_pos()
+
+        if pygame.mouse.get_pressed()[0]:
+            if quit_button.collidepoint(mouse_pos):
+                game.close_game_loop()
+                game.clear_save()
+                pygame.quit()
+                return
+            elif reset_button.collidepoint(mouse_pos):
+                raise ResetGame
 
     def __draw_upgrade_menu(self):
         perks = self.__get_perks()
@@ -413,6 +475,9 @@ class Display(IDisplay):
         self.__draw_player_inventory()
         self.__draw_clock()
         self.__draw_player_level_bar()
+
+        if GameClockSingleton().game_clock > 180000:
+            self.__draw_win_screen(game)
 
         if dead:
             self.__draw_game_over_screen(game)
