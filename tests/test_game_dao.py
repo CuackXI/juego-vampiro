@@ -65,12 +65,20 @@ class TestGameJSONDAO(unittest.TestCase):
             'updatable': {str(type(perk)): perk.to_json() for perk in player.__updatable_inventory},
         })
 
+        monster_spawner = Mock()
+        monster_spawner.__minute_boss_added = 10
+        monster_spawner.__second_minute_boss_added = 20
+        monster_spawner.to_json = Mock(return_value={
+            'minute_boss_added': monster_spawner.__minute_boss_added,
+            'second_minute_boss_added': monster_spawner.__second_minute_boss_added
+        })
+
         game = Mock()
         game.world.monsters = [monster]
         game.world.bullets = [bullet]
         game.world.items = [item]
         game.world.player = player
-        game.world.monster_spawner = Mock(to_json=Mock(return_value={'spawn_rate': 5}))
+        game.world.monster_spawner = monster_spawner
 
         self.dao.save_game(game)
 
@@ -118,6 +126,11 @@ class TestGameJSONDAO(unittest.TestCase):
             'static': {'<class \'business.upgrades.perks.RegenerationPerk\'>': {'level': regeneration_perk.level}},
             'updatable': {'<class \'business.upgrades.bullet_factories.NormalBulletFactory\'>': {'level': bullet_factory.level, 
                                                                                                  'attack_cooldown': bullet_factory._NormalBulletFactory__cooldown_handler.last_action_time}},
+        })
+
+        self.assertEqual(saved_data['monster_spawner'], {
+            'minute_boss_added': monster_spawner.__minute_boss_added,
+            'second_minute_boss_added': monster_spawner.__second_minute_boss_added
         })
 
         self.assertEqual(saved_data['clock'], GameClockSingleton().game_clock)
