@@ -30,7 +30,7 @@ class MonsterSpawner(IMonsterSpawner):
 
         self.__spawn_cooldown = CooldownHandler(MonsterSpawner.BASE_DELAY)
 
-    def load_saved_data(self, world: IGameWorld, saved_data: list):
+    def load_saved_data(self, world: IGameWorld, saved_data: dict):
         """Loads the monsters from the saved game data.
         
         Args:

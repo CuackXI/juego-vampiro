@@ -9,6 +9,7 @@ from presentation.interfaces import IDisplay
 from presentation.tileset import Tileset
 from business.handlers.clock import GameClockSingleton
 from business.entities.interfaces import IPlayer, IMonster
+from business.upgrades.interfaces import IPerk
 from game import Game
 
 class Display(IDisplay):
@@ -120,15 +121,6 @@ class Display(IDisplay):
         self.__screen.blit(self.__world.player.sprite.image, adjusted_rect)
 
         self.__draw_player_health_bar()
-
-    def __draw_player_level(self):
-        font = pygame.font.SysFont(None, 48)
-        experience_text = font.render(
-            f"NIVEL {self.__world.player.level} XP: {self.__world.player.experience}/{self.__world.player.experience_to_next_level}",
-            True,
-            (255, 255, 255),
-        )
-        self.__screen.blit(experience_text, (10, 10))
 
     def __draw_player_inventory(self):
         inventory = self.__world.player.inventory
@@ -346,7 +338,7 @@ class Display(IDisplay):
                 raise ResetGame
 
     def __draw_upgrade_menu(self):
-        perks = self.__get_perks()
+        perks: list[IPerk] = self.__get_perks()
 
         if len(perks) != 0:
             opacity_square = pygame.Surface((settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT), pygame.SRCALPHA)

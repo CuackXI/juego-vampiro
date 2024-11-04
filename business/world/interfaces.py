@@ -10,6 +10,7 @@ from persistence.json_interfaces import JSONable
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
+    from game import Game
     from business.world.interfaces import IMonsterSpawner
 
 class IGameWorld(ABC):
@@ -99,7 +100,7 @@ class IGameWorld(ABC):
 
     @property
     @abstractmethod
-    def game(self):
+    def game(self) -> "Game":
         """Return the game instance.
 
         Returns:
