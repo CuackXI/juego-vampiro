@@ -1,7 +1,7 @@
 """Settings module."""
 
 # Display
-GAME_TITLE = "Skibidi Survivors"
+GAME_TITLE = "Tuki Survivors"
 FPS = 60
 
 # Tile dimensions
