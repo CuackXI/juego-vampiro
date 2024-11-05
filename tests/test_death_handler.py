@@ -14,7 +14,7 @@ class TestDeathHandler(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         pygame.init()
-        pygame.display.set_mode((1, 1))
+        pygame.display.set_mode((1, 1), pygame.HIDDEN)
 
     @classmethod
     def tearDownClass(cls):
