@@ -32,12 +32,6 @@ class MonsterSpawner(IMonsterSpawner):
         self.__spawn_cooldown = CooldownHandler(MonsterSpawner.BASE_DELAY)
 
     def load_saved_data(self, world: IGameWorld, saved_data: dict):
-        """Loads the monsters from the saved game data.
-        
-        Args:
-            world (IGameWorld): The game world instance.
-            saved_data: The saved game data.
-        """
         mosnters_data = saved_data.get('monsters')
 
         for monster_type in mosnters_data:
@@ -70,12 +64,6 @@ class MonsterSpawner(IMonsterSpawner):
             self.__spawn_cooldown.put_on_cooldown()
 
     def spawn_monster(self, world: IGameWorld):
-        """Spawns a monster at the edge of the current camera view.
-
-        Args:
-            world (IGameWorld): The game world instance.
-            camera (Camera): The camera instance.
-        """
         while True:
             try:
                 camera_left = self.__display.camera.camera_rect.left

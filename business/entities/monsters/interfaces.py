@@ -7,6 +7,8 @@ from business.upgrades.interfaces import IBulletFactory
 from business.entities.interfaces import IBullet
 
 class IMonsterGun(MovableEntity, IMonster):
+    """The monster interface that shoots bullets."""
+    
     @property
     @abstractmethod
     def inventory(self) -> list[IBulletFactory]:

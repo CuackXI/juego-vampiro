@@ -34,6 +34,7 @@ class GunMonster(IMonsterGun):
             self.__load_saved_data(saved_data)
 
     def __load_saved_data(self, saved_data: dict):
+        """Loads saved data from the data file."""
         self._pos_x = saved_data['pos_x']
         self._pos_y = saved_data['pos_y']
         self.__health = saved_data['health']
@@ -71,6 +72,7 @@ class GunMonster(IMonsterGun):
         return self.__inventory
 
     def __get_normalized_direction(self, entity: "IHasPosition"):
+        """Gets direction to an entity."""
         x1, y1 = self.pos_x, self.pos_y
         x2, y2 = entity.pos_x, entity.pos_y
         vector_x = x2 - x1
@@ -86,6 +88,7 @@ class GunMonster(IMonsterGun):
         return direccion_x, direccion_y
 
     def __get_direction_towards_the_player(self, world: IGameWorld):
+        """Gets direction towards the player."""
         dir_x, dir_y = self.__get_normalized_direction(world.player)
 
         return dir_x, dir_y

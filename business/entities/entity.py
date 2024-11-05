@@ -3,7 +3,7 @@
 import logging
 from abc import abstractmethod
 
-from business.entities.interfaces import *
+from business.entities.interfaces import IHasPosition, ICanMove
 from business.world.interfaces import IGameWorld
 from presentation.sprite import Sprite
 

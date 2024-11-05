@@ -29,6 +29,7 @@ class MonsterBullet(IMonsterBullet):
         }
 
     def __calculate_direction(self, dx, dy):
+        """Calculates a direction to other position."""
         distance = math.hypot(dx, dy)
         if distance != 0:
             return dx / distance, dy / distance

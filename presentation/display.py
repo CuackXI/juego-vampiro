@@ -42,17 +42,20 @@ class Display(IDisplay):
         return self.__camera
 
     def __get_perks(self):
+        """Gets the random set of perks."""
         if len(self.__perks_for_display) == 0:
             self.__perks_for_display = self.__world.get_perks_for_display()
         
         return self.__perks_for_display
 
     def __load_ground_tileset(self):
+        """Gets the ground tileset"""
         return Tileset(
             "./assets/ground_tileset.png", settings.TILE_WIDTH, settings.TILE_HEIGHT, 2, 3
         )
 
     def __render_ground_tiles(self):
+        """Renders the ground tiles"""
         start_col = max(0, self.camera.camera_rect.left // settings.TILE_WIDTH)
         end_col = min(
             settings.WORLD_COLUMNS, (self.camera.camera_rect.right // settings.TILE_WIDTH) + 1
@@ -94,35 +97,33 @@ class Display(IDisplay):
         text_x = bar_x + (bar_width - text_surface.get_width()) // 2
         text_y = bar_y + bar_height + 5
 
-        # Draw the health value text
         self.__screen.blit(text_surface, (text_x, text_y))
 
     def __draw_monster_health_bar(self, monster: IMonster):
         """Draws the monster's health bar and health value on the screen, only if its health is under its max health."""
-        
-        # Define the health bar dimensions
+
         bar_width = settings.TILE_WIDTH
         bar_height = 5
         bar_x = monster.sprite.rect.centerx - bar_width // 2 - self.camera.camera_rect.left
         bar_y = monster.sprite.rect.bottom + 5 - self.camera.camera_rect.top
 
-        # Draw the background bar (red)
         bg_rect = pygame.Rect(bar_x, bar_y, bar_width, bar_height)
         pygame.draw.rect(self.__screen, (255, 0, 0), bg_rect)
 
-        # Draw the health bar (green)
         health_percentage = monster.health / monster.max_health
         health_width = int(bar_width * health_percentage)
         health_rect = pygame.Rect(bar_x, bar_y, health_width, bar_height)
         pygame.draw.rect(self.__screen, (0, 255, 0), health_rect)
 
     def __draw_player(self):
+        """Draws the player."""
         adjusted_rect = self.camera.apply(self.__world.player.sprite.rect)
         self.__screen.blit(self.__world.player.sprite.image, adjusted_rect)
 
         self.__draw_player_health_bar()
 
     def __draw_player_inventory(self):
+        """Draws the player inventory."""
         inventory = self.__world.player.inventory
 
         level_font = pygame.font.SysFont(None, 20)
@@ -151,6 +152,7 @@ class Display(IDisplay):
             self.__screen.blit(perk_level, (45 + (i * 55), 115))
 
     def __draw_pause_menu(self, game: Game):
+        """Draws the pause menu."""
         x = self.__world.player.pos_x
         y = self.__world.player.pos_y
 
@@ -198,6 +200,7 @@ class Display(IDisplay):
                 return
 
     def __draw_clock(self):
+        """Draws the clock"""
         time = self.__time_as_text()
 
         font = pygame.font.Font(None, 36)
@@ -216,6 +219,7 @@ class Display(IDisplay):
         self.__screen.blit(time_text, (box_x + 10, box_y + 5))
 
     def __draw_game_over_screen(self, game: Game):
+        """Draws the game over screen."""
         x = self.__world.player.pos_x
         y = self.__world.player.pos_y
 
@@ -240,8 +244,6 @@ class Display(IDisplay):
         self.__screen.blit(level_text, ((settings.SCREEN_WIDTH // 2) - 80, (settings.SCREEN_HEIGHT // 2) + 10))
         self.__screen.blit(time_text, ((settings.SCREEN_WIDTH // 2) - 80, (settings.SCREEN_HEIGHT // 2) + 40))
 
-        # Boton de reset
-
         reset_button = pygame.Rect(150, 250, 200, 50)
         reset_text = font.render("Reiniciar", True, self.COLOR_BUTTON_TEXT)
 
@@ -251,8 +253,6 @@ class Display(IDisplay):
         pygame.draw.rect(self.__screen, self.COLOR_BUTTON, reset_button)
 
         self.__screen.blit(reset_text, (reset_button.x + 40, reset_button.y + 10))
-
-        # Boton de salir
 
         quit_button = pygame.Rect(150, 250, 200, 50)
         quit_text = font.render("Salir", True, self.COLOR_BUTTON_TEXT)
@@ -276,6 +276,7 @@ class Display(IDisplay):
                 raise ResetGame
             
     def __draw_win_screen(self, game: Game):
+        """Draws the win screen."""
         game.win()
 
         x = self.__world.player.pos_x
@@ -292,14 +293,11 @@ class Display(IDisplay):
         game_over_font = pygame.font.Font(None, 72)
         font = pygame.font.Font(None, 36)
 
-        time = self.__time_as_text()
-
         game_over_text = game_over_font.render("Ganaste!", True, (150, 255, 150))
         level_text = font.render(f"Nivel: {self.__world.player.level}", True, (255, 255, 255))
 
         self.__screen.blit(game_over_text, ((settings.SCREEN_WIDTH // 2) - 100, (settings.SCREEN_HEIGHT // 2) - 60))
         self.__screen.blit(level_text, ((settings.SCREEN_WIDTH // 2) - 80, (settings.SCREEN_HEIGHT // 2) + 10))
-        # Boton de reset
 
         reset_button = pygame.Rect(150, 250, 200, 50)
         reset_text = font.render("Reiniciar", True, self.COLOR_BUTTON_TEXT)
@@ -310,8 +308,6 @@ class Display(IDisplay):
         pygame.draw.rect(self.__screen, self.COLOR_BUTTON, reset_button)
 
         self.__screen.blit(reset_text, (reset_button.x + 40, reset_button.y + 10))
-
-        # Boton de salir
 
         quit_button = pygame.Rect(150, 250, 200, 50)
         quit_text = font.render("Salir", True, self.COLOR_BUTTON_TEXT)
@@ -335,6 +331,7 @@ class Display(IDisplay):
                 raise ResetGame
 
     def __draw_upgrade_menu(self):
+        """Draws the upgrade menu."""
         perks: list[IPerk] = self.__get_perks()
 
         if len(perks) != 0:
@@ -387,6 +384,7 @@ class Display(IDisplay):
                 return
 
     def __time_as_text(self) -> str:
+        """Converts ms from the clock to text for the clock."""
         clock = GameClockSingleton()
         total_seconds = clock.game_clock // 1000
         minutes = int(total_seconds // 60)
@@ -402,6 +400,7 @@ class Display(IDisplay):
         return formatted_time
 
     def __draw_player_level_bar(self):
+        """Draws the player's level bar."""
         bar_width = 400
         bar_height = 25
 

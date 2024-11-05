@@ -1,3 +1,5 @@
+"""Module that contains the monster bullet factory."""
+
 from business.entities.monsters.interfaces import IMonsterGun
 from business.upgrades.interfaces import IBulletFactory
 from business.entities.bullets import *
@@ -6,6 +8,8 @@ from presentation.sprite import *
 from business.entities.monsters.bullets import MonsterBullet
 
 class MonsterBulletFactory(IBulletFactory):
+    """Monster bullet factory implementation."""
+
     BASE_LEVEL_STATS = {
         1: {
             'COOLDOWN': 5000,
@@ -25,6 +29,7 @@ class MonsterBulletFactory(IBulletFactory):
             self.__cooldown_handler = CooldownHandler(self.cooldown)
 
     def load_cooldown(self, amount):
+        """Loads the cooldown from the data."""
         self.__cooldown_handler.last_action_time = amount
 
     def to_json(self):
@@ -35,6 +40,7 @@ class MonsterBulletFactory(IBulletFactory):
 
     @staticmethod
     def load_bullets(data, world: IGameWorld):
+        """Loads the bullets from the data"""
         for bullet_data in data:
             pos_x = bullet_data['pos_x']
             pos_y = bullet_data['pos_y']
@@ -54,6 +60,7 @@ class MonsterBulletFactory(IBulletFactory):
         self.__shoot_at_player(world)
     
     def __shoot_at_player(self, world: IGameWorld):
+        """Shoots at player."""
         player = world.player
 
         bullet = MonsterBullet(self.__monster.pos_x, self.__monster.pos_y, player.pos_x, player.pos_y, 

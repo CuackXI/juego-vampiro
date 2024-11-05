@@ -2,11 +2,19 @@
 
 from abc import ABC, abstractmethod
 
-from business.upgrades.interfaces import IPerk
 from persistence.json_interfaces import JSONable
 from presentation.sprite import Sprite
-from business.common.interfaces import IUpdatable
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from business.upgrades.interfaces import IPerk
 
+
+class IUpdatable(ABC):
+    """Interface for entities that can be updated."""
+
+    @abstractmethod
+    def update(self, world):
+        """Update the state of the entity."""
 
 class IHasSprite(ABC):
     """Interface for entities that have a sprite."""

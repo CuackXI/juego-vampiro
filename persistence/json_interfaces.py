@@ -1,3 +1,5 @@
+"""Module for JSON related interfaces."""
+
 from abc import ABC, abstractmethod
 
 class JSONable(ABC):

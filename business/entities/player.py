@@ -83,6 +83,7 @@ class Player(MovableEntity, IPlayer):
             self.__load_saved_data(saved_data)
 
     def __load_saved_data(self, saved_data: dict):
+        """Loads the saved data from the data file."""
         self._pos_x = saved_data['pos_x']
         self._pos_y = saved_data['pos_y']
         self.__experience = saved_data['experience']
@@ -196,7 +197,6 @@ class Player(MovableEntity, IPlayer):
 
         self.sprite.update_pos(self._pos_x, self._pos_y)
 
-
     def take_damage(self, amount):
         self.__health = max(0, self.__health - amount)
 
@@ -218,6 +218,7 @@ class Player(MovableEntity, IPlayer):
             self.heal(self.max_health * 0.2, color = True)
 
     def __gain_experience(self, amount: int, world: IGameWorld):
+        """Gains experience by the specified amount."""
         self.__experience += amount
 
         last_level = self.__level

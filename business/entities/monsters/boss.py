@@ -61,6 +61,7 @@ class BossMonster(MovableEntity, IMonster):
         return self.__max_health
 
     def __get_normalized_direction(self, entity: "IHasPosition"):
+        """Gets direction to an entity."""
         x1, y1 = self.pos_x, self.pos_y
         x2, y2 = entity.pos_x, entity.pos_y
         vector_x = x2 - x1
@@ -76,6 +77,7 @@ class BossMonster(MovableEntity, IMonster):
         return direccion_x, direccion_y
 
     def __get_direction_towards_the_player(self, world: IGameWorld):
+        """Gets direction towards the player."""
         dir_x, dir_y = self.__get_normalized_direction(world.player)
 
         return dir_x, dir_y

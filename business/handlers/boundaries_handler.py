@@ -8,6 +8,7 @@ class BoundariesHandler:
 
     @staticmethod
     def is_entity_within_world_boundaries(entity: Entity):
+        """If the entity is inside the world."""
         return (
             20 <= entity.pos_x <= settings.WORLD_WIDTH - 20 and 25 <= entity.pos_y <= settings.WORLD_HEIGHT - 25
         )

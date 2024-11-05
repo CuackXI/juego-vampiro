@@ -1,3 +1,5 @@
+"""Module for JSON game DAO implementation"""
+
 import os
 import json
 

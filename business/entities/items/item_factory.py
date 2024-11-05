@@ -6,6 +6,8 @@ from business.entities.items.guaymallen import *
 from business.world.interfaces import IGameWorld
 
 class ItemFactory(IItemFactory):
+    """Item factory that creates instances of all the possible items."""
+
     COMMON_GEM = "CommonGem"
     RED_GEM = "RedGem"
     GREEN_GEM = "GreenGem"

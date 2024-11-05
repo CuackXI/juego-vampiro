@@ -1,8 +1,11 @@
+"""Module that contains all of the player's possible perks."""
+
 from business.upgrades.interfaces import IPerk
 from business.entities.interfaces import IPlayer
 from presentation.sprite import RegenerationPerkSprite, MaxHealthPerkSprite, DamageMultiplierPerkSprite, SpeedPerkSprite
 
 class RegenerationPerk(IPerk):
+    """Regeneration perk implementation."""
 
     BASE_LEVEL_STATS = {
         1: 1,
@@ -49,6 +52,8 @@ class RegenerationPerk(IPerk):
         return f'AUMENTO DE REGENERACIÓN: {self.upgrade_amount()}'
 
 class MaxHealthPerk(IPerk):
+    """Max health perk implementation."""
+
     BASE_LEVEL_STATS = {
         1: 25,
         2: 40,
@@ -94,6 +99,8 @@ class MaxHealthPerk(IPerk):
         return f'AUMENTO DE VIDA MÁXIMA: {self.upgrade_amount()}'
 
 class DamageMultiplierPerk(IPerk):
+    """Damage multiplier perk implemetation"""
+
     BASE_LEVEL_STATS = { #All + 1 from player
         1: 0.1,
         2: 0.5,
@@ -139,6 +146,8 @@ class DamageMultiplierPerk(IPerk):
         return f'MULTIPLICACION DE DAÑO: {1 + self.upgrade_amount()}'
 
 class SpeedPerk(IPerk):
+    """Speed perk implemetation"""
+
     BASE_LEVEL_STATS = { #All + 1 from player
         1: 0.1,
         2: 0.2,

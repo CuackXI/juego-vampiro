@@ -1,3 +1,5 @@
+"""Module for DAO interfaces."""
+
 from abc import ABC, abstractmethod
 
 from game import Game

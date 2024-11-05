@@ -14,6 +14,7 @@ class InputHandler(IInputHandler):
         self.__world = world
 
     def __get_player_movement(self, keys):
+        """Converts input to player movement."""
         SQUARE_ROOT_2 = 1.414 / 2
 
         d_x, d_y = 0, 0
@@ -41,6 +42,7 @@ class InputHandler(IInputHandler):
             self.__world.player.move(-d_x, -d_y)
             
     def is_pause_pressed(self):
+        """Detects if ESC key is being pressed."""
         keys = pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:
             if not self.__pause_key_down:
@@ -51,8 +53,10 @@ class InputHandler(IInputHandler):
         return False
 
     def process_input(self):
+        """Process the inputs of the player."""
         keys = pygame.key.get_pressed()
         self.__get_player_movement(keys)
 
     def process_pause(self, game: Game):
+        """Toggles pause from the game."""
         return not game.paused

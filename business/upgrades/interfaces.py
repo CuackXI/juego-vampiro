@@ -1,10 +1,14 @@
+"""This module has the interfaces for the upgrades."""
+
 from abc import abstractmethod
 
 from persistence.json_interfaces import JSONable
-from business.common.interfaces import IUpdatable
 from presentation.sprite import Sprite
+from business.entities.interfaces import IUpdatable
 
 class IPerk(JSONable):
+    """Interface for perks."""
+
     @abstractmethod
     def upgrade(self):
         """It upgrades the perk to the next level."""
@@ -45,6 +49,8 @@ class IPerk(JSONable):
         """
 
 class IBulletFactory(IPerk, IUpdatable):
+    """Interface for bullet factories."""
+    
     @abstractmethod
     def create_bullet(self):
         """Instances bullet of the specified type in the direction given by the player."""

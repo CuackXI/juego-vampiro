@@ -1,3 +1,5 @@
+"""Module that contains the game clock."""
+
 import settings
 
 class GameClockSingleton:

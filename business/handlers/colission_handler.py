@@ -15,6 +15,7 @@ class CollisionHandler:
 
     @staticmethod
     def __handle_bullets(bullets: list[IBullet], monsters: list[IMonster], player: IPlayer):
+        """Handles bullet collisions with the monsters and the player."""
         for bullet in bullets:
             for monster in monsters:
                 if CollisionHandler.__collides_with(bullet, monster) and not isinstance(bullet, IMonsterBullet):
@@ -25,11 +26,8 @@ class CollisionHandler:
                 bullet.take_damage(bullet.damage_amount)
 
     @staticmethod
-    def __handle_monsters(monsters: list[IMonster], player: IPlayer):
-        pass
-
-    @staticmethod
     def __handle_items(items: list[IItem], player: IPlayer, world: IGameWorld):
+        """Handles items collisions with the player."""
         for item in items:
             if item.in_player_range(player):
                 player.pickup_item(item, world)
@@ -43,5 +41,4 @@ class CollisionHandler:
             world (IGameWorld): The game world.
         """
         CollisionHandler.__handle_bullets(world.bullets, world.monsters, world.player)
-        CollisionHandler.__handle_monsters(world.monsters, world.player)
         CollisionHandler.__handle_items(world.items, world.player, world)

@@ -31,6 +31,7 @@ class NormalBullet(MovableEntity, IBullet):
         }
 
     def __calculate_direction(self, dx, dy):
+        """Calculates a direction to other position."""
         distance = math.hypot(dx, dy)
         if distance != 0:
             return dx / distance, dy / distance
@@ -80,6 +81,7 @@ class TurretBullet(MovableEntity, IBullet):
         }
 
     def __calculate_direction(self, dx, dy):
+        """Calculates a direction to other position."""
         distance = math.hypot(dx, dy)
         if distance != 0:
             return dx / distance, dy / distance
@@ -136,9 +138,7 @@ class FollowingBullet(MovableEntity, IBullet, IDespawnable):
         }
 
     def __calculate_direction(self, dx, dy):
-        """
-        Calculate normalized direction vector based on the distance to the target.
-        """
+        """Calculates a direction to other position."""
         distance = math.hypot(dx, dy)
         if distance != 0:
             return dx / distance, dy / distance
@@ -160,6 +160,7 @@ class FollowingBullet(MovableEntity, IBullet, IDespawnable):
         self.__health = max(0, self.__health - amount)
 
     def __get_nearest_monster(self, world: IGameWorld) -> IMonster:
+        """Gets the nearest monster entity to the bullet position."""
         if not world.monsters:
             return None
 

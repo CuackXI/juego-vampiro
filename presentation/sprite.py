@@ -40,32 +40,36 @@ class Sprite(pygame.sprite.Sprite):
         self._rect.center = (int(pos_x), int(pos_y))
 
     def __restore_image(self):
+        """Restores the original image."""
         self._image = self.__original_image.copy()
 
     def __change_color(self, color: tuple[int, int, int]):
+        """Changes the sprite color."""
         self._image = self.__original_image.copy()
         self._image.fill(color, special_flags=pygame.BLEND_MULT)
         self._image.set_colorkey((0, 0, 0))
 
     def __decrease_damage_countdown(self):
+        """Decreases the damaged state cooldown."""
         self.__is_in_damage_countdown -= 1
         if self.__is_in_damage_countdown <= 0:
             self.__is_in_damage_countdown = 0
             self.__restore_image()
 
     def __decrease_heal_countdown(self):
+        """Decreases the healed state cooldown."""
         self.__is_in_heal_countdown -= 1
         if self.__is_in_heal_countdown <= 0:
             self.__is_in_heal_countdown = 0
             self.__restore_image()
 
     def take_damage(self):
-        """Take damage."""
+        """Takes damage."""
         self.__change_color((255, 0, 0))
         self.__is_in_damage_countdown = 20
 
     def heal(self):
-        """Heal the player by turning the sprite green for 0.2 seconds."""
+        """Heals the player by turning the sprite green for 0.2 seconds."""
         self.__change_color((0, 255, 0))
 
         self.__is_in_heal_countdown = 24
@@ -142,7 +146,7 @@ class BossMonsterSprite(Sprite):
         super().__init__(image, rect)
 
 class BigBossMonsterSprite(Sprite):
-    """A class representing the boss monster sprite."""
+    """A class representing the big boss monster sprite."""
 
     ASSET = "./assets/boss2.png"
 
@@ -173,7 +177,7 @@ class BulletSprite(Sprite):
         super().__init__(image, rect)
 
 class MonsterBulletSprite(Sprite):
-    """A class representing the bullet sprite."""
+    """A class representing the monster bullet sprite."""
 
     ASSET = "./assets/monsterbullet.png"
 
@@ -233,7 +237,7 @@ class ExperienceGemSprite(Sprite):
         super().__init__(image, rect)
         
 class RedExperienceGemSprite(Sprite):
-    """A class representing the experience gem sprite."""
+    """A class representing the red experience gem sprite."""
 
     ASSET = "./assets/experience_gems.png"
 
@@ -247,7 +251,7 @@ class RedExperienceGemSprite(Sprite):
         super().__init__(image, rect)
                 
 class GreenExperienceGemSprite(Sprite):
-    """A class representing the experience gem sprite."""
+    """A class representing the green experience gem sprite."""
 
     ASSET = "./assets/experience_gems.png"
 
@@ -261,7 +265,7 @@ class GreenExperienceGemSprite(Sprite):
         super().__init__(image, rect)
 
 class BlueExperienceGemSprite(Sprite):
-    """A class representing the experience gem sprite."""
+    """A class representing the blue experience gem sprite."""
 
     ASSET = "./assets/experience_gems.png"
 

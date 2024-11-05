@@ -43,12 +43,14 @@ class GameWorld(IGameWorld):
             self.__initialize_perks()
 
     def __load_saved_data(self, saved_data: dict):
+        """Loads saved data from the data file."""
         self.monster_spawner.load_saved_data(self, saved_data)
 
         self.__load_bullets(saved_data)
         self.__load_items(saved_data)
 
     def __initialize_perks(self, saved_data: dict | None = None):
+        """Initialize perk's instances."""
         self.PERKS_U: list[IBulletFactory] = [NormalBulletFactory(self.__player), TurretBulletFactory(self.__player), FollowingBulletFactory(self.__player)]
         self.PERKS_S: list[IPerk] = [RegenerationPerk(self.__player), MaxHealthPerk(self.__player), DamageMultiplierPerk(self.__player), SpeedPerk(self.__player)]
 
@@ -79,6 +81,7 @@ class GameWorld(IGameWorld):
             self.__player.handle_perk(self.PERKS_U[0])
 
     def __load_bullets(self, saved_data: dict):
+        """Loads the bullets giving the saved data to the bullet factories."""
         saved_data = saved_data.get('bullets')
 
         for bullet_type in saved_data:
@@ -95,6 +98,7 @@ class GameWorld(IGameWorld):
                 MonsterBulletFactory().load_bullets(saved_data[bullet_type], self)
 
     def __load_items(self, saved_data: dict):
+        """Loads the items from the saved data."""
         ItemFactory.load_items(self, saved_data)
 
     def get_perks_for_display(self):

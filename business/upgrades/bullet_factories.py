@@ -1,3 +1,5 @@
+"""This module has all of the bullet factories."""
+
 from business.entities.interfaces import IPlayer, IUpdatable
 from business.upgrades.interfaces import IBulletFactory
 from business.entities.bullets import *
@@ -5,6 +7,7 @@ from business.handlers.cooldown_handler import CooldownHandler
 from presentation.sprite import BulletSprite, TurretBulletSprite, FollowingBulletSprite
 
 class NormalBulletFactory(IBulletFactory):
+    """Normal bullet factory implementation."""
     BASE_LEVEL_STATS = {
         1: {
             'COOLDOWN': 1000,
@@ -139,6 +142,7 @@ class NormalBulletFactory(IBulletFactory):
         pass
 
 class TurretBulletFactory(IBulletFactory, IUpdatable):
+    """Turret bullet factory implementation."""
     BASE_LEVEL_STATS = {
         1: {
             'COOLDOWN': 250,
@@ -274,6 +278,7 @@ class TurretBulletFactory(IBulletFactory, IUpdatable):
         pass
 
 class FollowingBulletFactory(IBulletFactory, IUpdatable):
+    """Following bullet factory implementation."""
     BASE_LEVEL_STATS = {
         1: {
             'COOLDOWN': 2000,
