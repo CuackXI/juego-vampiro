@@ -15,6 +15,9 @@ class GameJSONDAO(IGameDAO):
     def __init__(self, json_path="data/game.json") -> None:
         """Initializes the DAO."""
         self.__json_path = json_path
+
+        os.makedirs(os.path.dirname(self.__json_path), exist_ok=True)
+
         if not os.path.exists(self.__json_path):
             with open(self.__json_path, 'w', encoding="utf-8") as file:
                 json.dump(self.BASE_GAME_DATA, file, indent=4)
