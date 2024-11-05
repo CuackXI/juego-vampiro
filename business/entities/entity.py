@@ -7,7 +7,7 @@ from business.entities.interfaces import *
 from business.world.interfaces import IGameWorld
 from presentation.sprite import Sprite
 
-class Entity(IHasPosition, IHasSprite):
+class Entity(IHasPosition):
     """Base class for all entities in the game."""
 
     def __init__(self, pos_x: float, pos_y: float, sprite: Sprite):
@@ -43,7 +43,6 @@ class Entity(IHasPosition, IHasSprite):
     def update(self, world: IGameWorld):
         """Updates the entity."""
         self.sprite.update()
-
 
 class MovableEntity(Entity, ICanMove):
     """Base class for all entities that can move."""

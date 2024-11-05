@@ -5,14 +5,14 @@ import pygame
 from business.entities.entity import MovableEntity
 from business.entities.items.experience_gem import IExperienceGem
 from business.entities.items.guaymallen import Guaymallen
-from business.entities.interfaces import ICanDealDamage, IDamageable, IPlayer, IItem
+from business.entities.interfaces import IPlayer, IItem
 from business.upgrades.interfaces import IBulletFactory
 from business.handlers.cooldown_handler import CooldownHandler
 from business.upgrades.perks import *
 from business.world.interfaces import IGameWorld
 from presentation.sprite import Sprite
 
-class Player(MovableEntity, IPlayer, IDamageable, ICanDealDamage):
+class Player(MovableEntity, IPlayer):
     """Player entity.
 
     The player is the main character of the game. It can move around the game world and shoot at monsters."""

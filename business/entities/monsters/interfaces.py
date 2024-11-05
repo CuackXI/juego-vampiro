@@ -4,6 +4,7 @@ from abc import abstractmethod
 from business.entities.interfaces import *
 from business.entities.entity import MovableEntity
 from business.upgrades.interfaces import IBulletFactory
+from business.entities.interfaces import IBullet
 
 class IMonsterGun(MovableEntity, IMonster):
     @property
@@ -24,5 +25,5 @@ class IMonsterGun(MovableEntity, IMonster):
             float: The multiplier.
         """
 
-class IMonsterBullet(MovableEntity, IUpdatable, ICanMove, IDamageable, ICanDealDamage, JSONable):
+class IMonsterBullet(MovableEntity, IBullet):
     """Interface for monster's bullets."""

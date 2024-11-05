@@ -2,7 +2,7 @@
 
 import pygame
 
-from business.world.game_world import GameWorld
+from business.world.game_world import IGameWorld
 from presentation.interfaces import IInputHandler
 from business.handlers.boundaries_handler import BoundariesHandler
 from game import Game
@@ -10,7 +10,7 @@ from game import Game
 class InputHandler(IInputHandler):
     """Handles user input for the game."""
 
-    def __init__(self, world: GameWorld):
+    def __init__(self, world: IGameWorld):
         self.__world = world
 
     def __get_player_movement(self, keys):
