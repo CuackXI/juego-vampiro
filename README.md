@@ -1,2 +1,2 @@
-# juego-vampiro
-Proyecto de juego en pygame con POO basado en vampire survivors
+# Juego Vampiro 2023
+Proyecto de juego desarrollado en Python utilizando Pygame basado en Vampire Survivors.
