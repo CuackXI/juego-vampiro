@@ -22,8 +22,4 @@ Este trabajo fue realizado con el objetivo de **entender los fundamentos de la p
 ✅ Funcional  
 ❌ Abandonado
 
-## Créditos
-
-Desarrollado como parte de un proyecto educativo en el año 2024.
-
 ---
