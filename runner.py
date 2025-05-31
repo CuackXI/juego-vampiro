@@ -1,5 +1,4 @@
 """Runs the game"""
-import gc
 import pygame
 import settings
 from business.entities.player import Player
