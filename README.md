@@ -17,9 +17,9 @@ Este trabajo fue realizado con el objetivo de **entender los fundamentos de la p
 - Introducirse en el desarrollo de videojuegos con **Pygame**.
 - Desarrollar lógica de juego básica y sistemas de combate.
 
-## Estado del Proyecto
-
-✅ Funcional  
-❌ Abandonado
+## Como ejecutarlo
+- make setup
+- source venv/bin/activate
+- make run
 
 ---
