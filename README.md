@@ -18,8 +18,9 @@ Este trabajo fue realizado con el objetivo de **entender los fundamentos de la p
 - Desarrollar lógica de juego básica y sistemas de combate.
 
 ## Como ejecutarlo
-- make setup
-- source venv/bin/activate
-- make run
-
+```bash
+make setup
+source venv/bin/activate
+make run
+```
 ---
